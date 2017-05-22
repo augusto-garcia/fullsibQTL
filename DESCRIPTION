@@ -1,0 +1,15 @@
+Package: fullsibQTL
+Title: Software for QTL mapping using a full-sib progeny
+Version: 1.0-0
+Date: 2011-09-30
+Authors@R: c(person("Rodrigo","Gazaffi",    role = c("aut","cre"), email = "rgazaffi@gmail.com"),
+  	     person("Marcelo", "Mollinari", role = "ctb", email = "mmollina@usp.br"), 
+             person("Gabriel", "Margarido", role = "ctb", email = "gramarga@gmail.com"),
+             person("Karl",    "Broman",    role = "ctb", email = "kbroman@biostat.wisc.edu"),
+             person("Augusto", "Garcia",    role = "ctb", email = "augusto.garcia@usp.br"))
+Depends: R (>= 3.0), onemap
+Description: This package performs QTL mapping in outbred/outcrossing species, considering a full-sib cross (or F1 population) as a mapping population. It is assumed a previous genetic map obtained with onemap package. The method is based on maximum likelihood approach using mixture models and EM algorithm. The probabilities for QTL genotypes are inferred using multipoint approach based on Hidden Markov Models. We implemented functions to perform interval mapping (IM) and composite interval mapping (CIM). In a first step one need to scan the genome for QTLs and after locating them, one can characterize these loci, i.e., it is possible to estimate their effects, segregation pattern and the linkage phase between QTL and markers.
+License: GPL-3
+Author: Rodrigo Gazaffi [aut], Gabriel Margarido [ctb], Marcelo Mollinari [ctb], Karl Broman [ctb], Augusto Garcia [ctb]
+Maintainer: Rodrigo Gazaffi <rgazaffi@gmail.com> 
+

@@ -1,0 +1,940 @@
+\documentclass[letterpaper,12pt,oneside]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{graphics}
+\usepackage{graphicx}
+
+\pagestyle{headings}
+\pagenumbering{arabic}
+
+\setlength{\hoffset}{-1.5cm}
+\setlength{\voffset}{-2cm}
+\setlength{\textheight}{24.5cm}
+\setlength{\textwidth}{17cm}
+\renewcommand{\baselinestretch}{1.3}
+
+%\VignetteIndexEntry{FulsibQTL Tutorial}
+
+\SweaveOpts{eval=TRUE,echo=TRUE,results=hide,fig=FALSE}
+
+\begin{document}
+\begin{center}
+  \begin{Large}
+    {\bf FullsibQTL Tutorial}
+  \end{Large}
+  
+  \begin{large}
+    {\bf Software for QTL mapping using a full-sib progeny}
+  \end{large}
+  
+  \vspace{0.5cm}
+  
+  Rodrigo Gazaffi\textsuperscript{1}
+  
+  Antonio Augusto Franco Garcia\textsuperscript{1*}
+\end{center}
+
+\noindent \textsuperscript{1}Department of Genetics\\
+Escola Superior de Agricultura ``Luiz de Queiroz'' (ESALQ), Universidade de S\~ao Paulo (USP)
+
+\noindent Av. P\'adua Dias, 11 - Caixa Postal 83\\
+CEP: 13400-970 - Piracicaba - S\~ao Paulo - Brazil\\
+Tel: +55 19 34294125\\
+Fax: +55 19 34336706\\
+E-mail: augusto.garcia@usp.br
+
+\vspace{0.5cm}
+
+\noindent \textsuperscript{*}corresponding author
+\vspace{1cm}
+\phantom{bla}
+
+%\hspace{-1cm}
+\includegraphics[width=.7\linewidth, angle=-90]{Fig2.eps}
+
+\begin{center}
+  http://www.r-project.org
+  
+  \today
+\end{center}
+
+\newpage
+\section{Introduction}
+\textsl{FullsibQTL} is an \texttt{R} package to perform QTL mapping in outbred/outcrossing species. We consider as a mapping population a full-sib progeny (or $F_1$ population) derived by a biparental cross between two non homozygous parents, with a genetic map obtained with markers showing different segregation patterns. Here, we assumed the phenotypes are continuous having normal distribution and the genetic map was previously obtained with \textsl{onemap} package. If you are not familiar with \textsl{onemap}, we strongly encouraged to read \textsl{onemap} Vignettes (Margarido et al., 2007).
+
+In our software, we developed tools to perform (composite) interval mapping. Briefly, we developed an statistical model with three genetics effects, one for each parent and an interation (dominance). To obtain these estimatives, we used maximum likelihood approach using mixture models and EM algorithm (Gazaffi et al., 2013). The QTL genotype probabilities were calculated using a multipoint technology, based on Hiddden Markov Models (Wu et al., 2002b). We also implemented a function to select cofactors using multiple linear regression and the information criteria. Permutation test (Churchill and Doerge, 1994) for threshold determination were also implemented, as well the modification proposed by Chen and Storey (2006) for having a relaxed threshold. Some extra functions were developed to provide a graphical or text output for the analysis helping the interpretation of QTL mapping. To exemplify the usage of \textsl{FullsibQTL} we will analyse the dataset present by Gazaffi et al. (2013).
+
+The purpose of this tutorial is to help users dealing with this package and understanding the outputs. It is not our intention to teach the genetic basis of QTL mapping approach, see Gazaffi et al. (2013) for details. Remembering, users of \textsl{FullsibQTL} are supposed to have some experience with R, since the analysis is done using the command line, previous acknowledgement of \textsl{OneMap} is also desirably, once the genetic map is obtained with this software. \textsl{FullsibQTL} is available as source code for Windows\texttrademark \ and Unix. It is released under the GNU General Public License, is open-source and the code can be changed freely. It comes with no warranty. It is implemented as a package to be used under the freely distributed R software, which is a language and environment for statistical computing (www.r-project.org).
+
+\subsection{Citation}
+
+%\parshape 0pt \linewidth 0.8cm 16.2cm
+Gazaffi, R, Margarido, GRA, Pastina, MM, Mollinari, M, Garcia, AAF (submitted) A model for quantitative trait loci mapping, linkage phase and segregation pattern estimation for a full-sib progeny. \emph{Tree Genetics and Genomes}.
+
+%\parshape2 0pt \linewidth 0.8cm 16.2cm
+%Gazaffi, R, Garcia, AAF (in prep). A computer note of this package. \emph{qqr revista} bla bla bla bla bla bla bla bla bla bla bla bla
+
+\subsection{Instalation}
+
+ After installing R, \textsl{FullsibQTL} can be installed by opening R and issueing the command
+
+<<eval=FALSE, echo=FALSE>>= 
+ install.packages("fullsibQTL")
+@ 
+
+The package can be also installed by downloading the appropriate files directly at the CRAN web site and following the instructions given in the section ``6.3 Installing Packages'' of the ``R Installation and Administration'' manual (http://cran.r-project.org/doc/manuals/R-admin.pdf).
+
+\subsection{Getting started}
+The following example is intended to show the usage of all \textsl{FullsibQTL} functions. With basic knowledge of R syntax, one should have no big problems using it. It is assumed that the user is running Windows\texttrademark. Hopefully, these examples will be clear enough to help any user to understand its functionality and start using it.
+\begin{enumerate}
+\item Start R by double-clicking its icon.
+
+\item Load \textsl{FullsibQTL} (after installing it):
+<<eval=TRUE>>=
+library(fullsibQTL)
+@ 
+
+\item To save your project anytime, type:
+<<eval=FALSE>>=
+save.image("C:/.../yourfile.RData")
+@
+or access the toolbar File $\to$ Save Workspace.
+
+\item To load your project, in a new section type:
+<<eval=FALSE>>=
+load("C:/.../yourfile.RData")
+@
+or access the toolbar File $\to$ Load Workspace.
+
+\item To change the working directory, one can type:
+<<eval=FALSE>>=
+setwd("C:/.../new_working_directory")
+@ 
+or acess the toolbar File  $\to$ Chance working directory.
+
+\item  To open the help file for a any function, type ``?'' followed by the function name:
+<<eval=FALSE>>=
+?im.scan
+@
+\end{enumerate}
+
+\subsection{Functions}
+\textsl{FullsibQTL} package is composed by a small set of functions present in the Table~\ref{tab:fun}. There are some other functions used internally by the software, which one don not use them directly.
+
+\begin{table}[p]
+  \caption{FullsibQTL functions that are directly called by users}
+  \label{tab:fun}
+  \centering
+  \small
+  \begin{tabular}{p{4cm}lp{6cm}}
+    \textbf{Function type} & \textbf{Function name} & \textbf{Function description} \\
+    \hline
+    \textbf{Input}                      & read.outcross.pheno & Reads the data file containing markers and phenotypic values\\
+                                        & create.fullsib      & Creates the object to perform QTL\\
+    \hline
+    \textbf{interval mapping}           & im.scan             & Scan the genome using IM approach\\
+                                        & im.char             & Provides the genetic effects, LOD Score and the p-values of complementary tests\\
+    \hline
+    \textbf{cofactors}                  & cof.selection       & Selects cofactors using multiple linear regression\\
+                                        & cof.definition      & Defines locations on the genome to be used as cofactors\\
+
+    \hline                                    
+    \textbf{composite interval mapping} & cim.scan            & Scan the genome using CIM approach\\
+                                        & cim.char            & Provides the genetic effects, LOD Score and the p-values of complementary tests\\
+    \hline
+    \textbf{summaries}                  &print.fullsib        & Prints a summary for the object of class 'fullsib'\\
+                                        &print.fullsib.scan   & Prints the result of im.scan or cim.scan\\
+                                        &summary.fullsib.scan & Summarizes the QTL search for im.scan or cim.scan\\
+                                        &plot.fullsib.scan    & Plot the QTL profile for the mapped groups \\
+                                        &summary.fullsib.perm & Provides the threshold values for permutations test\\
+                                        &plot.fullsib.perm    & Plot the empiral distribution for permutation test\\
+                                        &draw.phase           & Returns the linkage phase between QTL and markers\\
+                                        &get.segr             & Returns the QTL segregation \\
+                                        &r2.ls                & Provides the phenotypic proportion of each QTL mapped and altogether (least square estimation)\\
+    \hline
+  \end{tabular}
+\end{table}
+   
+
+\section{Required data}
+Para proceder o mapeamento de QTL é necessário a inclusão de um arquivo texto contendo os genótipos e os fenótipos dos indivíduos da população, além do mapa genético previamente construído com o software \textsl{onemap}.
+
+O arquivo de entrada é análogo ao utilizado pelo \textsl{onemap}, ou seja, o mesmo arquivo considerado para a construção do mapa genético é utilizado acrescentando-se ao final os fenótipos dos indivíduos da população. Abaixo, mostra-se um exemplo de como seria um arquivo com 10 indivíduos, 5 marcadores e 2 fenótipos.
+
+\begin{verbatim}
+   10 5 2
+   *M1 B3.7        ab,ab,-,ab,b,ab,ab,-,ab,b
+   *M2 D2.18       o,-,a,a,-,o,a,-,o,o
+   *M3 D1.13       o,a,a,o,o,-,a,o,a,o
+   *M4 A.4         ab,b,-,ab,a,b,ab,b,-,a
+   *M5 D2.18       a,a,o,-,o,o,a,o,o,o
+   *pheno1         4.8, 2.1, 10.6, 3.7, -3.7, -7.5, -, 3.9, 3.6, -5.8
+   *pheno2         5, -5.8, -, 14.8, -2.4, -1.9, -1.1, 8.1, -11.1, 4.8
+\end{verbatim}
+
+Atenção: Recomenda-se ao usuário a não alterar a ordem dos marcadores deste arquivo ao utilizado para a construção do mapa de ligação, caso isto ocorra resultados não esperados podem ocorrer.
+
+Nota-se que na primeira linha o terceiro elemento indica o número de fenótipos contido no arquivo e a sétima linha contém os fenótipos. A indicação do nome do trait inicia-se com o nome da carateristica precedido pelo caracter ``*''. Os valores fenotipícos para cada indivíduo devem ser separados por vírgulas (``,'') e números decimais representados por ponto (``.''). Dado perdido pode ser representado por ``-'' ou ``NA''. Neste documento não explicaremos a codificação utilizada os marcadores moleculares já previamente apresentada no na seção \textit{Creating the data file} do tutorial do \textsl{onemap}.
+
+Uma vez que este arquivo esteja disponível, sua leitura deve ser feita com a função \linebreak
+\texttt{read.outcross.pheno}, adaptado do pacote \textsl{onemap} para receber a entrada dos valores fenotípicos.
+
+<<eval=FALSE>>=
+fs.data <- read.outcross.pheno("C:/workingdirectory","filename.txt")
+@ 
+
+Caso, o arquivo de dados esteja no mesmo diretório de trabalho pode-se também digitar:
+<<eval=FALSE>>=
+fs.data <- read.outcross.pheno(file="filename.txt")
+@ 
+
+Outra informação necessária ao programa é o mapa genético construído. Para tanto deve-se disponibilizar ao software os grupos de ligação previamente ordenados, neste caso o objeto da classe ``sequence'' para cada grupo obtido.
+
+\section{Loading dataset example}
+
+Para exemplificar o uso do pacote iremos utilizar o conjunto de dados simulados presente em Gazaffi et al. (2013). Para acessá-lo, o usuário deve digitar:
+
+<<eval=TRUE>>=
+data(QTLexample)
+@ 
+
+Ao carregar o exemplo, o usuário pode digitar o comando \texttt{ls} para visualizar que cinco variáveis foram carregadas:
+
+<<eval=TRUE, echo=TRUE, results=verbatim>>=
+ls()
+@ 
+
+O objeto \texttt{fullsib.data} contém os marcadores moleculares e os fenótipos lidos com a função \texttt{read.outcross.pheno} e os objetos \texttt{LG1.end}, \texttt{LG2.end}, \texttt{LG3.end} e \texttt{LG4.end} correspondem aos grupos de ligação previamente ordenados utilizando os recursos do \textsl{onemap} (objetos da classe ``sequence''). Digitando o nome das variáveis o usuário pode visualizar os objetos.
+
+\section{Creating the working object}
+Para iniciar as análises, o usuário precisa utilizar a função \texttt{create.fullsib} para criar um objeto da classe \texttt{fullsib}, o qual contém todos os objetos necessários ao mapeamento de QTLs. Para o exemplo, disponibilizado o usuário deve digitar:
+
+<<eval=TRUE, echo=TRUE>>=
+fsib <- create.fullsib(fullsib.data,
+                       map.list=list(LG1.end, LG2.end, LG3.end, LG4.end),
+                       step=1, map.function="kosambi")
+@ 
+
+O primeiro argumento, \texttt{fullsib.data} refere-se a variável criada com a função \texttt{read.outcross.pheno} (leitura dos dados), map.list é o argumento que indica os grupos de ligação construídos com o \textsl{onemap}. Para as situações que há mais de um grupo de ligação, estes devem ser armazenados em uma variável da classe \texttt{list}, ou seja, cada elemento dessa variável corresponde a um grupo de ligação. Para o cálculo das probabilidades condicionais multiponto, utiliza-se o argumento \texttt{step} define a distância em cM entre as quais as probabilidades são obtidas. Se \texttt{step=0} as probabilidades são calculadas apenas nas posições que contém marcadores. \texttt{map.function} indica que o mapa foi construído considerando a função de mapeamento de ``kosambi''. O usuário pode ver um resumo desse objeto digitando o nome da variável como indicado abaixo:
+
+<<eval=TRUE, echo=TRUE, results=verbatim>>=
+fsib
+@ 
+
+De forma geral, o objeto contém o mapa genético composto por quatro grupos de ligação, em que o seu comprimento total e a segregação dos marcadores estão indicadas. Também apresenta-se o número de marcadores não ligados ao mapa de ligação, isto é, marcadores contidos no arquivo de entrada que não estão posicionados nos grupos de ligação. Isto pode ser útil para espécies em que o mapa genético não abrange o genoma como todo, podendo ter marcadores que estão em regiões não saturadas. Finalmente, o número de fenótipos disponíveis para mapeamento estão indicados, assim como a distância usada para a obtenção das probabilidades condicionais.
+
+\section{Interval mapping}
+
+Para realizar o mapeamento por intervalo, há duas funções disponíveis \texttt{im.scan} e \texttt{im.char}. A primeira percorre o genoma fazendo associação entre genótipos e fenótipos buscando detectar QTLs. Para os locais que há QTLs a segunda função é utilizada para mostrar os efeitos genéticos e seus respectivos testes significâncias e também os testes complementares para inferência da segregação do QTL.
+
+\subsection{Genome scan}
+The genome scan can be performed with the function \texttt{im.scan}, such as:
+
+<<eval=TRUE, echo=TRUE>>=
+im1 <- im.scan(fsib, lg="all", pheno.col=1, LOD=TRUE)
+@ 
+
+O primeiro argumento \texttt{fsib} foi criado com a função \texttt{create.fullsib}, o argumento \texttt{lg} indica quais os grupos deve ser escaneado para QTL (outra possível forma de representação é \texttt{lg=1:4}, o default é percorrer todos os grupos de ligação, porém apenas alguns grupos de ligação podem ser analisados), \texttt{pheno.col} indica qual o fenótipo deve ser analisado. \texttt{LOD=TRUE} indica que o resultado do mapeamento deve ser mostrado em LOD Score, caso a opção seja \texttt{FALSE} a escala da curva de mapeamento será em $-log_{10}(p-value)$.
+
+O resultado do mapeamento pode ser visualizado digitando o nome da variável, como:
+
+<<eval=FALSE, echo=TRUE>>=
+im1
+@ 
+
+ou 
+
+<<eval=FALSE, echo=TRUE>>=
+print(im1,lg=1)
+@ 
+
+se apenas um ou alguns grupos de ligação desejam ser imprimidos na tela.
+
+Uma forma sintética de visualizar os dados é utilizando a função \texttt{summary} que imprime o máximo valor de LOD Score ou $-log_{10}(p-value)$ para cada grupo de ligação. O argumento \texttt{thr} for utilizado, apenas o máximo valor acima desse threshold é impresso. Para as situações em que mais de 1 QTL for mapeado no mesmo grupo de ligação, o usuário deve buscar manualmente a localização dos demais QTLs, uma vez que identificar mais de um pico pode ser um processo muito subjetivo e de dificil generalização.
+
+<<eval=TRUE, echo=TRUE>>=
+summary(im1)
+@ 
+
+<<eval=FALSE, echo=TRUE>>=
+#
+summary(im1, thr=3)
+@ 
+
+Para aumentar a flexibilidade no mapeamento é possível incluir covariável (de efeito fixo) ao modelo para controlar a variabilidade do fenótipo em estudo. Caso, este recurso seja utilizado deve-se usar o argumento \texttt{addcovar}, conforme exemplificado a seguir: 
+
+<<eval=TRUE, echo=TRUE, keep.source=TRUE>>=
+#defining the fixed covariate - must be full rank matrix
+covar <- matrix(rep(c(1,-1), each=150), ncol=1) 
+im2 <- im.scan(fsib, pheno.col=2, addcovar=covar)
+@ 
+
+QTL mapping result can be viewed as:
+<<eval=FALSE, echo=TRUE>>=
+im2
+@ 
+
+or i
+However, if one wants to see the result for just some linkage groups, one may type:
+<<eval=FALSE, echo=TRUE>>=
+print(im2, lg=1)
+@ 
+
+or
+
+<<eval=FALSE, echo=TRUE>>=
+print(im2, lg=c(1,3))
+@ 
+
+The \texttt{summary} function provides the maximum peak 
+falar da summary,
+do plot
+explicar como é o objeto fullsib.scan e opcoes de plot
+
+% mapeamento por interval
+%% scan
+%% caracterizacao
+%seleção de cofatores
+%definição de cofatores
+%cim
+
+%fase de ligacao
+%segregação
+%r2.ls
+
+%%exercise
+
+
+%-saber dos grupos sequence
+%-dados brutos
+
+\end{document}
+
+\section*{Importing data}
+\begin{enumerate}
+\item Once the input file is created, data can be loaded into R. The function used to import data is named \texttt{read.outcross}. Its usage is quite simple:
+<<eval=FALSE>>=
+example_out<- read.outcross("C:/workingdirectory","example_out.txt")
+@ 
+<<eval=FALSE,echo=FALSE>>=
+example_out<- read.outcross(system.file("example",package="onemap"),"example_out.txt")
+@ 
+The first argument is the directory where the input file is located and the second one is the file name.
+
+\item You can change the working directory in R using function \texttt{setwd()} or in the toolbar clicking File $\to$ Change dir. If you set your working directory to the one containing the input file, you can just type:
+<<eval=FALSE>>=
+example_out<- read.outcross(file="example_out.txt")
+@ 
+
+If no error has occurred, a message will display some basic information about the data, such as number of individuals and number of markers:
+<<eval=FALSE,echo=FALSE, results=verbatim>>=
+example_out<- read.outcross(system.file("example",package="onemap"),"example_out.txt")
+@ 
+
+\item Because this particular data set is distributed along with the package, you can load it simply typing
+<<eval=FALSE>>=
+data(example_out)
+@ 
+
+\item Loading the data creates an object of class \texttt{outcross}, which will further be used in the analysis. R command \texttt{print} recognizes objects of this class. Thus, if you type
+<<eval=FALSE>>=
+example_out
+@
+
+you will see some information about the object.
+<<eval=FALSE,echo=FALSE, results=verbatim>>=
+example_out
+@ 
+
+\end{enumerate}
+
+
+\newpage
+\section{QTL mapping with partially informative markers}
+%\label{sec:appendix}
+
+The model presented by Gazaffi et al. (2013) was developed considering a given locus that segregates in 1:1:1:1 fashion. This would result in four different conditional probabilities for QTL genotypes ($P^1Q^1$, $P^1Q^2$, $P^2Q^1$, $P^2Q^2$). However, for situations in which the genetic map is composed with partially informative markers may be limitations on the level of information that the odds may contain.
+
+%O modelo apresentado por Gazaffi et al. (2013) foi desenvolvido considerando um dado loco que segregava na proporção 1:1:1:1, isto resultaria na obtenção de quatro probabilidades condicionais distintas ($P^1Q^1$, $P^1Q^2$, $P^2Q^1$, $P^2Q^2$). Entretanto, para as situações em que o mapa genético é composto marcadores parcialmente informativos pode haver limitações no nĩvel de informação que as probabilidades podem conter.
+
+Uma situação muito comum que isto pode ocorrer é se uma região do genoma for 
+
+que apresentava quatro classes genotípicas
+Inicialmente, o modelo genético-estatístico (Equação~\ref{eq:LM}) foi desenvolvido considerando um loco que apresentava quatro classes genotípicas, sendo possível de ser modelado através de três efeitos genéticos. A segregação do QTL é inferida através do número de efeitos genéticos significativos e por suas magnitudes \cite{Gazaffi.et.al.2010}. Entretanto, algumas regiões de um mapa de ligação pode não ser informativas para a estimação de todos os efeitos genéticos, mesmo utilizando probabilidades multiponto. No presente trabalho, por exemplo, isto pode acontecer quando grupos de ligação são compostos por apenas um ou dois tipos de marcadores ($C$ e $D_1$ ou $C$ e $D_2$).
+
+Um procedimento em cada posição do mapa genético pode ser realizada, visando identificar regiões com problemas de colinearidade entre as probabilidades condicionais dos QTLs. O critério adotado foi a utilização em medidas de diagnóstico baseadas na decomposição de valor singular \cite{Belsley.1980}, utilizando o indíce de condição. Apesar dos autores sugerirem que problemas de colinearidades ocorrem para indíces de condição acima de 30, resultados preliminares sugerem que para o presente contexto, a utilização de 3.5 como threshold fornece bons resultados.
+
+Nas situações em que não se verifica problemas com colinearidade utilizam-se os constrastes definidos nas colunas 1, 2 e 3 (matriz \(\textbf{D}\)) para a obtenção do modelo de mapeamento. A segregação e a fase de ligação são inferidos de acordo com procedimento apresentados por \cite{Gazaffi.et.al.2010} Porém, quando identifica-se alguma relação de dependência entre as probabilidades dos genótipos dos QTLs sugere-se a remoção ou adaptação dos contrastes utilizados para definição dos efeitos genéticos (colunas 4 a 13). 
+
+%\begin{tabular}{c ccccccccccc}
+%      &  1&  2&  3&4&5&6&7&8&9&10&\\
+%  P1Q1&  1&  1&  1& & & & & & &  & \\
+%  P1Q2&  1& -1& -1& & & & & & &  & \\
+%  P2Q1& -1&  1& -1& & & & & & &  & \\
+%  P2Q2& -1& -1&  1& & & & & & &  & 
+%  \end{tabular}
+%\end{table}
+%\begin{equation}
+%  \label{eq:contrasts}
+%  \textbf{D}=
+%  \begin{array}{r@{} r@{}r@{}r:  r@{}r@{}  r@{}r@{} r@{}r: rrrrr@{}} 
+%    &1&2&3&4&5&6&7&8&9&10&11&12&13&\\
+%    \left.\begin{array}{r}\\  \\  \\  \\\end{array}\right[   
+%    &\begin{array}{r}  1 \\ 1 \\ -1 \\ -1 \end{array}
+%    &\begin{array}{r}  1 \\-1 \\  1 \\ -1 \end{array}
+%    &\begin{array}{r}  1 \\-1 \\ -1 \\  1 \end{array}
+%    &\begin{array}{r}  0 \\ 0 \\  1 \\ -1 \end{array}
+%    &\begin{array}{r}  1 \\-1 \\  0 \\  0 \end{array}
+%    &\begin{array}{r}  0 \\ 1 \\ 0 \\ -1 \end{array}
+%    &\begin{array}{r}  1 \\ 0 \\-1 \\ 0  \end{array}
+%    &\begin{array}{r}  0 \\ 1 \\ -1 \\  0 \end{array}
+%    &\begin{array}{r}  1 \\ 0 \\  0 \\ -1 \end{array}
+%    &\begin{array}{r} 1/3\\ 1/3\\ 1/3\\ -1 \end{array}
+%    &\begin{array}{r} 1/3\\ 1/3\\  -1\\1/3 \end{array}
+%    &\begin{array}{r} 1/3\\  -1\\ 1/3\\1/3  \end{array}
+%    &\begin{array}{r}  -1\\ 1/3\\ 1/3\\1/3  \end{array}
+%    &\left]\begin{array}{r}\\  \\  \\  \\\end{array}\right.
+%  \end{array}
+%\end{equation}
+
+
+De forma sucinta, quando considera-se os três contrastes para realizar o mapeamento de QTLs, a segregação é inferida com base em hipóteses complementares. Primeiramente, deve-se verificar a significância dos efeitos \(\alpha_p^{\ast}\), \(\alpha_q^{\ast}\) e \(\delta_{pq}^{\ast}\) através das hipóteses, \(H_{01}: \alpha_p^{\ast}=0\), \(H_{02}: \alpha_q^{\ast}=0\) e \(H_{03}: \delta_{pq}^{\ast}=0\), respectivamente. Nas situações em que observa-se mais de um efeito significativo, são consideradas hipóteses para verificar a igualdade das estimativas: Hipóteses \(H_{04}:\) \(\alpha_p^{\ast}=\alpha_q^{\ast}\) (ou \(\alpha_p^{\ast}=-\alpha_q^{\ast}\), ou \(-\alpha_p^{\ast}=\alpha_q^{\ast}\), ou \(-\alpha_p^{\ast}=-\alpha_q^{\ast}\)), \(H_{05}:\) \(\alpha_p^{\ast}\) = \(\delta_{pq}^{\ast}\) (ou \(\alpha_p^{\ast}\) = \(-\delta_{pq}^{\ast}\), ou \(-\alpha_p^{\ast}\) = \(\delta_{pq}^{\ast}\), ou \(-\alpha_p^{\ast}\) = \(-\delta_{pq}^{\ast}\)) e \(H_{06}:\) \(\alpha_q^{\ast}=\delta_{pq}^{\ast}\) ou (\(\alpha_q^{\ast}=-\delta_{pq}^{\ast}\), ou \(-\alpha_q^{\ast}=\delta_{pq}^{\ast}\), ou \(-\alpha_q^{\ast}=-\delta_{pq}^{\ast}\)). Caso apenas um efeito genético for significativo, assumi-se que o QTL tem segregação 1:1. Para as situações em que há dois efeitos genéticos significativos, um teste complementar é realizado para inferir se a segregação é 1:2:1 (Hipótese complementar não-rejeitada) ou 1:1:1:1 (Hipótese complementar rejeitada). Se os três efeitos forem significativos, considera-se que o QTL tem segregação 3:1 se as três hipóteses complementares não forem rejeitadas, 1:2:1 se apenas uma dentre as três hipóteses forem não-rejeitadas e 1:1:1:1 para os demais casos. Já a fase de ligação entre QTL e marcadores é inferida através da interpretação dos sinais de \(\alpha_p^{\ast}\) e \(\alpha_q^{\ast}\). Para a definição do modelo foi considerada a configuração  \linebreak \(P^1_mP^1P^1_{m+1}/P^2_mP^2P^2_{m+1} \times Q^1_mQ^1Q^1_{m+1}/Q^2_mQ^2Q^2_{m+1}\), a qual é definida como associação em ambos genitores, caso isto ocorra as estimativas de \(\alpha^{\ast}_p\) e \(\alpha^{\ast}_q\) são positivas, nas situações em que outras configurações sejam verificadas, as estimativas apresentaram sinais invertidos \cite{Gazaffi.et.al.2010}.
+
+Por outro lado, em regiões pouco informativas do genoma, não é possível considerar um modelo com todos os parâmetros, nesse caso há limitações para caractizar corretamente os QTLs. Na Tabela~\ref{tab:colin} é possível inferir a partir das relações de dependência entre os genótipos dos QTLs quais são os efeitos estimáveis, assim como suas esperança e também a possível caracterização do QTL. Para os casos i e ii, somente é possível estimar um dos efeitos genéticos dos genitores, o que permitiria detectar um QTL com segregação 1:1, análogo ao encontrado em uma população de retrocruzamento. Contudo, algumas considerações devem ser salientadas: i) Para um QTL localizado numa região com este tipo de colinearidade, somente é possível testar a presença de um QTL segregando em um genitor, nesse caso, mesmo que o QTL apresentasse mais efeitos significativos não seriam possíveis de serem estimados, devido a falta de informatividade dos marcadores, indicando que a segregação observada do QTL na progênie seja parcialmente condizente, com a segregação real do QTL. ii) Apesar de algumas regiões permitirem detectar um QTL com efeito genético similar a um retrocruzamento, o que poderia ser comparado com a abordagem de \textit{duplo pseudo testcross} em progênies de irmãos completos, porém o presente modelo tem como vantagem a possibilidade de incorporar como cofatores, regiões com diferentes padrões de segregação em relação ao local em mapeamento, aumentando assim o poder estatístico para a detecção de QTLs.
+
+Para o caso iii é possível estimar o efeito \(\alpha_p^{\ast}\), mas devido às probabilidades condicionais aos genótipos \(P^1Q^1\) e \(P^1Q^2\) serem iguais, estatisticamente não seria possível estimar separadamente os efeitos \(\alpha_q^\ast\) e \(\delta_{pq}^\ast\). Neste caso, a estratégia foi testar a existência de um efeito genético \(\alpha_q^\ast\), dentro dos genótipos informativos (\(P^2Q^1\) e \(P^2Q^2\)), representado pelo contraste 4 indicado na matriz~\(\textbf{D}\). Entretanto, este contraste testa uma possível combinação entre os efeitos \(\alpha_q^\ast\) e \(\delta_{pq}^\ast\), o que dificultaria a identificação a origem do efeito significativo e consequentemente a sua correta segregação. Neste caso, se apenas o efeito \(\alpha_p^{\ast}\) for significativo, o QTL segregaria nesta progênie com proporção 1:1. Se apenas o efeito \(\alpha_q^\ast\) for significativo a segregação observada na progênie seria na proporção 1:2:1. Para os casos em que ambos efeitos forem significativos a segregação observada será 1:2:1 ou 3:1. O padrão 3:1 surge quando a estimativa para \(\alpha_q^\ast\) (contrastes modificado) é o dobro do valor de \(\alpha_p^\ast\) (contrastes original), independente de seu sinal. Nota-se que neste tipo de colinearidade, a identificação da segregação do QTL, assim como sua fase de ligação entre os marcadores é parcialmente informativa, pois estão condicionados a marcadores que não permitem estimar todos os efeitos genéticos separadamente. Consequentemente, a futura integração de marcadores com diferentes padrões de segregação em regiões de colinearidade poderiam fornecer resultados mais precisos para o mapeamento de QTLs, inclusive alterando o tipo da segregação inferida. Esta mesma situação pode ser extrapolada para os casos iv, v, vi, vii e viii.
+
+Para o caso viii, se for assumido uma autofecundação ou cruzamento entre dois genitores geneticamente iguais, pode-se considerar uma situação análoga a um \(F_2\), assim \(\alpha_p^\ast\) e \(\alpha_q^\ast\) seriam iguais, fornecendo uma estimativa não viesada para a segregação, nem para a fase de ligação entre QTLs e marcadores (\(P^1P^2 \times Q^1Q^2\), se \(\alpha_p\) for positivo ou \(P^2P^1 \times Q^2Q^1\), se \(\alpha_p\) for negativo). Para obter a estimativa de dominância, conforme proposto por \cite{Cockerham.1954}, deve-se considerar metade do efeito \(\delta_{pq}^\ast\).
+
+Para os casos de ix a xii, a colinearidade é originada pela semelhança entre três classes genotípicas, o que permitiria apenas estimar um efeito genético que representaria uma combinação linear entre os efeitos \(\alpha_p^{\ast}\), \(\alpha_q^{\ast}\) e \(\delta_{pq}^{\ast}\), o que inviabiliza o correto entendimento da segregação e o reconhecimento das fases de ligação entre QTLs e marcadores. No presente estudo, considerou-se apenas o caso ix, quando identificado colinearidade entre três genótipos, pois ao considerar o tamanho amostral utilizado ($n=100$) a detecção de marcadores do tipo \(C\) ligados em repulsão são difíceis de serem observados. Ainda, ressalta-se que para definir estes contrastes adotou-se o coeficiente $1/3$ para os genótipos que são similares e $-1$ para o genótipo que difere das demais classes genotípicas, sendo que estes contrastes não são ortogonais em relação aos demais, o que pode tornar oneroso o mapeamento de QTLs, por exemplo, através de modelos MIM visando estudar epistasia, logo outras estratégias podem ser consideradas quando este tipo de situação é verificada.
+
+
+\begin{table*}
+  \caption{Identificação dos efeitos estimáveis e caracterização dos QTLs, a partir das possíveis relações de colinearidade existente entre os genótipos do QTL mapeado}
+  \label{tab:colin}
+  \begin{scriptsize}
+    %\begin{tabular}{c@{}c@{}c@{} c@{}c@{}c@{} c@{}c@{}c@{}}
+      \begin{tabular}{ccc ccc ccc}
+      \hline
+      % &                &          & Estimable &Esperança    & Rejected  &  Observed  & &\\
+      Case & Colinearity    & \begin{tabular}{c} \(\textbf{D}\) matrix \\ Contrasts\end{tabular}& \begin{tabular}{c} Estimable \\ effects \end{tabular} &\begin{tabular}{c} Contrast \\ Espected \\mean \end{tabular}& \begin{tabular}{c} Rejected \\ Hypothesis \end{tabular}& \begin{tabular}{c} Observed \\ Segregation$^{(\text{a})}$ \end{tabular}& &Phase$^{(\text{b})}$\\
+      \hline
+      i &\(P^1Q^1 = P^1Q^2\) and \(P^2Q^1 = P^2Q^2\)& \((1)\) & \(\alpha_p^\ast\) & \(\alpha_p^\ast\) &\(H_{01}\): \(\alpha_p^{\ast} = 0\)& 1:1&&\(P^1P^2\) or \(P^2P^1\)\\[.5cm]
+      ii&\(P^1Q^1 = P^2Q^1\) and \(P^1Q^2 = P^2Q^2\)& \((2)\) & \(\alpha_q^\ast\) & \(\alpha_q^\ast\) &\(H_{02}\): \(\alpha_q^{\ast}=0\)  & 1:1&&\(Q^1Q^2\) or \(Q^2Q^1\)\\[.5cm]
+      iii&\(P^1Q^1 = P^1Q^2\)& \((1)\) & \(\alpha_p^{\ast}\)   & \(\alpha_p^{\ast}\)                          &  \(H_{01}\)                & 1:1         &&\(P^1P^2\) or \(P^2P^1\)\\[.2cm]
+         &                   & \((4)\) & \(\alpha_q^{\ast}\)   & \((1/2)(\alpha_q^{\ast}-\delta_{pq}^{\ast})\)&  \(H_{02}\)                & 1:2:1       &&unsolved \\[.2cm]
+         &                   &         &                       &                                              &  \(H_{01}\) and  \(H_{02}\)& 1:2:1 or 3:1&& \(P^1P^2\) or \(P^2P^1\)\\[.5cm]
+      iv &\(P^2Q^1 = P^2Q^2\)& \((1)\) & \(\alpha_p^{\ast}\)   & \(\alpha_p^{\ast}\)                          &  \(H_{01}\)                & 1:1         && \(P^1P^2\) or \(P^2P^1\)\\[.2cm]
+         &                   & \((5)\) & \(\alpha_q^{\ast}\)   & \((1/2)(\alpha_q^{\ast}+\delta_{pq}^{\ast})\)&  \(H_{02}\)                & 1:2:1       &&unsolved \\[.2cm]
+         &                   &         &                       &                                              &  \(H_{01}\) and \(H_{02}\) & 1:2:1 or 3:1&& \(P^1P^2\) or \(P^2P^1\)\\[.5cm]
+       v &\(P^1Q^1 = P^2Q^1\)& \((6)\) & \(\alpha_p^{\ast}\)   & \((1/2)(\alpha_p^{\ast}-\delta_{pq}^{\ast})\)&  \(H_{01}\)                & 1:2:1       && unsolved\\[.2cm]
+         &                   & \((2)\) & \(\alpha_q^{\ast}\)   & \(\alpha_q^\ast\)                            &  \(H_{02}\)                & 1:1         && \(Q^1Q^2\) or \(Q^2Q^1\)\\[.2cm]
+         &                   &         &                       &                                              &  \(H_{01}\) and  \(H_{02}\)& 1:2:1 or 3:1&& \(Q^1Q^2\) or \(Q^2Q^1\)\\[.5cm]
+      vi &\(P^1Q^2 = P^2Q^2\)& \((7)\) & \(\alpha_p^{\ast}\)   & \((1/2)(\alpha_p^{\ast}+\delta_{pq}^{\ast})\)&  \(H_{01}\)                & 1:2:1       && unsolved\\[.2cm]
+         &                   & \((2)\) & \(\alpha_q^{\ast}\)   &  \(\alpha_q^\ast\)                           &  \(H_{02}\)                & 1:1         && \(Q^1Q^2\) or \(Q^2Q^1\)\\[.2cm]
+         &                   &         &                       &                                              &  \(H_{01}\) and  \(H_{02}\)& 1:2:1 or 3:1&&\(Q^1Q^2\) or \(Q^2Q^1\)\\[.5cm]
+     vii &\(P^1Q^1 = P^2Q^2\)& \((8)\) & \(\alpha_p^{\ast}\)   &  \((1/2)(\alpha_p^{\ast}-\alpha_{q}^{\ast})\)&  \(H_{01}\)                & 1:2:1       &&unsolved\\[.2cm]
+         &                   & \((3)\)& \(\delta_{pq}^{\ast}\)&  \(\delta_{pq}^\ast\)                        &  \(H_{03}\): \(\delta_{pq}^{\ast}=0\)&1:1&&unsolved\\[.2cm]
+         &                   &         &                       &                                              &  \(H_{01}\) and  \(H_{03}\)& 1:2:1 or 3:1&&unsolved\\[.5cm]
+    viii &\(P^1Q^2 = P^2Q^1\)& \((9)\) & \(\alpha_p^{\ast}\)  & \((1/2)(\alpha_p^{\ast}+\alpha_{q}^{\ast})\)  &  \(H_{01}\)                & 1:2:1        &&unsolved$^{(\text{c})}$\\[.2cm]
+         &                   & \((3)\)&\(\delta_{pq}^{\ast}\)& \(\delta_{pq}^\ast\)                          &  \(H_{03}\)                & 1:1          &&unsolved \\[.2cm]
+         &                   &         &                      &                                               &  \(H_{01}\) and  \(H_{03}\)& 1:2:1 or 3:1 &&unsolved\\[.5cm]
+     ix  &\(P^1Q^1 = P^1Q^2 = P^2Q^1\)& \((10)\) & \(\alpha_p^{\ast}\)   & \((4/3)( \alpha_p^{\ast}+\alpha_p^{\ast}-\delta_{pq}^{\ast})\)                          &  \(H_{01}\)                & 3:1      &&unsolved\\[.2cm]
+     x   &\(P^1Q^1 = P^1Q^2 = P^2Q^2\)& \((11)\) & \(\alpha_p^{\ast}\)   & \((4/3)( \alpha_p^{\ast}-\alpha_p^{\ast}+\delta_{pq}^{\ast})\)                          &  \(H_{01}\)                & 3:1      &&unsolved\\[.2cm]
+     xi  &\(P^1Q^1 = P^2Q^1 = P^2Q^2\)& \((12)\) & \(\alpha_p^{\ast}\)   & \((4/3)(-\alpha_p^{\ast}+\alpha_p^{\ast}+\delta_{pq}^{\ast})\)                          &  \(H_{01}\)                & 3:1      &&unsolved\\[.2cm]
+     xii &\(P^1Q^2 = P^2Q^1 = P^2Q^2\)& \((13)\) & \(\alpha_p^{\ast}\)   & \((4/3)(-\alpha_p^{\ast}-\alpha_p^{\ast}-\delta_{pq}^{\ast})\)                          &  \(H_{01}\)                & 3:1      &&unsolved\\
+      \hline
+    \end{tabular}
+  
+\(^{\text{(a)}}\): Devido a presença de colinearidade entre as probabilidades dos genótipos dos QTLs não é possível estimar a real segregação do QTL, uma vez que nem todos os efeitos são possíveis de serem estimados de forma independente, assim o QTL pode ser caracterizado apenas parcialmente, a partir da informação disponível.
+
+\(^{\text{(b)}}\): For clarity reasons, only the QTL alleles are represented; \(P^1P^2\) represents the configuration \(P^1_mP^1P^1_{m+1}/P^2_mP^2P^2_{m+1}\), and so on.
+
+\(^{\text{(c)}}\): Caso seja considerado um cruzamento entre dois genitores \(P\) e \(Q\) geneticamente iguais (ou autofecundação), a segregação real seria equivalente a segregação observada na população de mapeamento (1:2:1), com fases de ligação conhecida entre QTLs e marcas \(P^1P^2\times Q^1Q^2\) ou \(P^2P^1\times Q^2Q^1\).
+  \end{scriptsize}
+\end{table*}
+
+%\end{appendix}
+
+\end{document}
+
+
+
+
+
+
+
+\section*{Estimating two-point recombination fractions}
+\begin{enumerate}
+\item To start the mapping analysis, the first step is estimating the recombination fraction between all pairs of markers, using two-point tests:
+<<eval=FALSE>>=
+twopts <- rf.2pts(example_out)
+@ 
+This command uses as default values of LOD-Score 3 and maximum recombination fraction 0.35.
+
+\item Different values for the criteria can be chosen using:
+<<eval=FALSE>>=
+twopts <- rf.2pts(example_out, LOD=3, max.rf=0.4)
+@ 
+
+\item Although the two-point test was implemented in C language, which is much faster than R, this step can take quite some time, depending on the number of markers involved and their segregation type, since all combinations will be estimated and tested. Besides, the results use a lot of memory and a rather powerful computer is needed. For example, the analysis of a real data set with 1741 markers (segregating 3:1 and 1:1) took 2.8 hours, running under Windows\texttrademark \ on a Pentium\textsuperscript{\textregistered} 4 CPU 3.00 GHz with 1 GB RAM memory.
+
+\item When the two-point analysis is finished, an object of class \texttt{rf.2pts} is created. Typing
+<<eval=FALSE>>=
+twopts
+@ 
+will show a message with the criteria used in the analysis and information about printing details of this object:
+
+<<eval=FALSE, echo=FALSE, results=verbatim>>=
+twopts
+@ 
+
+
+\item If you want to see the results for given markers, say \texttt{M1} and \texttt{M3}, the command is:
+<<eval=FALSE,results=verbatim>>=
+print(twopts, "M1", "M3")
+@ 
+
+Each line indicates a possible linkage phase. 1 denotes coupling phase in both parents (CC), 2 and 3 denote coupling phase in parent 1 and 2, respectively, and repulsion in the other (CR and RC), and 4 denotes repulsion phase in both parents (RR).
+
+\end{enumerate}
+
+\section*{Assigning markers to linkage groups}
+\begin{enumerate}
+\item Once the recombination fractions and linkage phases for all pairs of markers have been estimated and tested, markers can be assigned to linkage groups. To do this, first use the function \texttt{make.seq} to create a sequence with all markers:
+<<eval=FALSE>>=
+mark.all <- make.seq(twopts, "all")
+@
+The function \texttt{make.seq} is used to create sequences from objects of several kinds, as will be seen along this tutorial. Here, the object is of class \texttt{rf.2pts} and the second argument specifies which markers one want to use. In this example, \texttt{"all"} indicates that all markers will be analyzed. If one wants to use only markers one and two, for example, the option will be \texttt{c(1,2)}. These numbers refer to the lines where the markers are located on the data file. Function \texttt{marker.type} could be helpful (\texttt{M1} and \texttt{M2} in this case). 
+
+\item The grouping step is very simple and can be done by using the function \texttt{group}:
+<<eval=FALSE>>=
+LGs <- group(mark.all)
+@ 
+For this function, optional arguments are \texttt{LOD} and \texttt{max.rf}, which define thresholds to be used when assigning markers to linkage groups. If none provided (default), criteria previously defined for the object \texttt{twopts} are used.
+
+\item The previous command generates an object of class \texttt{group} and the command \texttt{print} for such object has two options. If you simply type:
+<<eval=FALSE>>=
+LGs
+@ 
+
+you will get detailed information about the groups, i.e., all linkage groups will be printed, displaying the names of markers in each one of them.
+<<eval=FALSE,echo=FALSE, results=verbatim>>=
+LGs
+@ 
+
+However, in case you just want to see some basic information (such as the number of groups, number of linked markers and more), the command is:
+<<eval=FALSE,results=verbatim>>=
+print(LGs, detailed=FALSE)
+@ 
+
+\item You can notice that all markers are linked to some linkage group. If the LOD-Score threshold is changed to a higher value, some markers are kept unassigned:
+<<eval=FALSE>>=
+LGs <- group(mark.all, LOD=6)
+LGs
+@ 
+
+\item Changing back to the previous criteria, now setting the maximum recombination fraction to 0.40:
+<<eval=FALSE,results=verbatim>>=
+LGs <- group(mark.all, LOD=3, max.rf=0.4)
+LGs
+@ 
+\end{enumerate}
+
+\section*{Genetic mapping of linkage group 3}
+\begin{enumerate}
+\item When marker assignment to linkage groups is finished, the mapping step can take place. First of all, you must set the mapping function that should be used to display the genetic map through the analysis. You can choose between Kosambi or Haldane mapping function. To use Haldane, type
+<<eval=FALSE>>=
+set.map.fun(type="haldane")
+@
+
+To use Kosambi
+<<eval=FALSE>>=
+set.map.fun(type="kosambi")
+@
+
+Now, you must define which linkage group will be mapped. In other words, a linkage group must be ``extracted'' from the object of class \texttt{group}, in order to be mapped. For simplicity, we will start here with the smallest one, which is linkage group 3. This can be easily done using the following code:
+<<eval=FALSE>>=
+LG3 <- make.seq(LGs, 3)
+@ 
+The first argument (\texttt{LGs}) is an object of class \texttt{group} and the second is a number indicating which linkage group will be extracted, according to the results present in object \texttt{LGs}. The object \texttt{LG3}, generated by function \texttt{make.seq}, is of class \texttt{sequence}, showing that this function can be used with several types of objects.
+
+\item If you type
+<<eval=FALSE>>=
+LG3
+@ 
+you will see which markers are comprised in the sequence, and also that no parameters are estimated.
+<<eval=FALSE,echo=FALSE, results=verbatim>>=
+LG3
+@ 
+
+\item To obtain a preliminary order of these markers, the \texttt{rcd} function can be used:
+<<eval=FALSE>>=
+LG3.rcd <- rcd(LG3)
+@ 
+
+\item To order the markers in linkage group 3 (\texttt{LG3}), by evaluating all possible orders, the function \texttt{compare} can be used:
+<<eval=FALSE>>=
+LG3.comp <- compare(LG3)
+@ 
+
+This step takes some time, because this sequence contains one marker of type D1 and one of type D2, besides one marker segregating in 3:1 fashion (type C). Thus, although the number of possible orders is relatively small (60), for each order there are various possible combinations of linkage phases. Also, the convergence of the EM algorithm takes considerably more time, since markers of type C are not very informative. 
+
+The first argument is an object of class \texttt{sequence} (the extracted group \texttt{LG3}) and the object generated by this function is of class \texttt{compare}.
+
+\item To see the results of the previous step, type
+<<eval=FALSE,results=verbatim>>=
+LG3.comp
+@ 
+
+By default, the software stores 50 orders, which may or may not be unique. 
+
+In this example, note that there are nine possible unique orders. The value of \texttt{LOD} refers to the overall LOD-Score, considering all orders tested. \texttt{Nested LOD} refers to LOD-Scores \emph{within} a given order, i.e., scores for different combinations of linkage phases for the same order.
+
+For example, order 1 has the largest value of log-likelihood and, therefore, its LOD-Score is zero for some combination of linkage phases. For this same order and other linkage phases, LOD-Score is -2.43.
+g
+Analyzing the results for order 2, notice that its highest LOD-Score is very close to zero, indicating that this order is also quite plausible. Notice also that \texttt{Nested LOD} will always contain at least one zero value, corresponding to the best combination of phases for markers in a given order.
+
+\item Since it is a good idea to choose the order with the highest likelihood, the final map can be obtained with the command
+<<eval=FALSE>>=
+LG3.final <- make.seq(LG3.comp,1,1)
+@ 
+
+The first argument is the object of class \texttt{compare}. The second argument indicates which order is chosen: 1 is for the order with highest likelihood, 2 is for the second best, and so on. The third argument indicates which combination of phases is chosen for this specific order: 1 also means the combination with highest likelihood.
+
+For simplicity, these values are defaults, so typing
+<<eval=FALSE>>=
+LG3.final <- make.seq(LG3.comp)
+@ 
+will have the same effect.
+
+\item To see the final map, simply type
+<<eval=FALSE,results=verbatim>>=
+LG3.final
+@ 
+
+At the leftmost position, marker names are displayed. \texttt{Position} shows the cumulative distance using the Kosambi mapping function, as defined above. Finally, \texttt{Parent 1} and \texttt{Parent 2} show the diplotypes of both parents, that is, the manner in which alleles are arranged in the chromosomes. Notation is the same as that used by Wu et al. (2002a).
+\end{enumerate}
+
+\section*{Genetic mapping of linkage group 2}
+\begin{enumerate}
+\item Now let us map the markers in linkage group number 2. Again, ``extract'' that group from the object \texttt{LGs}:
+<<eval=FALSE>>=
+LG2 <- make.seq(LGs, 2)
+LG2
+@ 
+Note that there are 10 markers in this group, so it is unfeasible to use the \texttt{compare} function with all of them since it will take a long time to proceed.
+
+\item First, use \texttt{rcd} to get a first order estimate:
+<<eval=FALSE>>=
+LG2.rcd <- rcd(LG2)
+LG2.rcd
+@ 
+
+\item Use the \texttt{marker.type} function to check the segregation types of all markers in this group:
+<<eval=FALSE>>=
+marker.type(LG2)
+@ 
+
+\item Based on their segregation types and distribution on the preliminary map, markers M4, M9, M19, M20 and M24 are the most informative ones (type A is the better, followed by type B). So, let us create a framework of markers using \texttt{compare}:
+<<eval=FALSE>>=
+LG2.init <- make.seq(twopts,c(4,23,19,20,24))
+LG2.comp <- compare(LG2.init)
+LG2.comp
+@ 
+Now, the first argument to \texttt{make.seq} is an object of class \texttt{rf.2pts}, and the second argument is a vector of integers, specifying which molecular markers will constitute the sequence.
+
+\item Select the best order:
+<<eval=FALSE>>=
+LG2.frame <- make.seq(LG2.comp)
+@ 
+
+\item Next, try to map the remaining markers. Since there are more markers of type D1 than D2, the latter will be tried in the end:
+<<eval=FALSE,results=verbatim>>=
+LG2.extend <- try.seq(LG2.frame,9)
+LG2.extend
+@ 
+Based on the LOD-Scores, marker M9 is probably located between markers M23 and M24. However, the ``*'' symbol indicates that more than one linkage phase is possible. Detailed results can be seen with:
+
+<<eval=FALSE,results=verbatim>>=
+print(LG2.extend,5)
+@
+where the second argument indicates the position where the marker was placed. Note that the first allele arrangement is most likely. 
+
+\item The best order can be obtained with:
+<<eval=FALSE>>=
+LG2.frame <- make.seq(LG2.extend,5,1)
+@ 
+When using \texttt{make.seq} with an object of class \texttt{try}, the second argument is the position on the map (according to the scale to the right in the output) and the last argument indicates the combination of phases. The same can be done with (omitting the combination of phases):
+<<eval=FALSE>>=
+LG2.frame <- make.seq(LG2.extend,5)
+LG2.frame
+@ 
+Continuing with other markers, one by one:
+
+<<eval=FALSE>>=
+LG2.extend <- try.seq(LG2.frame,29)
+LG2.extend
+LG2.frame <- make.seq(LG2.extend,7)
+LG2.frame
+LG2.extend <- try.seq(LG2.frame,27)
+LG2.extend
+LG2.frame <- make.seq(LG2.extend,1)
+LG2.frame
+LG2.extend <- try.seq(LG2.frame, 16)
+LG2.extend
+LG2.frame <- make.seq(LG2.extend,2)
+LG2.frame
+LG2.extend <- try.seq(LG2.frame,21)
+LG2.extend
+LG2.final <- make.seq(LG2.extend,6)
+@ 
+
+\item Compare the order obtained through \texttt{rcd} and that obtained via HMM:
+<<eval=FALSE,results=verbatim>>=
+LG2.rcd
+LG2.final
+@ 
+Although \texttt{rcd} can result in a few different orders for this linkage group, the likelihood of the HMM-based order is always higher in this case.
+
+\item This process of adding markers sequentially can be automated with the use of function \texttt{order.seq}.
+<<eval=FALSE>>=
+LG2.ord <- order.seq(LG2, n.init=5, THRES=3)
+@ 
+In the syntax above, \texttt{n.init = 5} means that five markers (the most informative ones) will be used in the \texttt{compare} step; \texttt{THRES = 3} indicates that the \texttt{try.seq} step will only add markers to the sequence which can be mapped with LOD-Score higher than 3.
+NOTE: Although very useful, this function can be misleading, specially if there are not many fully informative markers, so use it carefully.
+
+\item Check the final order:
+<<eval=FALSE>>=
+LG2.ord
+@ 
+and note that markers \texttt{16}, \texttt{21} and \texttt{29} could not be safely mapped to a single position (\texttt{LOD-Score > THRES} in absolute value). The output displays the ``safe'' order and the most likely positions for unmapped markers, where ``***'' indicates the most likely position and ``*'' corresponds to other plausible positions.
+
+\item To get the safe order, use
+<<eval=FALSE>>=
+LG2.safe <- make.seq(LG2.ord,"safe")
+LG2.safe
+@ 
+and to get the order with all markers, use
+<<eval=FALSE>>=
+LG2.all <- make.seq(LG2.ord,"force")
+LG2.all
+@ 
+Notice that, for this linkage group, the ``forced'' map obtained with \texttt{order.seq} is the same as that constructed before with \texttt{compare} plus \texttt{try.seq}, but \emph{this is not always the case}.
+
+\item The \texttt{order.seq} function can perform two rounds of the \texttt{try.seq} step, first using \texttt{THRES} and then \texttt{THRES - 1} as threshold. This generally results in safe orders with more markers mapped, but takes longer to run. To do this,type:
+<<eval=FALSE>>=
+LG2.ord <- order.seq(LG2, n.init=5, THRES=3, touchdown=TRUE)
+LG2.ord
+@ 
+For this particular sequence, the \texttt{touchdown} step could not map any additional marker, but this will not happen all time.
+
+\item Finally, to check for alternative orders, use the \texttt{ripple.seq} function:
+<<eval=FALSE>>=
+ripple.seq(LG2.final, ws=4, LOD=3)
+@ 
+The second argument, \texttt{ws = 4}, means that subsets (windows) of four markers will be permutated sequentially (\texttt{$4!$} orders for each window), to search for other plausible orders. The \texttt{LOD} argument means that only orders with LOD-Score smaller than 3 will be printed.
+
+\item The \texttt{ripple.seq} command showed that the final order obtained is indeed the best for this linkage group. The map can than be obtained using
+    
+<<eval=FALSE,results=verbatim>>=
+LG2.all
+@
+
+\end{enumerate}
+
+\section*{Genetic mapping of linkage group 1}
+\begin{enumerate}
+\item Finally, linkage group 1 (the largest one) will be mapped. Extract and map it using \texttt{rcd}:
+<<eval=FALSE>>=
+LG1 <- make.seq(LGs, 1)
+LG1.rcd <- rcd(LG1)
+LG1.rcd
+@ 
+
+\item Construct the linkage map:
+<<eval=FALSE>>=
+LG1.ord <- order.seq(LG1, n.init=6, touchdown=TRUE)
+LG1.ord
+@ 
+Notice that the second round of \texttt{try.seq} added markers \texttt{M11} and \texttt{M25}.
+
+\item Now, get the order with all markers:
+<<eval=FALSE>>=
+LG1.final <- make.seq(LG1.ord,"force")
+LG1.final
+@ 
+Compared to the \texttt{rcd} order, this final map has markers \texttt{M12} and \texttt{M30} in different positions resulting in higher log-likelihood.
+
+\item Check the final map:
+<<eval=FALSE>>=
+ripple.seq(LG1.final)
+@ 
+
+\item Print it
+<<eval=FALSE,results=verbatim>>=
+LG1.final
+@
+\end{enumerate}
+
+\section*{Map estimation for a given order}
+\begin{enumerate}
+\item If, for any reason, one wants to estimate parameters for a given linkage map, it is possible to define a sequence and use the \texttt{map} function. For example, for markers \texttt{M30}, \texttt{M12}, \texttt{M3}, \texttt{M14} and \texttt{M2}, in this order, use
+  
+<<eval=FALSE>>=
+any.seq <- make.seq(twopts,c(30,12,3,14,2))
+any.seq.map <- map(any.seq)
+@ 
+This is a subset of the first linkage group. When used like this, \texttt{map} function searches for the best combination of phases between markers.
+
+\item Furthermore, a sequence can also have user-defined linkage phases. The next example shows incorrect phases for the same order of markers:
+<<eval=FALSE>>=
+any.seq <- make.seq(twopts,c(30,12,3,14,2),phase=c(4,1,4,3))
+any.seq.map <- map(any.seq)
+@ 
+
+\item If one needs to add or drop markers from a predefined sequence, use the functions \texttt{add.marker} and \texttt{drop.marker}. Adding markers 4 to 8 in \texttt{any.seq} can be done using
+<<eval=FALSE>>=
+any.seq <- add.marker(any.seq, 4:8)
+any.seq
+@
+
+Removing markers 3, 4, 5, 12 and 30 from \texttt{any.seq}: 
+<<eval=FALSE>>=
+any.seq <- drop.marker(any.seq, c(3,4,5,12,30))
+any.seq
+@
+\end{enumerate}
+
+\section*{Plotting the Recombination Fraction Matrix}
+\begin{enumerate}
+\item For a given sequence, it is possible to plot the recombination fraction matrix based on a color scale using the function \texttt{rf.graph.table}. This matrix can be useful to make some diagnostics about the map. For example, using the function \texttt{group} with \texttt{LOD=2.5}:
+
+<<eval=FALSE>>=
+LGs <- group(mark.all, LOD=2.5)
+LGs
+@ 
+
+This value of \texttt{LOD} wrongly results in linkage groups with markers from distinct ones (\texttt{LG2} and \texttt{LG3}) in the same group. Ordering markers will provide
+
+<<eval=FALSE>>=
+LG.err<-make.seq(LGs, 2)
+LG.err.ord<-order.seq(LG.err)
+LG.err.ord
+@
+
+\item The map with option ``force'' is:
+
+<<eval=FALSE>>=
+LG.err.map<-make.seq(LG.err.ord, "force")
+@ 
+
+\item However, plotting the recombination fraction matrix will result in:
+
+<<eval=FALSE, echo=TRUE>>=
+rf.graph.table(LG.err.map)
+@
+
+<<eval=FALSE, echo=FALSE,fig=TRUE>>=
+rf.graph.table(LG.err.map, inter=FALSE)
+@ 
+
+The color scale varies from red (small distances) to dark blue. This scale follows the ``rainbow'' color palette with \texttt{start} argument equal to 0 and \texttt{end} argument equal to 0.65. Clicking on the cell corresponding to two markers (off secondary diagonal), you can see some information about them. For example, clicking on the cell corresponding to markers \texttt{M4} and \texttt{M19} you can see their names, types (\texttt{A.4} and \texttt{B1.5}), recombination fraction (\texttt{rf=0.02281}) and LOD-Scores for each possible linkage phase. 
+
+Looking at the whole matrix, it is possible to see a sub-division in two groups: one with markers from \texttt{LG2} (\texttt{M27 M16 M20 M4 M19 M21 M23 M9 M24 M29}) and other with markers from \texttt{LG3} (\texttt{M18 M8 M13 M7 M22}). Following the secondary diagonal of the matrix, there is a gap between markers \texttt{M18} and \texttt{M29} (\texttt{rf=0.4322}). At this position, the group should be divided, that is, a higher LOD-Score should be used.  Notice that these two groups were placed together due to a false linkage (false positive) detected between markers \texttt{M4} and \texttt{M22}, which has LOD-Score 2.9. 
+
+The \texttt{rf.graph.table} can also be used to check the order of markers based on the monotonicity of the matrix, i.e. as we get away from the secondary diagonal, the recombination fraction values should increase.
+
+\end{enumerate}
+
+\section*{Final comments}
+At this point it should be clear that any potential \textsl{OneMap} user must have some knowledge about genetic mapping and also the R language, since the analysis is not done with \textsl{only one mouse click}. In the future, perhaps a graphical interface will be made available to make this software a lot easier to use. Any suggestions and critics are welcome.
+
+Currently, there is not a graphical function included in \textsl{OneMap} to draw the map. But once the distances and the linkage phases are estimated, map figures could be easily done. Also, there are several free softwares that can be used, such as MapChart (Voorrips, 2002).
+
+\section*{References}
+\setlength{\parindent}{0cm}
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B. \textbf{\textit{qtl: Tools for analyzing QTL experiments}} R package version 1.09-43, 2008.
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+Doerge, R.W. Constructing genetic maps by rapid chain delineation. \textbf{\textit{Journal of Agricultural Genomics}} 2, 1996.
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+Garcia, A.A.F., Kido, E.A., Meza, A.N., Souza, H.M.B., Pinto, L.R., Pastina, M.M., Leite, C.S., Silva, J.A.G., Ulian, E.C., Figueira, A. and Souza, A.P. Development of an integrated genetic map of a sugarcane (\textit{Saccharum spp.}) commercial cross, based on a maximum-likelihood approach for estimation of linkage and linkage phases. \textbf{\textit{Theoretical and Applied Genetics}} 112, 298-314, 2006.
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+Haldane, J. B. S. The combination of linkage values and the calculation of distance between the loci of linked factors. \textbf{\textit{Journal of Genetics}} 8, 299-309, 1919.
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+Jiang, C. and Zeng, Z.-B. Mapping quantitative trait loci with dominant and missing markers in various crosses from two inbred lines. \textbf{\textit{Genetica}} 101, 47-58, 1997.
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+Kosambi, D. D. The estimation of map distance from recombination values. \textbf{\textit{Annuaire of Eugenetics}} 12, 172-175, 1944.
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+Lander, E. S. and Green, P. Construction of multilocus genetic linkage maps in humans. \textbf{\textit{Proc. Natl. Acad. Sci. USA}} 84, 2363-2367, 1987.
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+Lander, E.S., Green, P., Abrahanson, J., Barlow, A., Daly, M.J., Lincoln, S.E. and Newburg, L. MAPMAKER, An interactive computing package for constructing primary genetic linkage maps of experimental and natural populations. \textbf{\textit{Genomics}} 1, 174-181, 1987.
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+Lincoln, S. E., Daly, M. J. and Lander, E. S. Constructing genetic linkage maps with MAPMAKER/EXP Version 3.0: a tutorial and reference manual. \textbf{\textit{A Whitehead Institute for Biomedical Research Technical Report}} 1993.
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+Margarido, G. R. A., Souza, A.P. and Garcia, A. A. F. OneMap: software for genetic mapping in outcrossing species. \textbf{\textit{Hereditas}} 144, 78-79, 2007.
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+Oliveira, K.M., Pinto, L.R., Marconi, T.G., Margarido, G.R.A., Pastina, M.M., Teixeira, L.H.M., Figueira, A.M., Ulian, E.C., Garcia, A.A.F., Souza, A.P. Functional genetic linkage map on EST-markers for a sugarcane ({\it Saccharum} spp.) commercial cross. \textbf{\textit{Molecular Breeding}} 20, 189-208, 2007.
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+Oliveira, E. J., Vieira, M. L. C., Garcia, A. A. F., Munhoz, C. F.,Margarido, G. R.A., Consoli, L., Matta, F. P., Moraes, M. C., Zucchi, M. I., and Fungaro,M. H. P. An Integrated Molecular Map of Yellow Passion Fruit Based on Simultaneous Maximum-likelihood Estimation of Linkage and Linkage Phases \textbf{\textit{J. Amer. Soc. Hort. Sci.}} 133, 35-41, 2008. 
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+Voorrips, R.E. MapChart: software for the graphical presentation of linkage maps and QTLs. \textbf{\textit{Journal of Heredity}} 93, 77-78, 2002.
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+Wu, R., Ma, C.X., Painter, I. and Zeng, Z.B. Simultaneous maximum likelihood estimation of linkage and linkage phases in outcrossing species. \textbf{\textit{Theoretical Population Biology}} 61, 349-363, 2002a.
+
+\parshape2 0pt \linewidth 0.8cm 16.2cm
+Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. Linkage mapping of sex-specific differences. \textbf{\textit{Genetical Research}} 79, 85-96, 2002b.
+
+\begin{center}
+  \Huge{Apendix}
+\end{center}
+
+\section*{DEFUNCT - Checking the map with three-point analysis}
+For historical reasons, three-point analyses are maintained in \textsl{OneMap}, but the same (and a lot more) can be done using the multipoint approach.
+
+\begin{enumerate}
+\item The function \texttt{def.rf.3pts} is used as follows:
+<<eval=FALSE>>=
+def.rf.3pts(example, "M18", "M8", "M13")
+@ 
+The first argument is the object with the input data, of class \texttt{outcross}. Then, three ordered markers are specified.
+
+In this case, the assignments ``\texttt{A11}'', ``\texttt{A12}'', $\ldots$, have similar meanings to those of the two-point analysis: \texttt{1} means coupling/coupling, \texttt{2} is for coupling/repulsion, \texttt{3} is for repulsion/coupling and \texttt{4} is for repulsion/repulsion. The first number is the linkage phase between markers \texttt{M$_{\mbox{i}}$} and \texttt{M$_{\mbox{i+1}}$}, while the second number is the linkage phase between markers \texttt{M$_{\mbox{i+1}}$} and \texttt{M$_{\mbox{i+2}}$}.
+
+\item Take a look at the default criteria used by this function: LOD = 5, maximum recombination fraction between adjacent markers = 0.35 and maximum recombination fraction between markers on the two ends = 0.55. Considering, for example, three markers A - B - C, in that order, the last criterion indicates the maximum recombination fraction acceptable between markers A and C. These values are used by the software to decide the most probable assignment and can be changed by the user:
+<<eval=FALSE>>=
+def.rf.3pts(example, "M18", "M8", "M13", LOD=10, max.rf=0.4)
+def.rf.3pts(example, "M18", "M8", "M13", max.rf=0.4, max.nolink=0.60)
+@ 
+The arguments \texttt{max.rf} and \texttt{max.nolink} correspond to the maximum recombination fraction between adjacent markers and the maximum recombination fraction between markers on the two ends, respectively.
+
+\item Do this step for all triplets of markers in linkage group 1:
+<<eval=FALSE>>=
+def.rf.3pts(example, "M18", "M8", "M13")
+def.rf.3pts(example, "M8", "M13", "M7")
+def.rf.3pts(example, "M13", "M7", "M22")
+@ 
+This last command line shows that the order \texttt{M13 - M7 - M22} is possibly incorrect, and a warning message is displayed. However, the HMM-based analyses use information from every marker in the sequence and, therefore, the order obtained through \texttt{compare} is likely to be the best order. Anyway, we had noticed that changing the positions of markers M7 and M22 resulted in an order with LOD-Score -0.02, which is very close to zero. This probably happens because M7 is of type D2 and M22 is of type D1.
+\end{enumerate}
+
+These three-point analyses were formerly used to check the final linkage map. In this new version, the best way to do this is using the new function \texttt{ripple.seq}.
+
+\end{document}
+
