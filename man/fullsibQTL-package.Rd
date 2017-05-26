@@ -44,44 +44,44 @@
 
   The most important functions are:
   \itemize{
-    \item \code{\link[fullsibQTL]{create.fullsib}} creates the main
+    \item \code{\link[fullsibQTL]{create_fullsib}} creates the main
     object to perform QTL mapping, including the calculation for QTL
     genotypes using multipoint technology.
 
-    \item \code{\link[fullsibQTL]{im.scan}} scan the genome or selected
+    \item \code{\link[fullsibQTL]{im_scan}} scan the genome or selected
     linkage groups for QTL using Interval Mapping method.
     
-    \item \code{\link[fullsibQTL]{im.char}} for a given position, QTL is
+    \item \code{\link[fullsibQTL]{im_char}} for a given position, QTL is
     characterized, i.e., the genetic effects are estimated and tested if
     they are significative, which allows to estimate QTL segregation
     patterns and its linkage phases with flanking markers.
 
-    \item \code{\link[fullsibQTL]{cim.scan}} scan the genome or selected
+    \item \code{\link[fullsibQTL]{cim_scan}} scan the genome or selected
     linkage groups for QTL using COMPOSITE Interval Mapping method.
 
-    \item \code{\link[fullsibQTL]{cim.char}} characterizes the QTL mapped
-    for a given position as similar done in \code{im.char}, but using
+    \item \code{\link[fullsibQTL]{cim_char}} characterizes the QTL mapped
+    for a given position as similar done in \code{im_char}, but using
     CIM analysis.
 
     \item \code{\link[fullsibQTL]{cof.selection}} performs cofactor
     selection using multiple linear regression using an information
     criteria (AIC or BIC). This function is a previous step for
-    \code{cim.scan} or \code{cim.char}.
+    \code{cim_scan} or \code{cim_char}.
 
-    \item \code{\link[fullsibQTL]{cof.definition}} allows to define any
+    \item \code{\link[fullsibQTL]{cof_definition}} allows to define any
     region of the genome to be considered as cofactors for CIM analysis,
     instead using of linear regression approach. This function is a
-    previous step for \code{cim.scan} or \code{cim.char}.
+    previous step for \code{cim_scan} or \code{cim_char}.
      
-    \item \code{\link[fullsibQTL]{draw.phase}} receives the object of
-    class \emph{fullsib.char} (output from \code{im.char} or
-    \code{cim.char}) and returns the linkage groups with QTL mapped,
+    \item \code{\link[fullsibQTL]{draw_phase}} receives the object of
+    class \emph{fullsib_char} (output from \code{im_char} or
+    \code{cim_char}) and returns the linkage groups with QTL mapped,
     allowing to infer the linkage phase between QTL and markers.
 
-    \item \code{\link[fullsibQTL]{get.segr}} using an object of class
-    \emph{fullsib.char}, returns the QTL segregation for a mapped QTL.
+    \item \code{\link[fullsibQTL]{get_segr}} using an object of class
+    \emph{fullsib_char}, returns the QTL segregation for a mapped QTL.
     
-    \item \code{\link[fullsibQTL]{r2.ls}} considering all QTL mapped for a
+    \item \code{\link[fullsibQTL]{r2_ls}} considering all QTL mapped for a
     single trait, it calculates the amount of phenotypic variation that
     all QTL explain jointly, and also its values for each QTL
     separately. Note: To obtain these estimations, we used least square 

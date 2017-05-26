@@ -5,15 +5,15 @@
 # File: internal.functions.R                                          #
 #                                                                     #
 # Contains:                                                           #
-# calc.probs*          used in create.fullsib                         #
-# calc.genoprobs:*     used in calc.probs                             #
-# colin.check**        used in calc.probs                             #
-# geno.class.identify  used in calc.probs                             #
-# model.select.lg:     used in cim.char                               #
-# model.select:        used in cim.scan                               #
+# calc_probs*          used in create.fullsib                         #
+# calc_genoprobs:*     used in calc_probs                             #
+# colin_check**        used in calc_probs                             #
+# geno_class_identify  used in calc_probs                             #
+# model_select_lg:     used in cim.char                               #
+# model_select:        used in cim.scan                               #
 # prob2cof:            used in cof.def..., cof.sel...  and r2.model   #
 # unlink2cof:          used in cof.definition and cof.selection       #
-# get.phase            used in draw.phase                             #
+# get_phase            used in draw.phase                             #
 #                                                                     #
 #                                                                     #
 # Written by Rodrigo Gazaffi                                          #
@@ -29,13 +29,13 @@
 
 #######################################################################
 #                                                                     #
-# Function: calc.probs                                                #
+# Function: calc_probs                                                #
 #                                                                     #
 # Function to obtain multipoint QTL probability for all chromossome   #
 # it is used in create.fullsib                                        #
 #######################################################################
 
-calc.probs <- function(fullsib, step, error.prob, map.function, condIndex)
+calc_probs <- function(fullsib, step, error.prob, map.function, condIndex)
 {
   ##show the time during calculation of probs...
   pb <- txtProgressBar(style=3)
@@ -52,7 +52,7 @@ calc.probs <- function(fullsib, step, error.prob, map.function, condIndex)
     #print(get(obj.name))
     names(dist.mark) <- colnames(get(obj.name)$geno)[seq.mark]
 
-    fullsib$probs[[i]] <- calc.genoprobs(dist=dist.mark,
+    fullsib$probs[[i]] <- calc_genoprobs(dist=dist.mark,
                      geno=get(obj.name)$geno[,seq.mark],
                      type=get(obj.name)$segr.type.num[seq.mark],
                      phase=fullsib$map[[i]]$seq.phases,
@@ -67,8 +67,8 @@ calc.probs <- function(fullsib, step, error.prob, map.function, condIndex)
         rep(NA, length(fullsib$probs[[i]]$cond.prob[1,,1]))
       for (j in 1:length(fullsib$probs[[i]]$cond.prob[1,,1])){
         probs2check <- fullsib$probs[[i]]$cond.prob[,j,]
-        tmp.colin[j] <- colin.check(probs2check, condIndex)
-        tmp.geno[j] <- geno.class.identify(tmp.colin[j])
+        tmp.colin[j] <- colin_check(probs2check, condIndex)
+        tmp.geno[j] <- geno_class_identify(tmp.colin[j])
       }
       fullsib$probs[[i]]$colin$type <- tmp.colin
       fullsib$probs[[i]]$colin$geno.class <- tmp.geno
@@ -81,15 +81,15 @@ calc.probs <- function(fullsib, step, error.prob, map.function, condIndex)
 
 #######################################################################
 #                                                                     #
-# Function: calc.genoprobs                                            #
+# Function: calc_genoprobs                                            #
 #                                                                     #
 # Function to obtain multipoint QTL probability for each chromossome  #
 # Probabilites are obtained by HMM approach similiar Wu et al. 2002   # 
 # This is done using C codes - this is already inside Onemap          #
 #######################################################################
 
-create.map <-function(dist,phase,type,step)    {
-    ## function that creates a map to be used in calc.genoprobs
+create_map <-function(dist,phase,type,step)    {
+    ## function that creates a map to be used in calc_genoprobs
     nam<-names(dist)
     if(step<0) stop("step must be >= 0.")
     minloc <- min(dist)
@@ -139,7 +139,7 @@ create.map <-function(dist,phase,type,step)    {
     }
 }
 
-calc.genoprobs <- function(dist, geno, type, phase, step,
+calc_genoprobs <- function(dist, geno, type, phase, step,
                            error.prob, map.function)
 {
 
@@ -165,7 +165,7 @@ calc.genoprobs <- function(dist, geno, type, phase, step,
     n.mar <- ncol(geno)
     
     ## new map and recombination fractions
-    map <- create.map(dist,phase,type,step)
+    map <- create_map(dist,phase,type,step)
     rf <- mf(diff(map$dist))
     
     ## new genotype matrix with pseudomarkers filled in
@@ -179,7 +179,8 @@ calc.genoprobs <- function(dist, geno, type, phase, step,
     
     ##this is already inside Onemap
     #z<-.C("onemap:::calc_genoprob_outbred",
-    z<-.C("calc_genoprob_outbred",
+    ## z<-.C("calc_genoprob_outbred",
+    z<-.C("onemap_calc_genoprob_outbred",
         as.integer(n.ind),
         as.integer(n.pos),
         as.integer(map$type),
@@ -187,9 +188,9 @@ calc.genoprobs <- function(dist, geno, type, phase, step,
         as.integer(newgen),
         as.double(rf),   
         as.double(error.prob),
-        genoprob=as.double(rep(0,4*n.ind*n.pos)),
+        genoprob=as.double(rep(0,4*n.ind*n.pos)))
         #genoprob=as.double(rep(0,4*n.ind*n.pos)))
-        PACKAGE="onemap")
+        #PACKAGE="onemap")
     
     ## re-arrange marginal probabilites
     z2 <- array(z$genoprob,dim=c(n.ind,n.pos,4))
@@ -208,8 +209,7 @@ calc.genoprobs <- function(dist, geno, type, phase, step,
                    link.phases[i+1,] <- link.phases[i,]*c(1,1), 
                    link.phases[i+1,] <- link.phases[i,]*c(1,-1),
                    link.phases[i+1,] <- link.phases[i,]*c(-1,1),
-                   link.phases[i+1,] <- link.phases[i,]*c(-1,-1),
-                   )
+                   link.phases[i+1,] <- link.phases[i,]*c(-1,-1))
         }
         link.phases <- apply(link.phases,1,
                              function(x) paste(as.character(x),collapse="."))
@@ -231,7 +231,7 @@ calc.genoprobs <- function(dist, geno, type, phase, step,
 
 #######################################################################
 #                                                                     #
-# Function: calc.genoprobs                                            #
+# Function: calc_genoprobs                                            #
 #                                                                     #
 # Linkage groups with differents segregation markers may differ about #
 # the information on the probabilities. So it is necessary to identify#
@@ -269,7 +269,7 @@ calc.genoprobs <- function(dist, geno, type, phase, step,
 #12: contr 13                                                         #
 #######################################################################
                                                   
-colin.check <- function (probs_1pos, condIndex)
+colin_check <- function (probs_1pos, condIndex)
 {
   decomp <- svd(probs_1pos)
   conditionIndex <- max(decomp$d)/decomp$d
@@ -314,19 +314,19 @@ colin.check <- function (probs_1pos, condIndex)
 
 #######################################################################
 #                                                                     #
-# Function: geno.class.identify                                       #
+# Function: geno_class_identify                                       #
 #                                                                     #
 # This function returns the number of estimable means in a single cM  #
-# under the colinearity relationship that is obtained with colin.check#
+# under the colinearity relationship that is obtained with colin_check#
 # This information is passed as argument for EM algorithm done in C   #
 #######################################################################
 
-geno.class.identify <- function(colin.number)
+geno_class_identify <- function(colin_number)
 {  
-  if (colin.number == 0) 
+  if (colin_number == 0) 
     geno.class <- 4
   ##no colinearity - probs fully informative
-  else if (colin.number > 2 && colin.number < 9)
+  else if (colin_number > 2 && colin_number < 9)
     geno.class <- 3
   ## 3,4,5,6,7,8 - has 3 estimable means like "B" mkr
   else 
@@ -338,7 +338,7 @@ geno.class.identify <- function(colin.number)
 
 #######################################################################
 #                                                                     #
-# Function: model.select.lg                                           #
+# Function: model_select_lg                                           #
 #                                                                     #
 # For CIM analysis cofactors are included on the model, obtained with #
 # either cof.selection or cof.definition function. However, depending #
@@ -347,15 +347,15 @@ geno.class.identify <- function(colin.number)
 # dropped from the model and for which position this is done          #
 #######################################################################
 
-model.select.lg <- function(fullsib, ws, LG){
+model_select_lg <- function(fullsib, ws, LG){
 
   ##is there any cof in this group?
   if.cof <- which(fullsib$cofactors$names.cof$lg == LG)
   
   if(length(if.cof) != 0){ #if there is cofactor
     ##which are the positions that REAL MARKERS are placed (location)
-    mkr.lg <- which(substring(names(fullsib$probs[[LG]]$newmap$dist),1,3) != "loc") 
-    mkr.lg <- fullsib$probs[[LG]]$newmap$dist[mkr.lg]
+    mkr_lg <- which(substring(names(fullsib$probs[[LG]]$newmap$dist),1,3) != "loc") 
+    mkr_lg <- fullsib$probs[[LG]]$newmap$dist[mkr_lg]
 
     ##which are the positions that COFACTORS are placed (location)
     cof.num <- which(names(fullsib$probs[[LG]]$newmap$dist) %in%
@@ -365,21 +365,21 @@ model.select.lg <- function(fullsib, ws, LG){
     ##For cof.cm i will get the longest distance: ws_1 or ws_2
     
     ##finding adjacent markers: part1
-    wsl1 <- which(mkr.lg %in%cof.cm == TRUE) - 1
+    wsl1 <- which(mkr_lg %in%cof.cm == TRUE) - 1
     wsl1 <- ifelse(wsl1 < 1, yes = 1, no = wsl1)
     
-    wsr1 <- which(mkr.lg %in%cof.cm == TRUE) + 1
-    wsr1 <-  ifelse(wsr1 > length(mkr.lg),
-                    yes =  length(mkr.lg), no = wsr1)
+    wsr1 <- which(mkr_lg %in%cof.cm == TRUE) + 1
+    wsr1 <-  ifelse(wsr1 > length(mkr_lg),
+                    yes =  length(mkr_lg), no = wsr1)
     
     ##finding the distance limits for cofactor part2
     wsl2 <- cof.cm - ws
     wsr2 <- cof.cm + ws
     
-    wsl2 <- sapply(wsl2, function(x) ifelse(sum(cumsum(mkr.lg > x)) == 0, yes = length(mkr.lg), no = which(cumsum(mkr.lg > x) == 1) - 1))
+    wsl2 <- sapply(wsl2, function(x) ifelse(sum(cumsum(mkr_lg > x)) == 0, yes = length(mkr_lg), no = which(cumsum(mkr_lg > x) == 1) - 1))
     wsl2 <- ifelse(wsl2 < 1, yes = 1, no = wsl2)
-    wsr2 <- sapply(wsr2, function(x) ifelse(sum(cumsum(mkr.lg > x)) == 0, yes = length(mkr.lg), no = which(cumsum(mkr.lg > x) == 1)))
-    wsr2 <- ifelse(wsr2 > length(mkr.lg), yes =  length(mkr.lg), no = wsr2)
+    wsr2 <- sapply(wsr2, function(x) ifelse(sum(cumsum(mkr_lg > x)) == 0, yes = length(mkr_lg), no = which(cumsum(mkr_lg > x) == 1)))
+    wsr2 <- ifelse(wsr2 > length(mkr_lg), yes =  length(mkr_lg), no = wsr2)
     
     ##which parts gives a more extense interval
     wslfinal <- apply(cbind(wsl1, wsl2), 1, min)
@@ -389,7 +389,7 @@ model.select.lg <- function(fullsib, ws, LG){
     wsfinal <- cbind(wslfinal, wsrfinal)   
     cim.window.limits <- function(x) {
       xres <- which(names(fullsib$probs[[LG]]$newmap$dist) %in%
-                    names(mkr.lg[x]) );
+                    names(mkr_lg[x]) );
       xres[2] <- ifelse (xres[2] == length(fullsib$probs[[LG]]$newmap$dist), yes = xres[2], no = xres[2] - 1)
       xres
     }    
@@ -433,18 +433,18 @@ model.select.lg <- function(fullsib, ws, LG){
 
 #######################################################################
 #                                                                     #
-# Function: model.select                                              #
+# Function: model_select                                              #
 #                                                                     #
 # This function returns a list, indication for each group (chr or LG) #
 # what cofactors should be used for CIM analysis and in which position#
-# this is just model.select.lg, used for all groups                   #
+# this is just model_select_lg, used for all groups                   #
 #######################################################################
 
-model.select <- function(fullsib, ws){
+model_select <- function(fullsib, ws){
   cof.output <- vector("list", length(fullsib$map))
   names(cof.output) <- paste("LG", 1: length(fullsib$map), sep="-")
   for (LG in 1:length(fullsib$map))
-    cof.output[[LG]] <- model.select.lg(fullsib, ws, LG)
+    cof.output[[LG]] <- model_select_lg(fullsib, ws, LG)
   cof.output
 }#end function
 
@@ -458,9 +458,9 @@ model.select <- function(fullsib, ws){
 # are used are cofactor for CIM analysis.                             #
 #######################################################################
 
-prob2cof <- function(prob, colin.type){
-  colin.type <- as.character(colin.type)
-  switch(EXPR=colin.type,
+prob2cof <- function(prob, colin_type){
+  colin_type <- as.character(colin_type)
+  switch(EXPR=colin_type,
          "0" = prob %*% matrix(c(1, 1,-1,-1,  1,-1, 1,-1,  1,-1,-1,1),ncol=3),
          "1" = prob %*% matrix(c(1, 1,-1,-1), ncol=1),
          "2" = prob %*% matrix(c(1,-1, 1,-1), ncol=1),
@@ -558,13 +558,13 @@ unlink2cof <- function(mk.unmap, obj.name, pheno.index){
 
 #######################################################################
 #                                                                     #
-# Function: get.phase                                                 #
+# Function: get_phase                                                 #
 #                                                                     #
 # This function draw the QTL configuration in the linkage group       #
 #######################################################################
 
 ####################
-get.phase <- function(model, alpha.p, lod.ap, alpha.q, lod.aq, probs){
+get_phase <- function(model, alpha.p, lod.ap, alpha.q, lod.aq, probs){
   result <- rep(NA,4)
   model <- as.character(model)
 
@@ -651,13 +651,13 @@ get.phase <- function(model, alpha.p, lod.ap, alpha.q, lod.aq, probs){
          },
                   
          {
-           warning("\n Should not be here! default options from switch in get.phase was used\n")
+           warning("\n Should not be here! default options from switch in get_phase was used\n")
          })#end-switch
   result
 }
 
 
-draw.map2 <- function(map.list, horizontal = FALSE, names = FALSE, grid = FALSE,
+draw_map2 <- function(map.list, horizontal = FALSE, names = FALSE, grid = FALSE,
                        cex.mrk = 1, cex.grp = 0.75, trait) {
   
   if (!any(class(map.list) == "list" | class(map.list) == "sequence")) 

@@ -1,0 +1,107 @@
+\name{r2_ls}
+
+\alias{r2_ls}
+
+\title{Calculates the \eqn{R^2} for a group of given QTL.}
+
+\description{
+  Considering a group os mapped QTL using either \code{im_scan} or
+  \code{cim_scan}, this function calculates the proportion of all QTL
+  together (and also separetely) explain from total phenotipic
+  variation, using least square estimation.
+}
+
+\usage{
+r2_ls(fullsib, lg, pos, pheno.col=1, addcovar = NULL, ls.estimation=FALSE)
+}
+
+\arguments{
+  \item{fullsib}{An object from class \emph{fullsib}.}
+
+  \item{lg}{Vector of integers indicating the linkage groups for each QTL.}
+ 
+  \item{pos}{Vector of character (of same length as \code{lg})
+    indicating the locus that will be taken. This name is found as the
+    row label for the matrix returned by \code{im_scan} or \code{cim_scan}.}
+  
+  \item{pheno.col}{Column number in the phenotype matrix (present in
+    \emph{fullsib} object) which should be used as the phenotype.}
+
+  \item{addcovar}{Additive covariates. If it is used, one must indicate the
+    design matrix for those source of variation. It should be noted that
+    additive covariates is included in the model as fixed effects, under
+    ordinary linear regression.}
+  
+  \item{ls.estimation}{if \code{TRUE} prints the summary of multiple
+    linear regression for all QTL providing the effects and their
+    significance. If \code{FALSE} no extra details is given.}
+}
+
+\details{
+  This function is an alternative way to obtain a estimative of \eqn{R^2}
+  for a model considering simultaneously all QTL mapped on genome
+  scan. This value could be interpreted as an estimation of
+  heritability on the wide sense.
+
+  Here, it is not the main goal to develop multiple QTL model using
+  mixture models, so if one really wants this value, we provide an
+  estimation using the least square approach, which is a very good
+  approximation on the results obtained with genome scan.
+
+  To obtain these values we first fit a full model with all QTL declared
+  and a second one with no QTL (null model). We obtain the Residual Sum
+  of Squares (\eqn{RSS}) of both models and calculated the \eqn{R^2} as:
+  \deqn{R^2 = \frac{RSS.null - RSS.full}{RSS.null}}
+
+  To estimate \eqn{R^2} for the \eqn{i-th} QTL, we obtain the \eqn{RSS}
+  for a model with all QTL dropping the QTL \eqn{i} and estimate:
+  \deqn{R^2_i = \frac{RSS.drop_i - RSS.full}{RSS.null}}
+
+  If \code{ls.estimation=TRUE}, the estimation for the model with all
+  QTL adjusted (full model) is printed. This can be done if one would
+  like to check if the estimatives with least square and the ones
+  obtained with genome scan. The values obtained here may differ from
+  the one with genome scan, but not about to change its significance.
+}
+
+\value{
+  It returns a vector with \eqn{q+1} position (\eqn{q} is the number of
+  QTL) with \eqn{R^2} estimation. In the first position one finds the
+  value for a model fitted with all QTLs simultaneously (identified as
+  \sQuote{R2.trait}), the others positions provides the \eqn{R^2} for
+  each QTL separately (identified as \sQuote{R2.lgX.Y}, where lgX.Y means
+  the lg number X in the Y-th position)
+}
+
+\seealso{
+  \code{\link[fullsibQTL]{cim_char}},
+
+  \code{\link[fullsibQTL]{cim_scan}},
+
+  \code{\link[fullsibQTL]{im_char}},
+
+  \code{\link[fullsibQTL]{im_scan}},
+}
+
+\examples{
+
+  data(QTLexample)
+
+  fullsib <- create_fullsib(fullsib_data,
+                            list(LG1.end, LG2.end, LG3.end, LG4.end),
+                            step=0,map.function="kosambi",condIndex=3.5)
+
+  r2_ls(fullsib, pheno.col=1, lg=c(1,1,2,2,2,3,4),
+     pos=c("M3","M12","M20","M24","M27","M37","M52"))
+
+  covar <- matrix(rep(c(1,-1), each=150), ncol=1)
+  r2_ls(fullsib, pheno.col=2, addcovar = covar, lg=c(1,1,2,2,2,3,4),
+     pos=c("M3","M12","M20","M24","M27","M37","M52"),
+     ls.estimation=TRUE) 
+
+
+}
+
+\author{Rodrigo Gazaffi \email{rgazaffi@gmail.com}}
+
+\keyword{utilities}

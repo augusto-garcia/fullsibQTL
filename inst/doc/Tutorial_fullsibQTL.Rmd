@@ -1,0 +1,239 @@
+<!--
+%\VignetteEngine{knitr::docco_linear}
+%\VignetteIndexEntry{fullsibQTL}
+-->
+
+# fullsibQTL Tutorial
+
+```{r, globalsetup, echo=FALSE, results='hide', cache=FALSE}
+#opts_chunk$set(cache=TRUE, autodep=TRUE)
+```
+
+This tutorial was developed under the following softwares: `R 3.4.0`, `onemap 2.0.7`, and `fullsibQTL 1.0.0`.
+
+`fullsibQTL` is an `R` package to perform QTL mapping in outbred/outcrossing species. We consider as a mapping population a full-sib progeny (or *F1* population) derived by a biparental cross between two non homozygous parents, with a genetic map obtained with markers showing different segregation patterns. Here, we assumed the phenotypes are continuous having normal distribution and the genetic map was previously obtained with `onemap` package. If you are not familiar with `onemap`, we strongly encouraged to read `onemap` [vignettes](https://github.com/augusto-garcia/onemap/tree/master) (Margarido et al., 2007).
+
+In our software, we developed tools to perform Composite Interval Mapping (CIP). Briefly, we developed an statistical model with three genetics effects, one for each parent and an interation (dominance). To obtain these estimatives, we used maximum likelihood approach using mixture models and EM algorithm (Gazaffi et al., 2014). The QTL genotype probabilities were calculated using a multipoint technology, based on Hiddden Markov Models (Wu et al., 2002b). We also implemented a function to select cofactors using multiple linear regression and the information criteria. Permutation test (Churchill and Doerge, 1994) for threshold determination were also implemented, as well the modification proposed by Chen and Storey (2006) for having a relaxed threshold. Some extra functions were developed to provide a graphical or text output for the analysis helping the interpretation of QTL mapping. To exemplify the usage of `fullsibQTL`, here we analyse the dataset present by Gazaffi et al. (2014).
+
+The purpose of this tutorial is to help users dealing with this package and understanding the outputs. It is not our intention to teach the genetic basis of QTL mapping approach, see Gazaffi et al. (2014) for details. Remembering, users of `fullsibQTL` are supposed to have some experience with R, since the analysis is done using the command line. Previous knowledged of `onemap` is also desirably, once the genetic map is obtained with this software. `fullsibQTL` is available as source code for Windows\texttrademark and Unix. It is released under the GNU General Public License, is open-source and the code can be changed freely. It comes with no warranty. It is implemented as a package to be used under the freely distributed R software, which is a language and environment for statistical computing
+
+If you are not familiar with `R`, we recommend the reading of
+vignette [Introduction to R](http://htmlpreview.github.com/?https://github.com/augusto-garcia/onemap/blob/master/vignettes_html/Introduction_R.html).
+
+If you are not familiar with `onemap`, we recommend the reading of vignette [How to build a linkage map for outcrossing populations](http://htmlpreview.github.io/?https://github.com/augusto-garcia/onemap/blob/master/inst/doc/Outcrossing_Populations.html).
+
+## Citation
+Gazaffi, R., Margarido, G. R., Pastina, M. M., Mollinari, M., Garcia, A. A. F. (2014). A model for quantitative trait loci mapping, linkage phase, and segregation pattern estimation for a full-sib progeny. *Tree Genetics & Genomes*, 10(4), 791-801.
+
+Gazaffi, R., Amadeu, R. R., Rosa, J. R. B. F., Garcia, A. A. F. (2017). Application notes: fullsibQTL: R package for QTL mapping using a full-sib progeny, *Journal*, v(x), pages().
+
+## Installation
+Within R:
+
+### From CRAN (stable version)
+```
+install.packages("fullsibQTL")
+```
+
+### From github (version under development)
+```
+install.packages("devtools")
+library(devtools)
+install_github("augusto-garcia/fullsibQTL")
+```
+
+## Functions
+The following table presents the `fullsibQTL` functions which can be directly called by users:
+
+| Type                       | Name                       | Description                                                                                    |
+|----------------------------|----------------------------|------------------------------------------------------------------------------------------------|
+| input                      | `read_outcross_pheno`      | Reads the data file containing markers and phenotypic values                                   |
+|                            | `create_fullsib`           | Creates the object to perform QTL                                                              |
+| interval mapping           | `im_scan`                  | Scan the genome using IM approach                                                              |
+|                            | `im_char`                  | Provides the genetic effects, LOD Score and the p-values of complementary testes               |
+| cofactors                  | `cof_selection`            | Selects cofactors using multiple linear regression                                             |
+|                            | `cof_definition`           | Defines locations on the genome to be used as cofactors                                        |
+| composite interval mapping | `cim_scan`                 | Scan the genome using CIM approach                                                             |
+|                            | `cim_char`                 | Provides the genetic effects, LOD Score and the p-values of complementary testes               |
+| summaries                  | `print` <br> class `fullsib`        | Prints a summary for the object of class fullsib                                               |
+|                            | `print` <br> class `fullsib_scan`   | Prints the result of im_scan or cim_scan                                                       |
+|                            | `summary` <br> class `fullsib_scan` | Summarizes the QTL search for im_scan or cim_scan                                              |
+|                            | `plot` <br> class `fullsib_scan`    | Plot the QTL profile for the mapped groups                                                     |
+|                            | `summary` <br> class `fullsib_perm` | Provides the threshold values for permutations test                                            |
+|                            | `plot` <br> class `fullsib_perm`    | Plot the empiral distribution for permutations test                                            |
+|                            | `draw_phase`               | Returns the linkage phase between QTL and markers                                              |
+|                            | `get_segr`                 | Returns the QTL segregation                                                                    |
+|                            | `r2_ls`                    | Provides the phenotypic proportion of each QTL mapped and altogether (least square estimation) |
+
+## Required data
+The input file of `fullsibQTL` is the same as the one required by `onemap` package, you can find more information at `onemap` [vignette](http://htmlpreview.github.io/?https://github.com/augusto-garcia/onemap/blob/master/inst/doc/Outcrossing_Populations.html). Above there is an example of such file. The header line indicates the data type, the following line with `10 5 0 0 2` indicates that the data has, respectivately, 10 individuals, 5 markers, no (0) chromosome information, 0 (no) physical position information, and 2 traits as phenotypic data. It is very similar to a `MAPMAKER/EXP` file, but has additional information about the crosstype. `-` for missing data.
+
+```
+data type outcross
+10 5 0 0 2
+I1 I2 I3 I4 I5 I6 I7 I8 I9 I10
+*M1 B3.7 ab ab - ab b ab ab - ab b
+*M2 D2.18 o - a a - o a - o o
+*M3 D1.13 o a a o o - a o a o
+*M4 A.4 ab b - ab a b ab b - a
+*M5 D2.18 a a o - o o a o o o
+*pheno1 4.8 2.1 10.6 3.7 -3.7 -7.5 - 3.9 3.6 -5.8
+*pheno2 5 -5.8 - 14.8 -2.4 -1.9 -1.1 8.1 -11.1 4.8
+```
+
+## Creating the working object
+Hopefully you already had used the `onemap` to build your linkage maps an also are familiar with this data type. Within the available file, you can import it. First you need to read it with `onemap::read_onemap` function and after you can combine it with your linkages groups with `create_fullsib` function. Your final object will have the `onemap` raw object, the linkage groups and some parameters information. In the following example we are importing the raw data and 4 linkages groups, we are setting as mapping function `kosambi` (Kosambi, 1944) with `map.function` argument, and, at last, we set the `step` argument as 1. The `step` argument is used for the computation of the conditional multipointprobability which defines the distance in cM (centiMorgan) the conditional probability are obtained. If `step=0`, the probabilities will be computed only in the positions of each marker.
+
+```{r, eval=FALSE}
+library(fullsibQTL)
+fs_data <- read_onemap(dir = "C:/workingdirectory", inputfile = "filename.raw")
+
+fsib <- create_fullsib(fs_data,
+                       map.list=list(LG1_final, LG2_final, LG3_final, LG4_final),
+                       step=1, map.function="kosambi")
+```
+
+After loading the data, the user can look at the the object's summary with:
+```{r, eval=FALSE}
+fs_data
+fsib
+```
+
+In this tutorial we will used the data example available in the package. To load it:
+```{r, eval=TRUE, echo=FALSE}
+rm(list=ls())
+library(fullsibQTL)
+```
+
+```{r, eval=TRUE}
+data(example_QTLfullsib)
+ls()
+example_QTLfullsib
+LG1_final
+```
+
+Now we have to combine the raw data with the linkage groups (hereafter LG) in a single object:
+
+```{r, eval=TRUE}
+fsib <- create_fullsib(example_QTLfullsib,
+                       map.list=list(LG1_final, LG2_final, LG3_final, LG4_final),
+                       step=1, map.function="kosambi")
+fsib
+```
+
+This object contains the genetic map composed by 4 LGs, whith their length and segregation patterns above indicated. There is also shown the number of unlinked makers, *i.e.*, how many markers of the `example_QTLfullsib` object are not present in any LG. This may be helpful for species where the map does not cover the whole genome. Finally, there is the number of the available phenotypes for the QTL mapping, as well the chosen distance (`step`) to obtain the conditional probability and the mapping function.
+
+## Interval mapping
+In order to proceed with interval mapping, there are two implemented functions `im_scan` and `im_char`. The first one scan all genoma doing association between genotype and phenotype trying to detect QTLs. The second one shows the genetic effects and their significance tests. It also shows additional tests to infer the QTL segregation pattern.
+
+### Genome scan
+
+
+## References
+Chen, L., and Storey, J. D. Relaxed significance criteria for linkage analysis. **_Genetics_**, 173(4), 2371-2381, 2006.
+
+Churchill, G. A., and Doerge, R. W. Empirical threshold values for quantitative trait mapping. **_Genetics_**, 138(3), 963-971, 1994.
+
+Margarido, G. R. A., Souza, A.P. and Garcia, A. A. F. OneMap: software
+for genetic mapping in outcrossing species. **_Hereditas_** 144,
+78-79, 2007.
+
+Wu, R., Ma, C.X., Painter, I. and Zeng, Z.-B. Simultaneous maximum
+likelihood estimation of linkage and linkage phases in outcrossing
+species. **_Theoretical Population Biology_** 61, 349-363, 2002a.
+
+Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. Linkage mapping of
+sex-specific differences. **_Genetical Research_** 79, 85-96, 2002b.
+
+## Onemap References
+
+Adler, J. **_R in a Nutshell_** A Desktop Quick Reference, 2009.
+
+Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B. **_qtl:
+Tools for analyzing QTL experiments_** R package version
+1.09-43, 2008. [http://www.rqtl.org/](http://www.rqtl.org/)
+
+Buetow, K. H., Chakravarti, A. Multipoint gene mapping using
+seriation. I. General methods. **_American Journal of Human
+Genetics_** 41, 180-188, 1987.
+
+Doerge, R.W. Constructing genetic maps by rapid chain delineation.
+**_Journal of Agricultural Genomics_** 2, 1996.
+
+Garcia, A.A.F., Kido, E.A., Meza, A.N., Souza, H.M.B., Pinto, L.R.,
+Pastina, M.M., Leite, C.S., Silva, J.A.G., Ulian, E.C., Figueira, A.
+and Souza, A.P. Development of an integrated genetic map of a
+sugarcane _Saccharum spp._ commercial cross, based on a
+maximum-likelihood approach for estimation of linkage and linkage
+phases. **_Theoretical and Applied Genetics_** 112, 298-314, 2006.
+
+Haldane, J. B. S. The combination of linkage values and the
+calculation of distance between the loci of linked factors. **_Journal
+of Genetics_** 8, 299-309, 1919.
+
+Jiang, C. and Zeng, Z.-B. Mapping quantitative trait loci with
+dominant and missing markers in various crosses from two inbred lines.
+**_Genetica_** 101, 47-58, 1997.
+
+Kosambi, D. D. The estimation of map distance from recombination
+values. **_Annuaire of Eugenetics_** 12, 172-175, 1944.
+
+Lander, E. S. and Green, P. Construction of multilocus genetic linkage
+maps in humans. **_Proc. Natl. Acad. Sci. USA_** 84, 2363-2367, 1987.
+
+Lander, E.S., Green, P., Abrahanson, J., Barlow, A., Daly, M.J.,
+Lincoln, S.E. and Newburg, L. MAPMAKER, An interactive computing
+package for constructing primary genetic linkage maps of experimental
+and natural populations. **_Genomics_** 1, 174-181, 1987.
+
+Lincoln, S. E., Daly, M. J. and Lander, E. S. Constructing genetic
+linkage maps with MAPMAKER/EXP Version 3.0: a tutorial and reference
+manual. **_A Whitehead Institute for Biomedical Research Technical
+Report_** 1993.
+
+Matloff, N. **_The Art of R Programming_**. 2011. 1st ed. San
+Francisco, CA: No Starch Press, Inc., 404 pages.
+
+
+
+Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia, A. A. F.
+Evaluation of algorithms used to order markers on genetics maps.
+**_Heredity_** 103, 494-502, 2009.
+
+Oliveira, K.M., Pinto, L.R., Marconi, T.G., Margarido, G.R.A.,
+Pastina, M.M., Teixeira, L.H.M., Figueira, A.M., Ulian, E.C., Garcia,
+A.A.F., Souza, A.P. Functional genetic linkage map on EST-markers for
+a sugarcane (_Saccharum spp._) commercial cross. **_Molecular
+Breeding_** 20, 189-208, 2007.
+
+Oliveira, E. J., Vieira, M. L. C., Garcia, A. A. F., Munhoz, C.
+F.,Margarido, G. R.A., Consoli, L., Matta, F. P., Moraes, M. C.,
+Zucchi, M. I., and Fungaro,M. H. P. An Integrated Molecular Map of
+Yellow Passion Fruit Based on Simultaneous Maximum-likelihood
+Estimation of Linkage and Linkage Phases **_J. Amer. Soc. Hort.
+Sci._** 133, 35-41, 2008.
+
+Tan, Y., Fu, Y. A novel method for estimating linkage maps.
+**_Genetics_** 173, 2383-2390, 2006.
+
+Van Os H, Stam P, Visser R.G.F., Van Eck H.J. RECORD: a novel method
+for ordering loci on a genetic linkage map. **_Theor Appl Genet_**
+112, 30-40, 2005.
+
+Voorrips, R.E. MapChart: software for the graphical presentation of
+linkage maps and QTLs. **_Journal of Heredity_** 93, 77-78, 2002.
+
+Wang S., Basten, C. J. and Zeng Z.-B. Windows QTL Cartographer 2.5.
+Department of Statistics, North Carolina State University, Raleigh,
+NC, 2010.
+[http://statgen.ncsu.edu/qtlcart/WQTLCart.htm](http://statgen.ncsu.edu/qtlcart/WQTLCart.htm)
+
+Wu, R., Ma, C.X., Painter, I. and Zeng, Z.-B. Simultaneous maximum
+likelihood estimation of linkage and linkage phases in outcrossing
+species. **_Theoretical Population Biology_** 61, 349-363, 2002a.
+
+Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. Linkage mapping of
+sex-specific differences. **_Genetical Research_** 79, 85-96, 2002b.
+
+
+
