@@ -11,11 +11,11 @@
 
 This tutorial was developed under the following softwares: `R 3.4.0`, `onemap 2.0.7`, and `fullsibQTL 1.0.0`.
 
-`fullsibQTL` is an `R` package to perform QTL mapping in outbred/outcrossing species. We consider as a mapping population a full-sib progeny (or *F1* population) derived by a biparental cross between two non homozygous parents, with a genetic map obtained with markers showing different segregation patterns. Here, we assumed the phenotypes are continuous having normal distribution and the genetic map was previously obtained with `onemap` package. If you are not familiar with `onemap`, we strongly encouraged to read `onemap` [vignettes](https://github.com/augusto-garcia/onemap/tree/master) (Margarido et al., 2007).
+`fullsibQTL` is an `R` package to perform QTL mapping in outbred/outcrossing species. We consider as a mapping population a full-sib progeny (or *F1* population) derived by a bi-parental cross between two non homozygous parents, with a genetic map obtained with markers showing different segregation patterns. Here, we assumed the phenotypes are continuous having normal distribution and the genetic map was previously obtained with `onemap` package. If you are not familiar with `onemap`, we strongly encouraged to read `onemap` [vignettes](https://github.com/augusto-garcia/onemap/tree/master) (Margarido et al., 2007).
 
-In our software, we developed tools to perform Composite Interval Mapping (CIP). Briefly, we developed an statistical model with three genetics effects, one for each parent and an interation (dominance). To obtain these estimatives, we used maximum likelihood approach using mixture models and EM algorithm (Gazaffi et al., 2014). The QTL genotype probabilities were calculated using a multipoint technology, based on Hiddden Markov Models (Wu et al., 2002b). We also implemented a function to select cofactors using multiple linear regression and the information criteria. Permutation test (Churchill and Doerge, 1994) for threshold determination were also implemented, as well the modification proposed by Chen and Storey (2006) for having a relaxed threshold. Some extra functions were developed to provide a graphical or text output for the analysis helping the interpretation of QTL mapping. To exemplify the usage of `fullsibQTL`, here we analyse the dataset present by Gazaffi et al. (2014).
+In our software, we developed tools to perform Composite Interval Mapping (CIP). Briefly, we developed an statistical model with three genetics effects, one for each parent and an interaction (dominance). To obtain these estimates, we used maximum likelihood approach using mixture models and EM algorithm (Gazaffi et al., 2014). The QTL genotype probabilities were calculated using a multipoint technology, based on Hiddden Markov Models (Wu et al., 2002b). We also implemented a function to select cofactors using multiple linear regression and the information criteria. Permutation test (Churchill and Doerge, 1994) for threshold determination were also implemented, as well the modification proposed by Chen and Storey (2006) for having a relaxed threshold. Some extra functions were developed to provide a graphical or text output for the analysis helping the interpretation of QTL mapping. To exemplify the usage of `fullsibQTL`, here we analyse the dataset present by Gazaffi et al. (2014).
 
-The purpose of this tutorial is to help users dealing with this package and understanding the outputs. It is not our intention to teach the genetic basis of QTL mapping approach, see Gazaffi et al. (2014) for details. Remembering, users of `fullsibQTL` are supposed to have some experience with R, since the analysis is done using the command line. Previous knowledged of `onemap` is also desirably, once the genetic map is obtained with this software. `fullsibQTL` is available as source code for Windows\texttrademark and Unix. It is released under the GNU General Public License, is open-source and the code can be changed freely. It comes with no warranty. It is implemented as a package to be used under the freely distributed R software, which is a language and environment for statistical computing
+The purpose of this tutorial is to help users dealing with this package and understanding the outputs. It is not our intention to teach the genetic basis of QTL mapping approach, see Gazaffi et al. (2014) for details. Remembering, users of `fullsibQTL` are supposed to have some experience with R, since the analysis is done using the command line. Previous knowledge of `onemap` is also desirably, once the genetic map is obtained with this software. `fullsibQTL` is available as source code for Windows\texttrademark and Unix. It is released under the GNU General Public License, is open-source and the code can be changed freely. It comes with no warranty. It is implemented as a package to be used under the freely distributed R software, which is a language and environment for statistical computing
 
 If you are not familiar with `R`, we recommend the reading of
 vignette [Introduction to R](http://htmlpreview.github.com/?https://github.com/augusto-garcia/onemap/blob/master/vignettes_html/Introduction_R.html).
@@ -66,7 +66,7 @@ The following table presents the `fullsibQTL` functions which can be directly ca
 |                            | `r2_ls`                    | Provides the phenotypic proportion of each QTL mapped and altogether (least square estimation) |
 
 ## Required data
-The input file of `fullsibQTL` is the same as the one required by `onemap` package, you can find more information at `onemap` [vignette](http://htmlpreview.github.io/?https://github.com/augusto-garcia/onemap/blob/master/inst/doc/Outcrossing_Populations.html). Above there is an example of such file. The header line indicates the data type, the following line with `10 5 0 0 2` indicates that the data has, respectivately, 10 individuals, 5 markers, no (0) chromosome information, 0 (no) physical position information, and 2 traits as phenotypic data. It is very similar to a `MAPMAKER/EXP` file, but has additional information about the crosstype. `-` for missing data.
+The input file of `fullsibQTL` is the same as the one required by `onemap` package, you can find more information at `onemap` [vignette](http://htmlpreview.github.io/?https://github.com/augusto-garcia/onemap/blob/master/inst/doc/Outcrossing_Populations.html). Above there is an example of such file. The header line indicates the data type, the following line with `10 5 0 0 2` indicates that the data has, respectively, 10 individuals, 5 markers, no (0) chromosome information, 0 (no) physical position information, and 2 traits as phenotypic data. It is very similar to a `MAPMAKER/EXP` file, but has additional information about the crosstype. `-` for missing data.
 
 ```
 data type outcross
@@ -82,7 +82,7 @@ I1 I2 I3 I4 I5 I6 I7 I8 I9 I10
 ```
 
 ## Creating the working object
-Hopefully you already had used the `onemap` to build your linkage maps an also are familiar with this data type. Within the available file, you can import it. First you need to read it with `onemap::read_onemap` function and after you can combine it with your linkages groups with `create_fullsib` function. Your final object will have the `onemap` raw object, the linkage groups and some parameters information. In the following example we are importing the raw data and 4 linkages groups, we are setting as mapping function `kosambi` (Kosambi, 1944) with `map.function` argument, and, at last, we set the `step` argument as 1. The `step` argument is used for the computation of the conditional multipointprobability which defines the distance in cM (centiMorgan) the conditional probability are obtained. If `step=0`, the probabilities will be computed only in the positions of each marker.
+Hopefully you already had used the `onemap` to build your linkage maps an also are familiar with this data type. Within the available file, you can import it. First you need to read it with `onemap::read_onemap` function and after you can combine it with your linkages groups with `create_fullsib` function. Your final object will have the `onemap` raw object, the linkage groups and some parameters information. In the following example we are importing the raw data and 4 linkages groups, we are setting as mapping function `kosambi` (Kosambi, 1944) with `map.function` argument, and, at last, we set the `step` argument as 1. The `step` argument is used for the computation of the conditional multipoint probability which defines the distance in cM (centiMorgan) the conditional probability are obtained. If `step=0`, the probabilities will be computed only in the positions of each marker.
 
 ```{r, eval=FALSE}
 library(fullsibQTL)
@@ -114,20 +114,153 @@ LG1_final
 
 Now we have to combine the raw data with the linkage groups (hereafter LG) in a single object:
 
-```{r, eval=TRUE}
+```{r, eval=TRUE, cache=TRUE}
 fsib <- create_fullsib(example_QTLfullsib,
                        map.list=list(LG1_final, LG2_final, LG3_final, LG4_final),
                        step=1, map.function="kosambi")
 fsib
 ```
 
-This object contains the genetic map composed by 4 LGs, whith their length and segregation patterns above indicated. There is also shown the number of unlinked makers, *i.e.*, how many markers of the `example_QTLfullsib` object are not present in any LG. This may be helpful for species where the map does not cover the whole genome. Finally, there is the number of the available phenotypes for the QTL mapping, as well the chosen distance (`step`) to obtain the conditional probability and the mapping function.
+This object contains the genetic map composed by 4 LGs, with their length and segregation patterns above indicated. There is also shown the number of unlinked makers, *i.e.*, how many markers of the `example_QTLfullsib` object are not present in any LG. This may be helpful for species where the map does not cover the whole genome. Finally, there is the number of the available phenotypes for the QTL mapping, as well the chosen distance (`step`) to obtain the conditional probability and the mapping function.
 
 ## Interval mapping
-In order to proceed with interval mapping, there are two implemented functions `im_scan` and `im_char`. The first one scan all genoma doing association between genotype and phenotype trying to detect QTLs. The second one shows the genetic effects and their significance tests. It also shows additional tests to infer the QTL segregation pattern.
+In order to proceed with interval mapping, there are two implemented functions `im_scan` and `im_char`. The first one scan all the genome computing associations between genotype and phenotype trying to detect QTLs. The second one shows the genetic effects and their significance tests. It also shows additional tests to infer the QTL segregation pattern.
 
 ### Genome scan
+The genome scan can be performed with the function `im_scan`, such as:
+```{r, eval=TRUE, cache=TRUE}
+im1 <- im_scan(fullsib = fsib, lg="all", pheno.col=1, LOD=TRUE)
+```
+The argument `fullsib` it is the object created using `create_fullsib`, `lg` indicates which linkage groups must be scanned for the QTL mapping. Another way to represent it is `lg=1:4`. The function default is `lg=all`, *i.e.*, scan every LG. The argument `pheno.col` indicates which phenotype must be used, default is to use the first trait. The argument `LOD=TRUE` indicates that the mapping result must be shown with the LOD score, if `FALSE`, the scale will be shown as $-log_{10}(p_{value})$.
 
+The mapping result can be view calling:
+```{r, eval=TRUE, cache=TRUE}
+im1
+```
+
+Another way to see the results is using `print` and specifying which LG you would like to print:
+```{r, eval=TRUE, cache=TRUE}
+print(im1, lg=1)
+```
+The resulting object of `im_scan` is a matrix with 4 columns and *k* lines, where *k* is the number of genome positions in which the conditional probabilities have been computed based on the `step` argument of the earlier `create_fullsib` function. In this object, the row names are the identification of each position (it can be the marker name itself or a pseudo-marker with a automatically given name in the format `loc` + number. The first column is the linkage group of the marker. The third column is the position position (in centiMorgan). The fourth column is the LOD score value (or the $-log_{10}(p_{value})$). The fifth column reefers to the model utilized for the computations (see Section 9).
+
+`summary(im1)` prints just the utmost LOD score value (or the $-log_{10}(p_{value})$) for every LG. The user can also set a threshold (`thr` argument) where just the scores above this value will be printed. When more than one QTL is mapped in the same LG, the user have to do manual QTL search as looking for more than one peak can be a subjective process.
+
+```{r, eval=TRUE, cache=TRUE}
+summary(im1)
+```
+
+To obtain a graphic plot about the QTL mapping:
+```{r, eval=TRUE, cache=TRUE}
+plot(im1)
+```
+
+The user can customize the QTL graphic plot. As an example, it is possible to plot in the same area until 5 mapping profiles. Moreover, the user can indicate the molecular markers' position, change the labels, between others features. For more information about it: `?plot.fullsib_scan`.
+
+Finally, to improve the mapping flexibility, it is possible to set a cofactor (as a fixed effect) within the model in order to control the variability of the aimed phenotype. to set a full-rank matrix which controls the phenotypic variance, first you need to define a incidence vector, and, then, set it as an argument of the `im_scan`. An example follows:
+
+```{r, eval=TRUE, cache=TRUE}
+covar <- matrix(rep(c(1,-1), each=150), ncol=1)
+im2 <- im_scan(fsib, pheno.col=2, addcovar=covar)
+```
+
+### Permutation test
+The threshold for QTL detection can be set using permutation tests (Churchill and Doerge, 1994) with adding the argument `n.perm` in the `im_scan` function. As the permutation test is a re-sample process, it is recommended to the user to set a seed before the permutations. With this seed, the permutation can be repeated achieving the same threshold value.  The argument `write.perm` allows the user to save a text file with all the permutations performed. An example follows:
+```{r, eval=TRUE, cache=TRUE, collapse=TRUE}
+set.seed(123456789)
+perm <- im_scan(fsib, pheno.col=1, n.perm=1000)
+## recording the permutations also in a text file
+set.seed(123456789)
+perm <- im_scan(fsib, pheno.col=1, n.perm=1000, write.perm="permutations.txt")
+```
+The permutation test demands some time. At the end of the process, `perm` receives a matrix with *p* lines, where *p* is the number of the realized permutations, and two columns with the highest and second highest peak values. The definition of the second peak is the same of the method two of Chen and Storey (2006), *i.e*, the highest LOD score (or $-log_{10}(p_{value})$) of the genome disregarding the LG where the highest peak was achieved. This threshold values can be visualized through `summary` at the object with the permutation tests. In this case, the user can set an $\alpha$ significance threshold. The result will be the quantile $(1-\alpha) \times 100$ of the samples. The function default is to show $\alpha$ values equal to $0.10$ and $0.05$.
+```{r, eval=TRUE, cache=TRUE}
+summary(perm, alpha=0.95)
+```
+
+If the user wants to see the maximum distribution, he or she can use the `plot` function with `perm` object. If the user set the `peak` argument for `2`, the distribution of the second highest peaks will be shown.
+
+```{r, eval=TRUE, cache=TRUE}
+plot(perm)
+plot(perm, peak=2)
+```
+
+### QTL characterization
+After the determination of the number and position of the QTLs, the user can characterize the QTLs. In other words, to identify the significant effects, the segregation pattern and linkage phases between QTLs and flanking markers. The already created object `im` shows the presence of at least 4 QTLs:
+
+```{r, eval=TRUE, cache=TRUE}
+summary(im1)
+```
+
+The characterization of these 4 regions is realized with the function `im_char`:
+```{r, eval=TRUE, cache=TRUE}
+qtl1 <- im_char(fsib, pheno.col=1, lg=1, pos="loc4")
+qtl2 <- im_char(fsib, pheno.col=1, lg=2, pos="M27")
+qtl3 <- im_char(fsib, pheno.col=1, lg=3, pos="loc64")
+qtl4 <- im_char(fsib, pheno.col=1, lg=4, pos="loc56")
+```
+
+It is worth noting that the positions "loc4", "M27", "loc64", and "loc56" are the ones presented in the `im1` object kept when the `summary` function was applied. The object with the LG 1 QTL characterization  is:
+```{r, eval=TRUE, cache=TRUE}
+qtl1
+```
+`qtl1` is a matrix with 1 column and 15 lines. The first line has the LG information. The second line has the position in centiMorgan which the region is localized. The third and fourth lines shows, respectively, $-log_{10}(p_{value})$) and LOD Score, values next to the ones obtained using `im_scan`. The fifth line (`mu`) is the intercept effect of the model. The lines `alpha.p`, `alpha.q`, and `delta.pq` represent the QTL genetic effects. The lines `LOD.alpha.p`, `LOD.alpha.q`, and `LOD.delta.pq` are the statistics of the marginal tests of these genetic effects. All of these three tests was performed with 1 degree of freedom (testing just if the effect differs than zero). In this case, a LOD score above or equal $0.83$ indicates an significant given effect (LOD $= 0.83$ is the same as a LRT $= 3.81$ which under $\Chi^2$ distribution with 1 degree of freedom has significance level of $5%$). The lines `H4.pvalue`, `H5.pvalue`, and `H6.pvalue` show the p-values for the complementary test in order to detect the QTL segregation. For more information about it, please see Gazaffi et al. (2014). At last, the line `model` shows which model was studied, see details on section 9. In some cases, a given test cannot be evaluated, in these cases the cells will have `NA` values.
+
+The identification of the linkage phases allows to detect where the allele which increase or reduce the effect are. Therefore, it is necessary an analysis of the `LOD.alpha.p` and `LOD.alpha.q` values. In order to facilitate interpretation, the function `draw_phase` was developed and can be used as follows:
+
+```{r, eval=TRUE, cache=TRUE}
+draw_phase(fsib, qtl1, 0.05)
+```
+The argument $\alpha$ equals $0.05$ is used to show the significant additive genetic effects. If it is the case, the allele with superscript 1 enhances the phenotype, and the allele with superscript 2 reduces it. Alleles with superscript 0 has no significant effect under this significance level threshold. To infer the QTL segregation, the user must use the `get_segr` function. Its default considers $\alpha=0.05$ of significance level for the marginal effects ("LOD.alpha.p","LOD.alpha.q","LOD.delta.pq") and the complementary tests ("H4.pvalue","H5.pvalue", "H6.pvalue"). It follows an example:
+
+```{r, eval=TRUE, cache=TRUE}
+get_segr(qtl1)
+get_segr(qtl2)
+get_segr(qtl3)
+get_segr(qtl4)
+```
+## Cofactor selection
+Before composite interval mapping (CIP), it is necessary to define which markers will be cofactors. To do it, there are two functions: `cof_selection` and `cof_definition`.
+
+### Cofactor selection using multiple linear regression
+The function `cof_selection` allows to select cofactors using multiple linear regression through *stepwise* approach. The criteria information is utilized to determine if a given possible cofactor is kept or not kept. Basically, this function first prepares the data and then uses `step`, a built-in R function. An example follows:
+
+```{r, eval=TRUE, cache=TRUE}
+cofs.fs <- cof_selection(fsib, pheno.col=1, k=log(300), n.cofactor = 10)
+```
+
+The object `fsib` is the same one created using `create_fullsib`, `pheno.col` indicates which phenotypic is to be used in the analysis, `k` is the chosen penalty for the information criteria computation. If `k=2`, it will be used the Akaike Information Criteria. If `k=log(n)` where `n`is the mapping population size, it corresponds to the Bayesian Information Criteria. If the user wants another penalty values, we strongly recommend to look at the [QTL Cartographer v1.17 manual](http://statgen.ncsu.edu/qtlcart/manual.pdf), page 76 and the help of the R function `step`. For some situations, the process would recommend to keep several cofactors which can lead to overparametrization of the model. To control it, the argument `n.cofactor` allows to the user to restrict the number of selected cofactors of the model, *i.e*, the proceeding to keep cofactors is frozen when the number of kept cofactors is equal to `n.cofactor` (the dafult is `n.cofactor=10`.
+
+The following example shows how to proceed the cofactor selection in a situation where the fixed covariates are set to control the character variability. To do it, we used the argument `addcovar`. In a similar way of `im_scan` function:
+
+```{r, eval=TRUE, cache=TRUE}
+covar <- matrix(rep(c(1,-1), each=150), ncol=1)
+cofs.fs2 <- cof_selection(fsib, pheno.col=2, addcovar=covar, k=2, thres.effect=0.05)
+```
+
+After the cofactor selection, `thres.effect=0.05` verifies if there is no significant effects (with p-values higher than $0.05$). If true, the non-significant effects are removed keeping just the significant ones as cofactors. This is helpful to reduce the model's degree of freedom. It is worth noting that each cofactor can has until 3 genetics effects and not all three may be significant. The default of this argument is 1, *i.e*, there is no removal of non-significant markers. We strongly recommend that if you utilized this argument, you have to used by a given criteria not by the software's default.
+
+Finally, the user can visualize the results printing and/or plotting the created object:
+
+```{r, eval=TRUE, cache=TRUE}
+cofs.fs
+plot(cofs.fs)
+```
+
+If you want more information about this function, we recommend to look at the function help (`?cof_selection`)
+
+## Interval mapping
+In order to proceed with interval mapping, there are two implemented functions `im_scan` and `im_char`. The first one scan all the genome computing associations between genotype and phenotype trying to detect QTLs. The second one shows the genetic effects and their significance tests. It also shows additional tests to infer the QTL segregation pattern.
+
+### Genome scan
+The genome scan can be performed with the function `im_scan`, such as:
+```{r, eval=TRUE, cache=TRUE}
+cim1 <- cim_scan(fullsib = cofs.fs, lg="all", pheno.col=1, LOD=TRUE, n.perm=1000)
+```
+
+```{r, eval=TRUE, cache=TRUE}
+cim1 <- cim_char(fullsib = cofs.fs, lg="all", pheno.col=1, LOD=TRUE)
+```
 
 ## References
 Chen, L., and Storey, J. D. Relaxed significance criteria for linkage analysis. **_Genetics_**, 173(4), 2371-2381, 2006.
