@@ -85,10 +85,10 @@ r2_ls(fullsib, lg, pos, pheno.col=1, addcovar = NULL, ls.estimation=FALSE)
 
 \examples{
 
-  data(QTLexample)
+  data(example_QTLfullsib)
 
-  fullsib <- create_fullsib(fullsib_data,
-                            list(LG1.end, LG2.end, LG3.end, LG4.end),
+  fullsib <- create_fullsib(example_QTLfullsib,
+                            list(LG1_final, LG2_final, LG3_final, LG4_final),
                             step=0,map.function="kosambi",condIndex=3.5)
 
   r2_ls(fullsib, pheno.col=1, lg=c(1,1,2,2,2,3,4),

@@ -3,6 +3,11 @@ useDynLib(fullsibQTL)
 # Import package dependencies
 import(onemap)
 
+# ImportFrom dependencies
+importFrom(graphics, abline, axis, hist, lines, par, plot, points, rug, text)
+importFrom(stats, anova, as.formula, coef, df.residual, dist, lm, model.matrix, pchisq, qchisq, quantile)
+importFrom(utils, head, setTxtProgressBar, tail, txtProgressBar, write.table)
+  
 # Export all names
 export(create_fullsib)
 export(im_scan, im_char)

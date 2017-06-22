@@ -75,7 +75,7 @@ cim_scan(fullsib, lg, pheno.col=1, ws = 10, LOD=TRUE, maxit=1000, tol=1e-04,
   in the analysis.
 
   If extra additive covariates is used, one need to specify them, on
-  \code{cof.selection} or \code{cof_definition} step.
+  \code{cof_selection} or \code{cof_definition} step.
   
   Li et al. (2007) proposed an adaption for CIM first developed by Zeng
   (1994). In their metodology, first the phenotype should be regressed
@@ -132,7 +132,7 @@ cim_scan(fullsib, lg, pheno.col=1, ws = 10, LOD=TRUE, maxit=1000, tol=1e-04,
   have the threshold as present by Churchill and Doerge (1994). If one
   choose the threshold with the second peak or lower is considering the
   approach by Chen and Storey (2006). The function
-  \code{summary_fullsib_perm} or just \code{summary} provides
+  \code{summary.fullsib_perm} or just \code{summary} provides
   automatically these results.
   
 }
@@ -162,39 +162,39 @@ cim_scan(fullsib, lg, pheno.col=1, ws = 10, LOD=TRUE, maxit=1000, tol=1e-04,
 
   \code{\link[fullsibQTL]{cim_char}},
 
-  \code{\link[fullsibQTL]{cof.selection}},
+  \code{\link[fullsibQTL]{cof_selection}},
 
   \code{\link[fullsibQTL]{cof_definition}}
 }
 
 \examples{
 
-  data(QTLexample)
+  data(example_QTLfullsib)
 
-  fullsib <- create_fullsib(fullsib_data,
-                            list(LG1.end, LG2.end, LG3.end, LG4.end),
+  fullsib <- create_fullsib(example_QTLfullsib,
+                            list(LG1_final, LG2_final, LG3_final, LG4_final),
                             step=0,map.function="kosambi",condIndex=3.5)
 
 
   ###############################################
   ## cofactor selection using BIC (n.ind = 300)
-  cofs.fs <- cof.selection(fullsib, pheno.col=1, k = log(300),
+  cofs.fs <- cof_selection(fullsib, pheno.col=1, k = log(300),
                            selection=1) 
 
   cim1 <- cim_scan(cofs.fs, pheno.col=1, ws = 22, LOD= TRUE, icim=FALSE)
 
   \dontrun{
   covar <- matrix(rep(c(1,-1), each=150), ncol=1)
-  cofs.fs <- cof.selection(fullsib, pheno.col=2, addcovar=covar, k=log(300))
+  cofs.fs <- cof_selection(fullsib, pheno.col=2, addcovar=covar, k=log(300))
   cim2 <- cim_scan(cofs.fs, pheno.col=2, ws = 22, LOD= TRUE, icim=TRUE) 
   ## cim with covariate, one just indicate the additive covar on
-  ## cof.selection or cof_definition
+  ## cof_selection or cof_definition
 
   ##permutation test:
   cim.perm <- cim_scan(cofs.fs, pheno.col=1, ws = 22, LOD = FALSE,
                        n.perm=1000) 
-  summary(im.perm) # threshold values
-  summary(im.perm, alpha=0.10)
+  summary(cim.perm) # threshold values
+  summary(cim.perm, alpha=0.10)
   }
 
 }

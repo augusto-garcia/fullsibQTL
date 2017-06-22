@@ -1,7 +1,8 @@
 \name{cof_selection}
 
 \alias{cof_selection}
-\alias{plot_fullsib_cofactors }
+
+\alias{plot.fullsib_cofactors }
 
 \title{Cofactors Selection procedure for CIM analysis}
 
@@ -173,10 +174,10 @@ cex.mrk = 1, cex.grp = 0.75,\ldots)
 }
 \examples{
 
-  data(QTLexample)
+  data(example_QTLfullsib)
 
-  fullsib <- create_fullsib(fullsib_data,
-                            list(LG1.end, LG2.end, LG3.end, LG4.end),
+  fullsib <- create_fullsib(example_QTLfullsib,
+                            list(LG1_final, LG2_final, LG3_final, LG4_final),
                             step=0,map.function="kosambi",condIndex=3.5)
 
 

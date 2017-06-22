@@ -2,7 +2,7 @@
 
 \alias{print.fullsib_scan}
 
-\title{Prits object of class \emph{fullsib_scan}}
+\title{Prints object of class \emph{fullsib_scan}}
 
 \description{
   Prints the object of class \emph{fullsib_scan} created by \code{im_scan}
@@ -10,7 +10,7 @@
 }
 
 \usage{
-\method{print}{fullsib_scan}(x, lg, \ldots)
+\method{print}{fullsib_scan}(x, lg, pos, \ldots)
 }
 
 \arguments{
@@ -19,6 +19,8 @@
 
   \item{lg}{Linkage group that will be printed. Default is to print all
   scanned groups.}
+  
+  \item{pos}{Position of the QTL, string(s).}
 
   \item{\ldots}{Further arguments, passed to other methods. Currently
   ignored.}
@@ -31,18 +33,18 @@
   
   \code{\link[fullsibQTL]{cim_scan}}, 
   
-  \code{\link[fullsibQTL]{plot_fullsib_scan}}, 
+  \code{\link[fullsibQTL]{plot.fullsib_scan}}, 
   
-  \code{\link[fullsibQTL]{summary_fullsib_scan}}, 
+  \code{\link[fullsibQTL]{summary.fullsib_scan}}, 
   
   \code{scanone} from \pkg{qtl} package
 }
 
 \examples{
 
-  data(QTLexample)
-  fullsib <- create_fullsib(fullsib_data,
-                            list(LG1.end, LG2.end, LG3.end, LG4.end), 
+  data(example_QTLfullsib)
+  fullsib <- create_fullsib(example_QTLfullsib,
+                            list(LG1_final, LG2_final, LG3_final, LG4_final), 
                             step = 0, map.function = "kosambi",
                             condIndex = 3.5)
 
@@ -53,6 +55,7 @@
 
   im1
   print(im1, lg=2)
+  print(im1, lg=2, pos="M27")
   print(im1, lg=c(1,4))
 }
 

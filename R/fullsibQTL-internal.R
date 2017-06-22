@@ -12,7 +12,7 @@
 # model_select_lg:     used in cim.char                               #
 # model_select:        used in cim.scan                               #
 # prob2cof:            used in cof.def..., cof.sel...  and r2.model   #
-# unlink2cof:          used in cof.definition and cof.selection       #
+# unlink2cof:          used in cof_definition and cof_selection       #
 # get_phase            used in draw.phase                             #
 #                                                                     #
 #                                                                     #
@@ -341,7 +341,7 @@ geno_class_identify <- function(colin_number)
 # Function: model_select_lg                                           #
 #                                                                     #
 # For CIM analysis cofactors are included on the model, obtained with #
-# either cof.selection or cof.definition function. However, depending #
+# either cof_selection or cof_definition function. However, depending #
 # on the position (defined the window size) some cofactors are removed#
 # from the analysis. So, this function indicated which cofactors are  #
 # dropped from the model and for which position this is done          #

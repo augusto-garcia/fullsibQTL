@@ -29,7 +29,7 @@
 #######################################################################
 
 summary.fullsib_perm <- function(object,
-                                 alpha=c(0.05, 0.10), ...)
+                                 alpha=c(0.05, 0.10), verbose=TRUE, ...)
 {
   threshold <-  apply(object, 2, quantile, 1 - alpha, na.rm=T)
 
@@ -39,11 +39,13 @@ summary.fullsib_perm <- function(object,
   threshold <- as.data.frame(threshold)
   colnames(threshold) <- colnames(object)
   rownames(threshold) <- round(alpha,2)
-
-  cat(" Threshold considering", nrow(object), "permutations\n")
-  if(ncol(object) == 2){
-    cat(" First column indicates", sQuote("classical"), "threshold showed by Churchill and Doerge, 1994\n")
-    cat(" Second column means threshold values suggested by Chen and Storey, 2006\n")
+  
+  if(verbose){
+    cat(" Threshold considering", nrow(object), "permutations\n")
+    if(ncol(object) == 2){
+      cat(" First column indicates", sQuote("classical"), "threshold showed by Churchill and Doerge, 1994\n")
+      cat(" Second column means threshold values suggested by Chen and Storey, 2006\n")
+    }
   }
   threshold
 }

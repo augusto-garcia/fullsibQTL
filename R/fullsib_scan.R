@@ -8,6 +8,7 @@
 # print.fullsib_scan                                                  #
 #                                                                     #
 # Written by Rodrigo Gazaffi                                          #
+# Reviewed by Rodrigo Amadeu                                          #
 # copyright (c) 2011, Rodrigo Gazaffi                                 #
 # summary.fullsib_scan is based on summary.scanone from qtl package   #
 # plot.fullsib_scan    is fully based on plot.scanone from qtl pkg    #
@@ -15,7 +16,7 @@
 #                      adapted some arguments                         #
 #                                                                     #
 # First version: 09/30/2011                                           #
-# Last  version: 09/30/2011                                           #
+# Last  version: 06/22/2017                                           #
 # License: GPL-3                                                      #
 #                                                                     #
 #######################################################################
@@ -30,7 +31,7 @@
 #                                                                     #
 #######################################################################
 
-summary.fullsib_scan <- function(object, thr=0,...)
+summary.fullsib_scan <- function(object, thr=0, ...)
 {
   if(!any(class(object) == "fullsib_scan"))
     stop("Input should have class 'fullsib_scan'")
@@ -455,10 +456,11 @@ plot.fullsib_scan <- function(x, x2, x3, x4, x5, lg, label.lg, cex.axis=1,
 #                                                                     #
 # prints the object of class fullsib_scan (im_scan or cim_scan)       #
 # if lg is defined it prints just the intended linkage group          #
-# default is to print all linkage groups                              #
+# if pos is defined it prints just the markers                        #
+# default is to print all linkage groups and all markers              #
 #######################################################################
 
-print.fullsib_scan <- function(x, lg, ...){
+print.fullsib_scan <- function(x, lg, pos, ...){
 
   if(missing(lg))
     lgs <- unique(x[,"lg"])
@@ -476,10 +478,15 @@ print.fullsib_scan <- function(x, lg, ...){
   else{
     lg.print <- NULL
     lg.print <- function(y) {x[,"lg"] == y}
-    temp <- sapply(lgs, lg.print)
+    if(!missing(pos)){
+      temp <- sapply(lgs, lg.print)*(!is.na(match(row.names(x),pos)))
+    }else{
+      temp <- sapply(lgs, lg.print)
+    }
     lines2print <- apply(temp,1, any)
     ##lines2print <- apply(sapply(lgs, function(x) {im.lod[,"lg"] == x}),1, any)
     return(print(subset(x, lines2print)))
   }
-} 
+}
+ 
 

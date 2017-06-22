@@ -63,7 +63,7 @@
     for a given position as similar done in \code{im_char}, but using
     CIM analysis.
 
-    \item \code{\link[fullsibQTL]{cof.selection}} performs cofactor
+    \item \code{\link[fullsibQTL]{cof_selection}} performs cofactor
     selection using multiple linear regression using an information
     criteria (AIC or BIC). This function is a previous step for
     \code{cim_scan} or \code{cim_char}.

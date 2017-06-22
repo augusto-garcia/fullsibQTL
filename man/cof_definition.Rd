@@ -1,7 +1,8 @@
 \name{cof_definition}
 
 \alias{cof_definition}
-\alias{plot_fullsib_cofactors }
+
+%\alias{plot.fullsib_cofactors}
 
 \title{Ad-hoc definition of cofactors for CIM analysis}
 
@@ -12,11 +13,11 @@
 }
 
 \usage{
-cof_definition(fullsib, pheno.col=1, addcovar=NULL, cof_pos,
+cof_definition(fullsib, pheno.col=1, addcovar=NULL, cof.pos,
 thres.effect=1)
 
-\method{plot}{fullsib_cofactors}(x, horizontal = FALSE, grid = FALSE,
-cex.mrk = 1, cex.grp = 0.75,\ldots)
+%\method{plot}{fullsib_cofactors}(x, horizontal = FALSE, grid = FALSE,
+%cex.mrk = 1, cex.grp = 0.75,\ldots)
 
 }
 
@@ -31,7 +32,7 @@ cex.mrk = 1, cex.grp = 0.75,\ldots)
     additive covariates is included in the model as fixed effects, under
     ordinary linear regression.}
 
-  \item{cof_pos}{character matrix, in each row represents a
+  \item{cof.pos}{character matrix, in each row represents a
     different cofactor and two columns indicating the linkage group and
     the name of the position to be considered. To define markers that
     are not place on markers, one should indicate as \code{NA}. See
@@ -41,18 +42,18 @@ cex.mrk = 1, cex.grp = 0.75,\ldots)
     for selected cofactors. Default is \code{thres.effect = 1}, none
     cofactors effect is removed from the analysis.}
 
-  \item{x}{An object from class \emph{fullsib_cofactors}.}
+%  \item{x}{An object from class \emph{fullsib_cofactors}.}
   
-  \item{horizontal}{if \code{TRUE}, indicates that the map should be plotted
-    horizontally. Default is \code{FALSE}.}
+%  \item{horizontal}{if \code{TRUE}, indicates that the map should be plotted
+%    horizontally. Default is \code{FALSE}.}
   
-  \item{grid}{if \code{TRUE}, displays a grid in the background. Default is
-    \code{FALSE}.}
+%  \item{grid}{if \code{TRUE}, displays a grid in the background. Default is
+%    \code{FALSE}.}
   
-  \item{cex.mrk}{the magnification to be used for markers.}
+%  \item{cex.mrk}{the magnification to be used for markers.}
   
-  \item{cex.grp}{the magnification to be used for group axis
-    annotation.}
+%  \item{cex.grp}{the magnification to be used for group axis
+%    annotation.}
 
   \item{\ldots}{Further arguments, passed to other methods. Currently
     ignored.}
@@ -117,10 +118,10 @@ cex.mrk = 1, cex.grp = 0.75,\ldots)
 }
 \examples{
 
-  data(QTLexample)
+  data(example_QTLfullsib)
 
-  fullsib <- create_fullsib(fullsib_data,
-                            list(LG1.end, LG2.end, LG3.end, LG4.end),
+  fullsib <- create_fullsib(example_QTLfullsib,
+                            list(LG1_final, LG2_final, LG3_final, LG4_final),
                             step=0,map.function="kosambi",condIndex=3.5)
 
  \dontrun{
@@ -134,7 +135,7 @@ cex.mrk = 1, cex.grp = 0.75,\ldots)
                    "3","M37",
                    "4","M52"),4,2, byrow=TRUE)
 
-  cof_def <- cof_definition(fullsib, pheno.col=1, cof_pos=cofs)
+  cof_def <- cof_definition(fullsib, pheno.col=1, cof.pos=cofs)
   cof_def
   plot(cof_def)
 
@@ -148,10 +149,10 @@ cex.mrk = 1, cex.grp = 0.75,\ldots)
                     "4","M52",
                     NA, "M64"),5,2, byrow=TRUE)
 
-  cof2.def <- cof_definition(fullsib, pheno.col=2, addcovar=covar, cof_pos=cofs2, thres.effect=1)
+  cof2.def <- cof_definition(fullsib, pheno.col=2, addcovar=covar, cof.pos=cofs2, thres.effect=1)
   cof2.def
 
-  cof3.def <- cof_definition(fullsib, pheno.col=1, cof_pos=cofs2, thres.effect=0.05)
+  cof3.def <- cof_definition(fullsib, pheno.col=1, cof.pos=cofs2, thres.effect=0.05)
   cof3.def
   ### realize with thres.effect = 0.05, the 5th cofactor is removed,
   ### because it is non significative (never was selected on cof_selection)

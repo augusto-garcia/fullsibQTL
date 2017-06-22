@@ -92,7 +92,7 @@ lwd = 2, add=FALSE, gap = 50, col= c("black", "blue", "red", "orange",
   
   \code{\link[fullsibQTL]{cim_scan}},
   
-  \code{\link[fullsibQTL]{summary_fullsib_scan}},
+  \code{\link[fullsibQTL]{summary.fullsib_scan}},
   
   \code{par},
   
@@ -104,10 +104,10 @@ lwd = 2, add=FALSE, gap = 50, col= c("black", "blue", "red", "orange",
 
 \examples{
 
-  data(QTLexample)
+  data(example_QTLfullsib)
 
-  fullsib <- create_fullsib(fullsib_data,
-                            list(LG1.end, LG2.end, LG3.end, LG4.end), 
+  fullsib <- create_fullsib(example_QTLfullsib,
+                            list(LG1_final, LG2_final, LG3_final, LG4_final), 
                             step=0, map.function="kosambi", condIndex = 3.5) 
 
 

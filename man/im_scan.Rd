@@ -140,22 +140,22 @@ im_scan (fullsib, lg, pheno.col=1, addcovar=NULL, LOD=TRUE, maxit=1000,
 
   \code{\link[fullsibQTL]{im_char}},
    
-  \code{\link[fullsibQTL]{plot_fullsib_scan}},
+  \code{\link[fullsibQTL]{plot.fullsib_scan}},
 
-  \code{\link[fullsibQTL]{summary_fullsib_scan}},
+  \code{\link[fullsibQTL]{summary.fullsib_scan}},
 
-  \code{\link[fullsibQTL]{plot_fullsib_perm}},
+  \code{\link[fullsibQTL]{plot.fullsib_perm}},
   
-  \code{\link[fullsibQTL]{summary_fullsib_perm}}
+  \code{\link[fullsibQTL]{summary.fullsib_perm}}
 
 } 
 
 \examples{
 
-  data(QTLexample)
+  data(example_QTLfullsib)
 
-  fsib <- create_fullsib(fullsib_data,
-                         list(LG1.end, LG2.end, LG3.end, LG4.end), 
+  fsib <- create_fullsib(example_QTLfullsib,
+                         list(LG1_final, LG2_final, LG3_final, LG4_final), 
                          step=0, map.function="kosambi", condIndex = 3.5) 
 
 

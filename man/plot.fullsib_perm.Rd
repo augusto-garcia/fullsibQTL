@@ -50,7 +50,7 @@
   
   \code{\link[fullsibQTL]{cim_scan}},
   
-  \code{\link[fullsibQTL]{summary_fullsib_perm}},
+  \code{\link[fullsibQTL]{summary.fullsib_perm}},
 
   \code{hist},  
 }
@@ -58,10 +58,10 @@
 
 \examples{
   \dontrun{
-  data(QTLexample)
+  data(example_QTLfullsib)
 
-  fullsib <- create_fullsib(fullsib_data,
-                            list(LG1.end, LG2.end, LG3.end, LG4.end), 
+  fullsib <- create_fullsib(example_QTLfullsib,
+                            list(LG1_final, LG2_final, LG3_final, LG4_final), 
                             step=0, map.function="kosambi", condIndex = 3.5) 
 
   im.perm <- im_scan(fullsib, pheno.col=1, LOD=TRUE, n.perm=1000,
