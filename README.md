@@ -45,4 +45,4 @@ install_github("augusto-garcia/fullsibQTL")
 
 You can read _fullsibQTL_ tutorial going to the vignettes of the installed package, or clicking below.
 
-[Tutorial fullsibQTL](http://htmlpreview.github.com/?https://github.com/augusto-garcia/fullsibQTL/blob/master/inst/doc/Tutorial_fullsibQTL.html)
+[Tutorial fullsibQTL](http://htmlpreview.github.com/?https://github.com/rramadeu/fullsibQTL/blob/master/inst/doc/Tutorial_fullsibQTL.html)
