@@ -7,6 +7,7 @@
 
 ```{r, globalsetup, echo=FALSE, results='hide', cache=FALSE}
 #opts_chunk$set(cache=FALSE, autodep=TRUE)
+knitr::opts_chunk$set(fig.width=10)
 ```
 
 This tutorial was developed under the following softwares: `R 3.4.0`, `onemap 2.0.7`, and `fullsibQTL 1.0.0`.
@@ -58,12 +59,12 @@ The following table presents the `fullsibQTL` functions which can be directly ca
 |                            | `cof_definition`           | Defines locations on the genome to be used as cofactors                                        |
 | composite interval mapping | `cim_scan`                 | Scan the genome using CIM approach                                                             |
 |                            | `cim_char`                 | Provides the genetic effects, LOD Score and the p-values of complementary testes               |
-| summaries                  | `print` <br> class: `fullsib`        | Prints a summary for the object of class fullsib                                               |
-|                            | `print` <br> class: `fullsib_scan`   | Prints the result of im_scan or cim_scan                                                       |
-|                            | `summary` <br> class: `fullsib_scan` | Summarizes the QTL search for im_scan or cim_scan                                              |
-|                            | `plot` <br> class: `fullsib_scan`    | Plot the QTL profile for the mapped groups                                                     |
-|                            | `summary` <br> class: `fullsib_perm` | Provides the threshold values for permutations test                                            |
-|                            | `plot` <br> class: `fullsib_perm`    | Plot the empiral distribution for permutations test                                            |
+| summaries                  | `print`                    | class `fullsib`: Prints a summary for the object of class fullsib                              |
+| class name in              | `print`                    | class `fullsib_scan`: Prints the result of im_scan or cim_scan                                 |
+|                            | `summary`                  | class `fullsib_scan`: Summarizes the QTL search for im_scan or cim_scan                        |
+|                            | `plot`                     | class `fullsib_scan`: Plot the QTL profile for the mapped groups                               |
+|                            | `summary`                  | class `fullsib_perm`: Provides the threshold values for permutations test                      |
+|                            | `plot`   | class `fullsib_perm`: Plot the empiral distribution for permutations test                      |
 |                            | `draw_phase`               | Returns the linkage phase between QTL and markers                                              |
 |                            | `get_segr`                 | Returns the QTL segregation                                                                    |
 |                            | `r2_ls`                    | Provides the phenotypic proportion of each QTL mapped and altogether (least square estimation) |
@@ -91,6 +92,11 @@ Hopefully you already had used the `onemap` to build your linkage maps an also a
 library(fullsibQTL)
 fs_data <- read_onemap(dir = "C:/workingdirectory", inputfile = "filename.raw")
 
+## To read the example data from this same package:
+fs_data <- read_onemap(dir = system.file("extdata", package = "fullsibQTL"), 
+                       inputfile = "example_QTLfullsib.raw")
+
+## Within the Linkage Groups done:
 fsib <- create_fullsib(fs_data,
                        map.list = list(LG1_final, LG2_final, LG3_final, LG4_final),
                        step = 1, map.function = "kosambi")
@@ -505,9 +511,11 @@ plot(im, lty=3, lwd=2, lg=c(1,2), label.lg=c("Chr 1","Chr 2"), cex.axis=1.2, inc
 ## Changes the line colors
 plot(im, lty=3, lwd=2, lg=c(1,2), label.lg=c("Chr 1","Chr 2"), cex.axis=1.2, incl.mkr="name", cex.incl = .75, gap = 50, col="red")
 ```
+
 You can check more colors options at this [cheatsheet](https://www.nceas.ucsb.edu/~frazier/RSpatialGuides/colorPaletteCheatsheet.pdf) or at this color [guide](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf) 
 
-You can also customize the plot with the default R plot options as main, ylab, xlab, yaxt, ylim, etc. 
+You can also customize the plot with the default R plot options as `main`, `ylab`, `xlab`, `yaxt`, `ylim`, etc. 
+
 ```{r}
 plot(im, lty=1, lwd=2, lg=c(1,2), cex.axis=1.2, incl.mkr="name", cex.incl = .9, gap = 50, col="red", alternate.lgid = TRUE,
      ## Configuring with R plot options:
@@ -577,7 +585,7 @@ Chen, L., and Storey, J. D. Relaxed significance criteria for linkage analysis. 
 
 Churchill, G. A., and Doerge, R. W. Empirical threshold values for quantitative trait mapping. **_Genetics_**, 138(3), 963-971, 1994.
 
-Gazaffi, R., Margarido, G. R., Pastina, M. M., Mollinari, M., Garcia, A. A. F. (2014). A model for quantitative trait loci mapping, linkage phase, and segregation pattern estimation for a full-sib progeny. *Tree Genetics & Genomes*, 10(4), 791-801.
+Gazaffi, R., Margarido, G. R., Pastina, M. M., Mollinari, M., Garcia, A. A. F. (2014). A model for quantitative trait loci mapping, linkage phase, and segregation pattern estimation for a full-sib progeny. **_Tree Genetics & Genomes_**, 10(4), 791-801.
 
 Margarido, G. R. A., Souza, A.P. and Garcia, A. A. F. OneMap: software
 for genetic mapping in outcrossing species. **_Hereditas_** 144,
@@ -590,95 +598,99 @@ species. **_Theoretical Population Biology_** 61, 349-363, 2002a.
 Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. Linkage mapping of
 sex-specific differences. **_Genetical Research_** 79, 85-96, 2002b.
 
+```{r, eval=FALSE,echo=FALSE}
+
 ## Onemap References
+# 
+# Adler, J. **_R in a Nutshell_** A Desktop Quick Reference, 2009.
+# 
+# Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B. **_qtl:
+# Tools for analyzing QTL experiments_** R package version
+# 1.09-43, 2008. [http://www.rqtl.org/](http://www.rqtl.org/)
+# 
+# Buetow, K. H., Chakravarti, A. Multipoint gene mapping using
+# seriation. I. General methods. **_American Journal of Human
+# Genetics_** 41, 180-188, 1987.
+# 
+# Doerge, R.W. Constructing genetic maps by rapid chain delineation.
+# **_Journal of Agricultural Genomics_** 2, 1996.
+# 
+# Garcia, A.A.F., Kido, E.A., Meza, A.N., Souza, H.M.B., Pinto, L.R.,
+# Pastina, M.M., Leite, C.S., Silva, J.A.G., Ulian, E.C., Figueira, A.
+# and Souza, A.P. Development of an integrated genetic map of a
+# sugarcane _Saccharum spp._ commercial cross, based on a
+# maximum-likelihood approach for estimation of linkage and linkage
+# phases. **_Theoretical and Applied Genetics_** 112, 298-314, 2006.
+# 
+# Haldane, J. B. S. The combination of linkage values and the
+# calculation of distance between the loci of linked factors. **_Journal
+# of Genetics_** 8, 299-309, 1919.
+# 
+# Jiang, C. and Zeng, Z.-B. Mapping quantitative trait loci with
+# dominant and missing markers in various crosses from two inbred lines.
+# **_Genetica_** 101, 47-58, 1997.
+# 
+# Kosambi, D. D. The estimation of map distance from recombination
+# values. **_Annuaire of Eugenetics_** 12, 172-175, 1944.
+# 
+# Lander, E. S. and Green, P. Construction of multilocus genetic linkage
+# maps in humans. **_Proc. Natl. Acad. Sci. USA_** 84, 2363-2367, 1987.
+# 
+# Lander, E.S., Green, P., Abrahanson, J., Barlow, A., Daly, M.J.,
+# Lincoln, S.E. and Newburg, L. MAPMAKER, An interactive computing
+# package for constructing primary genetic linkage maps of experimental
+# and natural populations. **_Genomics_** 1, 174-181, 1987.
+# 
+# Lincoln, S. E., Daly, M. J. and Lander, E. S. Constructing genetic
+# linkage maps with MAPMAKER/EXP Version 3.0: a tutorial and reference
+# manual. **_A Whitehead Institute for Biomedical Research Technical
+# Report_** 1993.
+# 
+# Matloff, N. **_The Art of R Programming_**. 2011. 1st ed. San
+# Francisco, CA: No Starch Press, Inc., 404 pages.
+# 
+# 
+# 
+# Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia, A. A. F.
+# Evaluation of algorithms used to order markers on genetics maps.
+# **_Heredity_** 103, 494-502, 2009.
+# 
+# Oliveira, K.M., Pinto, L.R., Marconi, T.G., Margarido, G.R.A.,
+# Pastina, M.M., Teixeira, L.H.M., Figueira, A.M., Ulian, E.C., Garcia,
+# A.A.F., Souza, A.P. Functional genetic linkage map on EST-markers for
+# a sugarcane (_Saccharum spp._) commercial cross. **_Molecular
+# Breeding_** 20, 189-208, 2007.
+# 
+# Oliveira, E. J., Vieira, M. L. C., Garcia, A. A. F., Munhoz, C.
+# F.,Margarido, G. R.A., Consoli, L., Matta, F. P., Moraes, M. C.,
+# Zucchi, M. I., and Fungaro,M. H. P. An Integrated Molecular Map of
+# Yellow Passion Fruit Based on Simultaneous Maximum-likelihood
+# Estimation of Linkage and Linkage Phases **_J. Amer. Soc. Hort.
+# Sci._** 133, 35-41, 2008.
+# 
+# Tan, Y., Fu, Y. A novel method for estimating linkage maps.
+# **_Genetics_** 173, 2383-2390, 2006.
+# 
+# Van Os H, Stam P, Visser R.G.F., Van Eck H.J. RECORD: a novel method
+# for ordering loci on a genetic linkage map. **_Theor Appl Genet_**
+# 112, 30-40, 2005.
+# 
+# Voorrips, R.E. MapChart: software for the graphical presentation of
+# linkage maps and QTLs. **_Journal of Heredity_** 93, 77-78, 2002.
+# 
+# Wang S., Basten, C. J. and Zeng Z.-B. Windows QTL Cartographer 2.5.
+# Department of Statistics, North Carolina State University, Raleigh,
+# NC, 2010.
+# [http://statgen.ncsu.edu/qtlcart/WQTLCart.htm](http://statgen.ncsu.edu/qtlcart/WQTLCart.htm)
+# 
+# Wu, R., Ma, C.X., Painter, I. and Zeng, Z.-B. Simultaneous maximum
+# likelihood estimation of linkage and linkage phases in outcrossing
+# species. **_Theoretical Population Biology_** 61, 349-363, 2002a.
+# 
+# Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. Linkage mapping of
+# sex-specific differences. **_Genetical Research_** 79, 85-96, 2002b.
+```
 
-Adler, J. **_R in a Nutshell_** A Desktop Quick Reference, 2009.
-
-Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B. **_qtl:
-Tools for analyzing QTL experiments_** R package version
-1.09-43, 2008. [http://www.rqtl.org/](http://www.rqtl.org/)
-
-Buetow, K. H., Chakravarti, A. Multipoint gene mapping using
-seriation. I. General methods. **_American Journal of Human
-Genetics_** 41, 180-188, 1987.
-
-Doerge, R.W. Constructing genetic maps by rapid chain delineation.
-**_Journal of Agricultural Genomics_** 2, 1996.
-
-Garcia, A.A.F., Kido, E.A., Meza, A.N., Souza, H.M.B., Pinto, L.R.,
-Pastina, M.M., Leite, C.S., Silva, J.A.G., Ulian, E.C., Figueira, A.
-and Souza, A.P. Development of an integrated genetic map of a
-sugarcane _Saccharum spp._ commercial cross, based on a
-maximum-likelihood approach for estimation of linkage and linkage
-phases. **_Theoretical and Applied Genetics_** 112, 298-314, 2006.
-
-Haldane, J. B. S. The combination of linkage values and the
-calculation of distance between the loci of linked factors. **_Journal
-of Genetics_** 8, 299-309, 1919.
-
-Jiang, C. and Zeng, Z.-B. Mapping quantitative trait loci with
-dominant and missing markers in various crosses from two inbred lines.
-**_Genetica_** 101, 47-58, 1997.
-
-Kosambi, D. D. The estimation of map distance from recombination
-values. **_Annuaire of Eugenetics_** 12, 172-175, 1944.
-
-Lander, E. S. and Green, P. Construction of multilocus genetic linkage
-maps in humans. **_Proc. Natl. Acad. Sci. USA_** 84, 2363-2367, 1987.
-
-Lander, E.S., Green, P., Abrahanson, J., Barlow, A., Daly, M.J.,
-Lincoln, S.E. and Newburg, L. MAPMAKER, An interactive computing
-package for constructing primary genetic linkage maps of experimental
-and natural populations. **_Genomics_** 1, 174-181, 1987.
-
-Lincoln, S. E., Daly, M. J. and Lander, E. S. Constructing genetic
-linkage maps with MAPMAKER/EXP Version 3.0: a tutorial and reference
-manual. **_A Whitehead Institute for Biomedical Research Technical
-Report_** 1993.
-
-Matloff, N. **_The Art of R Programming_**. 2011. 1st ed. San
-Francisco, CA: No Starch Press, Inc., 404 pages.
-
-
-
-Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia, A. A. F.
-Evaluation of algorithms used to order markers on genetics maps.
-**_Heredity_** 103, 494-502, 2009.
-
-Oliveira, K.M., Pinto, L.R., Marconi, T.G., Margarido, G.R.A.,
-Pastina, M.M., Teixeira, L.H.M., Figueira, A.M., Ulian, E.C., Garcia,
-A.A.F., Souza, A.P. Functional genetic linkage map on EST-markers for
-a sugarcane (_Saccharum spp._) commercial cross. **_Molecular
-Breeding_** 20, 189-208, 2007.
-
-Oliveira, E. J., Vieira, M. L. C., Garcia, A. A. F., Munhoz, C.
-F.,Margarido, G. R.A., Consoli, L., Matta, F. P., Moraes, M. C.,
-Zucchi, M. I., and Fungaro,M. H. P. An Integrated Molecular Map of
-Yellow Passion Fruit Based on Simultaneous Maximum-likelihood
-Estimation of Linkage and Linkage Phases **_J. Amer. Soc. Hort.
-Sci._** 133, 35-41, 2008.
-
-Tan, Y., Fu, Y. A novel method for estimating linkage maps.
-**_Genetics_** 173, 2383-2390, 2006.
-
-Van Os H, Stam P, Visser R.G.F., Van Eck H.J. RECORD: a novel method
-for ordering loci on a genetic linkage map. **_Theor Appl Genet_**
-112, 30-40, 2005.
-
-Voorrips, R.E. MapChart: software for the graphical presentation of
-linkage maps and QTLs. **_Journal of Heredity_** 93, 77-78, 2002.
-
-Wang S., Basten, C. J. and Zeng Z.-B. Windows QTL Cartographer 2.5.
-Department of Statistics, North Carolina State University, Raleigh,
-NC, 2010.
-[http://statgen.ncsu.edu/qtlcart/WQTLCart.htm](http://statgen.ncsu.edu/qtlcart/WQTLCart.htm)
-
-Wu, R., Ma, C.X., Painter, I. and Zeng, Z.-B. Simultaneous maximum
-likelihood estimation of linkage and linkage phases in outcrossing
-species. **_Theoretical Population Biology_** 61, 349-363, 2002a.
-
-Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. Linkage mapping of
-sex-specific differences. **_Genetical Research_** 79, 85-96, 2002b.
 
 
 
