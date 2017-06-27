@@ -1,14 +1,11 @@
-
 #######################################################################
 #                                                                     #
 # Package: fullsibQTL                                                 #
 #                                                                     #
-# File: cof_selection.R                                               #
+# File: fullsib_cofactors.R                                           #
 #                                                                     # 
 # Contains:                                                           #
-# cof_selection                                                       #
-# plot.fullsib_cofactors                                               #
-# print.fullsib_cofactors                                             #
+# plot.fullsib_cofactors                                              #
 #                                                                     #
 # Written by Rodrigo Gazaffi                                          #
 # copyright (c) 2011, Rodrigo Gazaffi                                 #
@@ -21,14 +18,60 @@
 
 #######################################################################
 #                                                                     #
-# Function: plot.fullsib_cofactors                                     #
+# Function: plot.fullsib_cofactors                                    #
 #                                                                     #
 # This function is based on draw_map presented in onemap pkg. It is   #
 # used to plot genetic map with the cofactors on map                  #
 #######################################################################
 
+## -------------------------
+## plot.fullsib_cofactors function
+
+#' Plot \code{fullsib_cofactors} object
+#' 
+#' This function is based on \code{\link[onemap]{draw_map}} presented in \pkg{onemap}. It is
+#' used to plot genetic map with the cofactors on map    
+#' 
+#' @aliases plot.cof_selection
+#' 
+#' @param x An object from class \emph{fullsib_cofactors}.
+#' @param horizontal if \code{TRUE}, indicates that the map should be plotted
+#' horizontally. Default is \code{FALSE}.
+#' @param grid if \code{TRUE}, displays a grid in the background. Default is
+#' \code{FALSE}.
+#' @param cex.mrk the magnification to be used for markers.
+#' @param cex.grp the magnification to be used for group axis annotation.
+#' @param ... Further arguments, passed to other methods. Currently ignored.
+#' 
+#' @return A plot of a map with the \emph{fullsib_cofactors} positions.
+#' 
+#' @seealso 
+#' \code{\link[onemap]{draw_map}},
+#' \code{\link[fullsibQTL]{cof_selection}},
+#' \code{\link[fullsibQTL]{cof_definition}}
+#' 
+#' @keywords utilities
+#' @examples
+#'   data(example_QTLfullsib)
+#' 
+#'   fullsib <- create_fullsib(example_QTLfullsib,
+#'                             list(LG1_final, LG2_final, LG3_final, LG4_final),
+#'                             step=0,map.function="kosambi",condIndex=3.5)
+#' 
+#' 
+#' 
+#'   ###############################################
+#'   ## cofactor selection using BIC (n.ind = 300)
+#' 
+#'   ### just using markers that are placed on linkage groups (default)
+#'   cofs.fs <- cof_selection(fullsib, pheno.col=1, k = log(300), selection =1)
+#'   cofs.fs
+#'   plot(cofs.fs)
+#'   plot(cofs.fs, horizontal = TRUE, grid = TRUE, cex.mrk = 2.5, cex.grp = 1)
+#'   
+
 plot.fullsib_cofactors  <- function(x, horizontal = FALSE, grid = FALSE,
-                                   cex.mrk = 1, cex.grp = 0.75,...)
+                                   cex.mrk = 1, cex.grp = 0.75, ...)
 {
 
   

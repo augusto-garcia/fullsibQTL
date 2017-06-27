@@ -6,7 +6,6 @@
 #                                                                     # 
 # Contains: cim_char                                                  #
 #                                                                     #
-#                                                                     #
 # Written by Rodrigo Gazaffi                                          #
 # copyright (c) 2011, Rodrigo Gazaffi                                 #
 #                                                                     #
@@ -27,6 +26,110 @@
 # draw_phase that used the result of this function.                   #
 # all the MLE and tests are done in C code                            #
 #######################################################################
+
+## -------------------------
+## cim_char function
+
+#' QTL characterization using Composite Interval Mapping
+#' 
+#' Considering a detected QTL on a given position, this function allows to
+#' estimate the genetic effects and also provides a series os estatistical test
+#' allowing to infer QTL segregation patterns and its linkage phases with
+#' flanking markers.
+#' 
+#' The method implemented in this package consists first to scan the genome for
+#' a QTL (done with \code{cim_scan}) and than on a second step, the QTL is
+#' characterized (done with \code{cim_char}).
+#' 
+#' In our model, QTL can segregate in one of four possible types: 1:1:1:1,
+#' 1:2:1, 3:1 or 1:1. The QTL segregation may vary as function of the number of
+#' significative effects and their magnitude between each other. To understand
+#' with details, check Gazaffi et al. (2014) and \pkg{fullsibQTL} Vignette. To
+#' help the user with the understanding of mapped QTL, the function
+#' \code{get_segr} and \code{draw_phase} were devolped to infer directly the
+#' segregation pattern and the linkage phase between QTL and markers,
+#' respectively.
+#' 
+#' For convergence during EM iteration we use the following criterion:
+#' \deqn{conv = abs\left[\frac{(new.lk - old.lk)}{old.lk}\right]} in which,
+#' \eqn{old.lk} is the likelihood for \eqn{i^{th}} iteration and \eqn{new.lk}
+#' is the likelihood for \eqn{(i+1)^{th}}. If convergence value was higher than
+#' \code{tol} argument, iterative process continues, if not iteration is
+#' stopped.
+#' 
+#' If \code{icim} is TRUE, first a linear regression is done to remove the
+#' cofactors, intercept and additive covariates (if defined) effects from the
+#' phenotype. The residual of this analysis is used as a \sQuote{new}
+#' phenotype. The QTL analysis is done similar an interval mapping.
+#' 
+#' @param fullsib An object from class \emph{fullsib_cofactors}.
+#' @param pheno.col Column number in the phenotype matrix (present in
+#' \emph{fullsib_cofactors} object) which should be used as the phenotype.
+#' @param ws Window Size in cM. Default is 10 cM (i.e., 5 cM for each side.
+#' @param lg Integer indicating which linkage group will be studied.
+#' @param pos String representing the name of the locus that will be studied.
+#' This name is found as the row label for the matrix returned by
+#' \code{cim_scan}.
+#' @param maxit Maximum number of iteration in EM algorithm.
+#' @param tol Tolerance for determining convergence in EM algorithm. See
+#' details.
+#' @param icim if \code{TRUE}, icim approach proposed by Li et al. (2007) is
+#' done (extended for full sib progeny), if \code{FALSE} (default) traditional
+#' CIM is performed. See details for icim method.
+#' @param verbose If \code{TRUE} display information during EM algorithm. It
+#' indicates the iteration of EM is performing, with log-likelihood,
+#' convergence, genetics effects, square root of variance. The log-likelihood
+#' of the model under \eqn{H_0} model is also showed
+#' @return An object of class \emph{fullsib_char} is returned, consisting in a
+#' matrix of one column and 15 rows. The information provided are for each row
+#' are: linkage group that was analysed, position (cM),
+#' \eqn{-\log_{10}(pvalue)}, LOD Score, model intercept (\code{mu}), QTL effect
+#' for parent \eqn{P} (\code{alpha_p}) and its LOD Score (\code{LOD_H1}), QTL
+#' effect for parent \eqn{Q} (\code{alpha_q}) and its LOD Score
+#' (\code{LOD_H2}), dominance effect (\code{delta_pq} and its LOD Score
+#' (\code{LOD_H3}). Additional tests are also performed to identify the
+#' segregation pattern (\code{LOD_H4}, \code{LOD_H5} and \code{LOD_H6}).
+#' 
+#' For getting the segregation estimated \code{get_segr} function should be
+#' used. The last row indicated the \code{model} used in the analysis. See
+#' \pkg{fullsibQTL} Vignette for details.
+#' @author Rodrigo Gazaffi, \email{rgazaffi@@gmail.com}
+#' @seealso 
+#' \code{\link[fullsibQTL]{cim_scan}}
+#' \code{\link[fullsibQTL]{im_char}}
+#' \code{\link[fullsibQTL]{draw_phase}}
+#' \code{\link[fullsibQTL]{get_segr}}
+#' 
+#' @references
+#' 
+#' Gazaffi, R.; Margarido, G. R.; Pastina, M. M.; Mollinari, M.; Garcia, A. A.
+#' F. (2014) A model for quantitative trait loci mapping, linkage phase, and
+#' segregation pattern estimation for a full-sib progeny. \emph{Tree Genetics &
+#' Genomes} 10(4): 791-801
+#' 
+#' Li, H., Ye, G.; Wang, J. (2007) A Modified Algorithm for the Improvement of
+#' Composite Interval Mapping. \emph{Genetics} 175: 361-374
+#' @keywords utilities
+#' @examples
+#'   data(example_QTLfullsib)
+#' 
+#'   fullsib <- create_fullsib(example_QTLfullsib,
+#'                             list(LG1_final, LG2_final, LG3_final, LG4_final),
+#'                             step=0,map.function="kosambi",condIndex=3.5)
+#' 
+#' 
+#'   ###############################################
+#'   ## cofactor selection using BIC (n.ind = 300)
+#'   cofs.fs <- cof_selection(fullsib, pheno.col=1, k = log(300),
+#'                            selection=1) 
+#' 
+#'   \dontrun{
+#'   cim1 <- cim_scan(cofs.fs, pheno.col=1, ws = 22, LOD= TRUE, icim=FALSE)
+#'   summary(cim1)
+#'   }
+#' 
+#'   qtl <- cim_char(cofs.fs, pheno.col=1, ws=22, lg=3, pos="M38")
+#' 
 
 cim_char <- function(fullsib, pheno.col=1, ws = 10, lg, pos,
                      maxit=1000,tol=1e-10, icim=FALSE, verbose=FALSE)
@@ -148,7 +251,4 @@ cim_char <- function(fullsib, pheno.col=1, ws = 10, lg, pos,
   colnames(z) <- closest.mkr
 
   structure(z, class = c("fullsib_char", "matrix"))
-
 }
-
-

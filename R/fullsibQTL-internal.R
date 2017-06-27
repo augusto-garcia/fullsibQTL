@@ -2,7 +2,7 @@
 #                                                                     #
 # Package: fullsibQTL                                                 #
 #                                                                     #
-# File: internal.functions.R                                          #
+# File: fullsibQTL-internal.R                                         #
 #                                                                     #
 # Contains:                                                           #
 # calc_probs*          used in create.fullsib                         #
@@ -14,7 +14,7 @@
 # prob2cof:            used in cof.def..., cof.sel...  and r2.model   #
 # unlink2cof:          used in cof_definition and cof_selection       #
 # get_phase            used in draw.phase                             #
-#                                                                     #
+# viewer               used in plot_fullsibQTL                        #
 #                                                                     #
 # Written by Rodrigo Gazaffi                                          #
 # copyright (c) 2011, Rodrigo Gazaffi                                 #
@@ -734,3 +734,14 @@ draw_map2 <- function(map.list, horizontal = FALSE, names = FALSE, grid = FALSE,
   }
 }
 
+#######################################################################
+#                                                                     #
+# Function: viewer                                                    #
+#                                                                     #
+# Gets the use viewer to plot interactive graphic (plot_fulssibQTL.R) #
+# from rstudioapi::viewer?? help                                      #
+#######################################################################
+
+#viewer <- function(...){
+#  getOption("viewer")
+#}

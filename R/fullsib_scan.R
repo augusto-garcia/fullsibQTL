@@ -31,6 +31,57 @@
 #                                                                     #
 #######################################################################
 
+## -------------------------
+## summary.fullsib_scan function
+
+#' Summarize QTL mapping scan
+#' 
+#' Summarizes the QTL mapping scan resulted from the \code{im_scan} and
+#' \code{cim_scan}.
+#' 
+#' This function was designed to get only the maximum peak of each analysed
+#' group. For the cases that more than one peak is present should decided the
+#' position of the QTL examinating object of class \emph{fullsib_scan} by
+#' oneself. We assumed this, because to define a QTL can be very subjective in
+#' some situations.
+#' 
+#' @param object An object of class \emph{fullsib_scan} (output of
+#' \code{im_scan} and \code{cim_scan}.
+#' @param thr threshold value to declare a QTL, i.e., only prints peaks with
+#' value higher than \sQuote{thr}.
+#' @param \dots parameters to be passed.
+#' 
+#' @return It gets the object of class \emph{fullsib_scan} and simplifies in a
+#' matrix containing just the maximum peak of each linkage group that exceeds
+#' the threshold value defined by the user.
+#' 
+#' @author Rodrigo Gazaffi \email{rgazaffi@@gmail.com}
+#' 
+#' @seealso 
+#' \code{\link[fullsibQTL]{im_scan}}
+#' \code{\link[fullsibQTL]{cim_scan}}
+#' \code{\link[fullsibQTL]{im_char}}
+#' \code{\link[fullsibQTL]{cim_char}}
+#' \code{\link[fullsibQTL]{plot.fullsib_scan}}
+#' \code{\link[fullsibQTL]{summary.fullsib_scan}}
+#' \code{scanone} from \pkg{qtl} package
+#' \code{summary.scanone} from \pkg{qtl} package
+#' 
+#' @keywords utilities
+#' @examples
+#' 
+#'   data(example_QTLfullsib)
+#' 
+#'   fullsib <- create_fullsib(example_QTLfullsib,
+#'                             list(LG1_final, LG2_final, LG3_final, LG4_final), 
+#'                             step=0, map.function="kosambi", condIndex = 3.5) 
+#' 
+#'   im1 <- im_scan(fullsib, lg="all", pheno.col=1, LOD=TRUE)
+#'   summary(im1)
+#'   summary(im1, thr=6.5)
+#' 
+#' 
+
 summary.fullsib_scan <- function(object, thr=0, ...)
 {
   if(!any(class(object) == "fullsib_scan"))
@@ -77,8 +128,6 @@ summary.fullsib_scan <- function(object, thr=0, ...)
     }
 }
 
-
-
 #######################################################################
 #                                                                     #
 # Package: fullsibQTL                                                 #
@@ -98,6 +147,104 @@ summary.fullsib_scan <- function(object, thr=0, ...)
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
+
+## -------------------------
+## plot.fullsib_scan function
+
+#' Plot the QTL mapping scan
+#' 
+#' Plot the QTL mapping scan resulted from the \code{im_scan} and
+#' \code{cim_scan}. This is fully based on \code{plot.scanone} from \pkg{qtl}
+#' package.
+#' 
+#' This function is basically \code{plot.scanone} written by Karl Broman and
+#' adapted for this package. We also adapt the functions to receive more object
+#' to plot QTL profile.
+#' 
+#' @param x An object of class \emph{fullsib_scan}, output of \code{im_scan}
+#' and \code{cim_scan}.
+#' @param x2 Second object of class \emph{fullsib_scan}, optional.
+#' @param x3 Third object of class \emph{fullsib_scan}, optional.
+#' @param x4 Fourth object of class \emph{fullsib_scan}, optional.
+#' @param x5 Fifth object of class \emph{fullsib_scan}, optional.
+#' @param lg Indicates which linkage groups will be plotted, default is to plot
+#' all groups.
+#' @param label.lg for more than one linkage group plotted, a label for each
+#' group can be easily added to the plot, the length must be the same of the
+#' number of LG.
+#' @param cex.axis The same option for argument used in par function for
+#' graphical parameters. See \sQuote{?par} for details.
+#' @param incl.mkr indicates how the markers will be displayed on the plot. It
+#' can assume three options: \code{points}, \code{name}, \code{none}, in which
+#' the first indicates the position of the markers with small triangules, the
+#' second indicates by its name (sometimes it is useful if only one group is
+#' plotted, otherwise it can be difficult to distinguish the names) and the
+#' last none additional information is given. Here, the default is to consider
+#' \code{incl.mkr = points}.
+#' @param cex.incl If incl.mkr is indicated as \code{points} or \code{name}, an
+#' integer can be defined to resize the symbols (for points) or text (for
+#' names) displayed at the graphic.
+#' @param xlim Limits for x-axis (optional).
+#' @param ylim Limits for y-axis (optional).
+#' @param lty Line types; vector of length 1 until 5, according to the number
+#' of object of class \emph{fullsib_scan} plotted.
+#' @param lwd Line widths; vector of length 1 until 5, according to the number
+#' of object of class \emph{fullsib_scan} plotted.
+#' @param add If TRUE, add to a current plot
+#' @param gap Gap separating chromosomes (in cM).
+#' @param col Line colors; vector of length 1 until 5, according to the number
+#' of object of class \emph{fullsib_scan} plotted.
+#' @param alternate.lgid If TRUE and more than one linkage group is plotted,
+#' alternate the placement of chromosome axis labels, so that they may be more
+#' easily distinguished.
+#' @param \dots Passed to the function \code{plot} when it is called.
+#' 
+#' @return None
+#' 
+#' @author Mainly writted by Karl Broman and present at \code{plot.scanone} and
+#' adapted by Rodrigo Gazaffi \email{rgazaffi@@gmail.com}
+#' 
+#' @seealso 
+#' \code{\link[fullsibQTL]{im_scan}}
+#' \code{\link[fullsibQTL]{cim_scan}}
+#' \code{\link[fullsibQTL]{summary.fullsib_scan}}
+#' \code{par}
+#' \code{scanone} from \pkg{qtl} package
+#' \code{plot.scanone} from \pkg{qtl} package
+#' 
+#' @keywords plot
+#' 
+#' @examples
+#'   data(example_QTLfullsib)
+#' 
+#'   fullsib <- create_fullsib(example_QTLfullsib,
+#'                             list(LG1_final, LG2_final, LG3_final, LG4_final), 
+#'                             step=0, map.function="kosambi", condIndex = 3.5) 
+#' 
+#' 
+#' 
+#'   ## running im_scan:
+#'   im1 <- im_scan(fullsib, lg="all", pheno.col=1, LOD=TRUE)
+#'   ## results in LOD Score for all linkage groups
+#' 
+#'   im2 <- im_scan(fullsib, lg=1:4, pheno.col=1, LOD=FALSE)
+#'   ## results in -log10(pvalue) for all linkage groups
+#' 
+#' 
+#'   plot(im1) ##default
+#'   ##customizing graphics
+#'   plot(im1, lty=3, lwd=2, incl.mkr="points")
+#'   plot(im1, lty=3, lwd=2, incl.mkr="name")
+#'   plot(im1, lty=3, lwd=2, incl.mkr="name", cex.incl=0.5)
+#'   plot(im1, im2, label.lg=c("1st LG", "2nd LG","3rd LG","4th LG"))
+#'   plot(im1, im2, label.lg=c("1st LG", "2nd LG","3rd LG","4th LG"),
+#'   alternate.lgid=TRUE)
+#' 
+#'   #add argument is another way of overlapping QTL results
+#'   plot(im1,lg=2, incl.mkr="name")
+#'   plot(im2,lg=2, incl.mkr="name", add=TRUE)
+#' 
+#' 
 
 plot.fullsib_scan <- function(x, x2, x3, x4, x5, lg, label.lg, cex.axis=1,
                               incl.mkr = c("none", "points", "name"), cex.incl,
@@ -449,8 +596,6 @@ plot.fullsib_scan <- function(x, x2, x3, x4, x5, lg, label.lg, cex.axis=1,
   invisible()
 }
 
-
-
 #######################################################################
 # Function: print.fullsib_scan                                        #
 #                                                                     #
@@ -459,6 +604,50 @@ plot.fullsib_scan <- function(x, x2, x3, x4, x5, lg, label.lg, cex.axis=1,
 # if pos is defined it prints just the markers                        #
 # default is to print all linkage groups and all markers              #
 #######################################################################
+
+## -------------------------
+## print.fullsib_scan function
+
+#' Prints object of class \emph{fullsib_scan}
+#' 
+#' Prints the object of class \emph{fullsib_scan} created by \code{im_scan} or
+#' \code{cim_scan}.
+#' 
+#' @param x Object of class \emph{fullsib_scan} resulted from \code{im_scan} or
+#' \code{cim_scan}.
+#' @param lg Linkage group that will be printed. Default is to print all
+#' scanned groups.
+#' @param pos Position of the QTL, string(s).
+#' @param \dots parameters to be passed.
+#' 
+#' @return None
+#' 
+#' @author Rodrigo Gazaffi, \email{rgazaffi@@gmail.com}
+#' 
+#' @seealso 
+#' \code{\link[fullsibQTL]{im_scan}}
+#' \code{\link[fullsibQTL]{cim_scan}}
+#' \code{\link[fullsibQTL]{plot.fullsib_scan}}
+#' \code{\link[fullsibQTL]{summary.fullsib_scan}}
+#' \code{scanone} from \pkg{qtl} package
+#' 
+#' @keywords utilities
+#' 
+#' @examples
+#'   data(example_QTLfullsib)
+#'   fullsib <- create_fullsib(example_QTLfullsib,
+#'                             list(LG1_final, LG2_final, LG3_final, LG4_final), 
+#'                             step = 0, map.function = "kosambi",
+#'                             condIndex = 3.5)
+#' 
+#'   ## running im_scan:
+#'   im1 <- im_scan(fullsib, lg = "all", pheno.col = 1, LOD = TRUE)
+#' 
+#'   im1
+#'   print(im1, lg=2)
+#'   print(im1, lg=2, pos="M27")
+#'   print(im1, lg=c(1,4))
+#' 
 
 print.fullsib_scan <- function(x, lg, pos, ...){
 
@@ -484,9 +673,8 @@ print.fullsib_scan <- function(x, lg, pos, ...){
       temp <- sapply(lgs, lg.print)
     }
     lines2print <- apply(temp,1, any)
-    ##lines2print <- apply(sapply(lgs, function(x) {im.lod[,"lg"] == x}),1, any)
-    return(print(subset(x, lines2print)))
+    ##lines2print <- apply(sapply(lgs, function(x) {im.lod[,"lg"] == x}),1, any)   \
+    temp <- subset(x, lines2print)
+    return(print(temp))
   }
 }
- 
-

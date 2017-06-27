@@ -2,18 +2,21 @@ useDynLib(fullsibQTL)
 
 # Import package dependencies
 import(onemap)
+import(ggplot2, except=last_plot)
+import(plotly)
 
 # ImportFrom dependencies
 importFrom(graphics, abline, axis, hist, lines, par, plot, points, rug, text)
 importFrom(stats, anova, as.formula, coef, df.residual, dist, lm, model.matrix, pchisq, qchisq, quantile)
-importFrom(utils, head, setTxtProgressBar, tail, txtProgressBar, write.table)
-  
+importFrom(utils, head, setTxtProgressBar, tail, txtProgressBar, write.table, browseURL)
+
 # Export all names
 export(create_fullsib)
 export(im_scan, im_char)
 export(cof_selection, cof_definition)
 export(cim_scan, cim_char)
 export(draw_phase, r2_ls, get_segr)
+export(plot_fullsibQTL, tidy_fullsibQTL)
 
 # S3 methods
 S3method(print, fullsib)

@@ -66,20 +66,20 @@
   Gazaffi, R., Mollinari, M., Pastina, M.M., Margarido, G.R.A, Garcia,
   A.A.F. (2014) QTL mapping model for characterizing segregation
   pattern and linkage phase for outcrossing species. \emph{Tree Genetics
-  and Genomes}, 10(4), 791-801.
+  and Genomes}, 10(4), 791-801
   
   Margarido, G. R. A., Souza, A.P. and Garcia, A. A. F. (2007)
   OneMap: software for genetic mapping in outcrossing species.
-  \emph{Hereditas} 144: 78-79.
+  \emph{Hereditas} 144: 78-79
 
   Wu, R., Ma, C.-X., Painter, I. and Zeng, Z.-B. (2002a)
   Simultaneous maximum likelihood estimation of linkage and linkage
   phases in outcrossing species. \emph{Theoretical Population Biology}
-  61: 349-363.
+  61: 349-363
 
   Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. (2002b). Linkage
   mapping of sex-specific differences. \emph{Genetical Research} 79:
-  85-96.
+  85-96
 }
   
 \examples{

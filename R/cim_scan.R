@@ -6,7 +6,6 @@
 #                                                                     # 
 # Contains: cim_scan                                                  #
 #                                                                     #
-#                                                                     #
 # Written by Rodrigo Gazaffi                                          #
 # copyright (c) 2011, Rodrigo Gazaffi                                 #
 #                                                                     #
@@ -32,6 +31,162 @@
 # The result is an object from fullsib_perm class.                    #
 # EM algorithm is done in C code                                      #
 #######################################################################
+
+## -------------------------
+## cim_scan function
+
+#' QTL searching using Composite Interval Mapping
+#' 
+#' Performs QTL mapping using Composite Interval Mapping (CIM) approach, with
+#' mixture models. MLE are obtained using EM algorithm. Permutation test is
+#' also implemented for threshold determination
+#' 
+#' The mapping procedure is performed similar as present in \code{im_scan}.
+#' However the inclusion of cofactors can locate QTL with more precision with
+#' higher statistical power in comparison of interval mapping approach.
+#' 
+#' The usage of the cofactors on the CIM is function of window size. Here, we
+#' consider window size minimal distance that cofactors should be from the
+#' interval under analysis. For example, if one considers a window size of 20
+#' cM, while CIM is being performed, any marker located closer than 10 cM for
+#' each side, will not be included in the analysis.
+#' 
+#' If extra additive covariates is used, one need to specify them, on
+#' \code{cof_selection} or \code{cof_definition} step.
+#' 
+#' Li et al. (2007) proposed an adaption for CIM first developed by Zeng
+#' (1994). In their metodology, first the phenotype should be regressed to
+#' remove the variation due to cofactors and intercept. On a second moment, the
+#' residual is used to map QTL, similar an interval mapping approach. The
+#' method was proposed for inbred lines, and we included this method on CIM
+#' done in fullsib context.
+#' 
+#' For convergence during EM iteration we use the following criterion:
+#' \deqn{conv = abs\left[\frac{(new.lk - old.lk)}{old.lk}\right]} in which,
+#' \eqn{old.lk} is the likelihood for \eqn{i^{th}} iteration and \eqn{new.lk}
+#' is the likelihood for \eqn{(i+1)^{th}}. If convergence value was higher than
+#' \code{tol} argument, iterative process continues, if not iteration is
+#' stopped.
+#' 
+#' We also implemented permutation test on \code{cim_scan}, including the
+#' approach proposed by Chen and Storey (Chen and Storey, 2006). In this case,
+#' to define peak we used the maximum value of LOD or \eqn{-\log_{10}(pvalue)}
+#' in each linkage group. In fullsib_data (example dataset) there are four
+#' linkage groups, so we consider four peaks, if a dataset has more than 10
+#' linkage groups, we restrict to storage until the 10th highest peaks.
+#' 
+#' Individuals with missing phenotypes are dropped.
+#' 
+#' @param fullsib An object from class \emph{fullsib_cofactors}.
+#' @param lg Vector indicating which linkage group will be scanned. Default is
+#' to analyse all groups.
+#' @param pheno.col Column number in the phenotype matrix (present in
+#' \emph{fullsib_cofactors} object) which should be used as the phenotype.
+#' @param ws Window Size in cM. Default is 10 cM (i.e., 5 cM for each side.
+#' @param LOD if \code{TRUE} indicates the mapping result as LOD Score, if
+#' \code{FALSE} QTL search is presents as \eqn{-\log_{10}(pvalue)}.
+#' @param maxit Maximum number of iteration in EM algorithm.
+#' @param tol Tolerance for determining convergence in EM algorithm. See
+#' details.
+#' @param n.perm If \code{n.perm} is missing or zero, usual genome scan is
+#' performed, otherwise, permutation test is done. The number of permutation to
+#' be used is defined for \code{n.perm} value.
+#' @param write.perm Optional string (e.g., \dQuote{file.txt}) to create a text
+#' file containing the results obtained on the permutation test.
+#' @param icim if \code{TRUE}, icim approach proposed by Li et al. (2007) is
+#' done (extended for full sib progeny), if \code{FALSE} (default) traditional
+#' CIM is performed. See details for icim method.
+#' @param verbose If \code{TRUE} display information during EM algorithm. For
+#' each position on the genome, it indicates the iteration of EM is performing,
+#' with log-likelihood, convergence, genetics effects, square root of variance.
+#' The log-likelihood of the model under \eqn{H_0} model is also showed.
+#' @param verbose.scan If \code{TRUE} display a progress bar showing the
+#' percentage of genome scan is done, based on the number of linkage groups to
+#' be scanned. However, when permutation test is done, the option is coded as
+#' FALSE for having a clear output.
+#' @return
+#' 
+#' This function can return two differents classes of objects
+#' \dQuote{fullsib_scan} and \dQuote{fullsib_perm}:
+#' 
+#' If usual analysis is done (\sQuote{n.perm=0}), the function returns a matrix
+#' with 4 columns: The first two columns indicates the linkage groups number
+#' and position in centiMorgan the analysis has been done (\code{lg} and
+#' \code{pos.cM}, respectivaly). The third is the value of QTL mapping test,
+#' one can choose between \code{LOD} or \eqn{-\log_{10}(pvalue)}. The fourth
+#' indicates which model was considered based on the level of informativeness
+#' of the probabilities.  These values can vary between 0 to 9. For further
+#' details about this see the \pkg{fullsibQTL} Vignette. The names of each row
+#' is important for QTL characterization, because it will be used as argument
+#' for \code{cim_char} and \code{r2_ls} functions.
+#' 
+#' For situation that \sQuote{nperm} is higher then zero, permutation test is
+#' performed and the function returns an object from \dQuote{fullsib_perm}.
+#' This object is a matrix which the number of row indicates the number of
+#' permutations and the number of column defines the number of highest peaks
+#' colected on each permutation. As described on details, we define peak the
+#' maximum value of either \code{LOD} or \eqn{-\log_{10}(pvalue)} of each
+#' linkage group.  They are ordered from the maximum to minimum value. If one
+#' determines the threshold with the distribuition of the highest peak (column
+#' one), one have the threshold as present by Churchill and Doerge (1994). If
+#' one choose the threshold with the second peak or lower is considering the
+#' approach by Chen and Storey (2006). The function \code{summary.fullsib_perm}
+#' or just \code{summary} provides automatically these results.
+#' @author Rodrigo Gazaffi, \email{rgazaffi@@gmail.com}
+#' @seealso \code{\link[fullsibQTL]{create_fullsib}},
+#' 
+#' \code{\link[fullsibQTL]{im_scan}},
+#' 
+#' \code{\link[fullsibQTL]{cim_char}},
+#' 
+#' \code{\link[fullsibQTL]{cof_selection}},
+#' 
+#' \code{\link[fullsibQTL]{cof_definition}}
+#' @references Chen, L., Storey, J.D. (2006) Relaxed Significance Criteria for
+#' Linkage Analysis. \emph{Genetics} 173: 2371-2381
+#' 
+#' Gazaffi, R.; Margarido, G. R.; Pastina, M. M.; Mollinari, M.; Garcia, A. A.
+#' F. (2014) A model for Quantitative Trait Loci Mapping, Linkage Phase, and
+#' Segregation Pattern Estimation for a Full-Sib Progeny. \emph{Tree Genetics &
+#' Genomes} 10(4): 791-801
+#' 
+#' Li, H., Ye, G.; Wang, J. (2007) A Modified Algorithm for the Improvement of
+#' Composite Interval Mapping. \emph{Genetics} 175: 361-374
+#' 
+#' Zeng, Z. B. (1994) Precision Mapping of Quantitative Trait Loci.  \emph{Proc
+#' Natl Acad Sci U S A} 90: 10,972-10,976
+#' @keywords utilities
+#' @examples
+#' 
+#' 
+#'   data(example_QTLfullsib)
+#' 
+#'   fullsib <- create_fullsib(example_QTLfullsib,
+#'                             list(LG1_final, LG2_final, LG3_final, LG4_final),
+#'                             step=0,map.function="kosambi",condIndex=3.5)
+#' 
+#' 
+#'   ###############################################
+#'   ## cofactor selection using BIC (n.ind = 300)
+#'   cofs.fs <- cof_selection(fullsib, pheno.col=1, k = log(300),
+#'                            selection=1) 
+#' 
+#'   cim1 <- cim_scan(cofs.fs, pheno.col=1, ws = 22, LOD= TRUE, icim=FALSE)
+#' 
+#'   \dontrun{
+#'   covar <- matrix(rep(c(1,-1), each=150), ncol=1)
+#'   cofs.fs <- cof_selection(fullsib, pheno.col=2, addcovar=covar, k=log(300))
+#'   cim2 <- cim_scan(cofs.fs, pheno.col=2, ws = 22, LOD= TRUE, icim=TRUE) 
+#'   ## cim with covariate, one just indicate the additive covar on
+#'   ## cof_selection or cof_definition
+#' 
+#'   ##permutation test:
+#'   cim.perm <- cim_scan(cofs.fs, pheno.col=1, ws = 22, LOD = FALSE,
+#'                        n.perm=1000) 
+#'   summary(cim.perm) # threshold values
+#'   summary(cim.perm, alpha=0.10)
+#'   }
+#' 
 
 cim_scan <- function(fullsib, lg, pheno.col=1, ws = 10, LOD=TRUE,
                      maxit=1000, tol=1e-04, n.perm=0, write.perm,

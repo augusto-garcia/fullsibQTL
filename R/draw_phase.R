@@ -29,7 +29,59 @@
 # significative or not                                                #
 #######################################################################
 
+## -------------------------
+## draw_phase function
 
+#' Represents the linkage phase between markers and QTL
+#' 
+#' Locate the QTL in a linkage group, representing the significative parental
+#' effects from the result of \code{im_char} and \code{cim_char}
+#' 
+#' @param fullsib An object from class \emph{fullsib} or
+#' \emph{fullsib_cofactors}.
+#' @param fschar An object from class \emph{fullsib_char}.
+#' @param probs probability used to identify significative parental effect.
+#' 
+#' @return It returns text output indicating in a linkage group linkage phase
+#' between markers and QTL.
+#' 
+#' @author Based on \code{print.sequence} from \pkg{onemap} and it was written
+#' by Marcelo Mollinari \email{mmollina@@usp.br}. It was modified allowing the
+#' inclusion of QTL, by Rodrigo Gazaffi \email{rgazaffi@@gmail.com}
+#' 
+#' @seealso
+#' \code{\link[fullsibQTL]{im_char}}
+#' \code{\link[fullsibQTL]{cim_char}}
+#' \code{\link[fullsibQTL]{get_segr}}
+#' @keywords utilities
+#' @examples
+#' 
+#' 
+#'   data(example_QTLfullsib)
+#' 
+#'   fullsib <- create_fullsib(example_QTLfullsib,
+#'                             list(LG1_final, LG2_final, LG3_final, LG4_final),
+#'                             step=0,map.function="kosambi",condIndex=3.5)
+#' 
+#' 
+#'   ###############################################
+#'   ## cofactor selection using BIC (n.ind = 300)
+#'   cofs.fs <- cof_selection(fullsib, pheno.col=1, k = log(300),
+#'                            selection=1) 
+#' 
+#'   \dontrun{
+#'   cim1 <- cim_scan(cofs.fs, pheno.col=1, ws = 22, LOD= TRUE, icim=FALSE)
+#'   summary(cim1)
+#'   plot(cim1)
+#'   }
+#' 
+#'   qtl.lg3 <- cim_char(cofs.fs, pheno.col=1, ws=22, lg=3, pos="M38")
+#'   draw_phase(cofs.fs, qtl.lg3, probs=0.05)
+#' 
+#'   qtl.lg4 <- cim_char(cofs.fs, pheno.col=1, ws=22, lg=4, pos="M52")
+#'   draw_phase(cofs.fs, qtl.lg4, probs=0.05)
+#' 
+ 
 draw_phase <- function(fullsib, fschar, probs=0.05){
   
   ##checking argument
@@ -124,5 +176,3 @@ draw_phase <- function(fullsib, fschar, probs=0.05){
   if(length(which(substring(QTL.phase,2,2) == "0")) > 1)
     cat("P0 and Q0 has neutral effect (non signif.)\n")
 }
-
-
