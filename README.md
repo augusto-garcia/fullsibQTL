@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # fullsibQTL
 =======
 [![Build Status](https://travis-ci.org/augusto-garcia/fullsibQTL.svg?branch=master)](https://travis-ci.org/augusto-garcia/fullsibQTL) [![Development](https://img.shields.io/badge/development-active-blue.svg)](https://img.shields.io/badge/development-active-blue.svg)
@@ -49,4 +48,3 @@ install_github("augusto-garcia/fullsibQTL")
 You can read _fullsibQTL_ tutorial going to the vignettes of the installed package, or clicking below.
 
 [Tutorial fullsibQTL](http://htmlpreview.github.com/?https://github.com/rramadeu/fullsibQTL/blob/master/inst/doc/Tutorial_fullsibQTL.html)
->>>>>>> cce9aceb76c9c1e4127df4a5877eea62c1eaf096
