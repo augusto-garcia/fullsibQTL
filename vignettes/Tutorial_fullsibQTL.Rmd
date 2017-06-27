@@ -108,6 +108,11 @@ fs_data
 fsib
 ```
 
+If you want to see this data file in its raw format, type the following line to see where it is located:
+```{r, eval=FALSE}
+system.file("extdata", "example_QTLfullsib.raw", package = "fullsibQTL")
+```
+
 ```{r, eval=TRUE, echo=FALSE}
 rm(list=ls())
 library(fullsibQTL)

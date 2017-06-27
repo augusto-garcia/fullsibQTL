@@ -13,8 +13,7 @@ export(create_fullsib)
 export(im_scan, im_char)
 export(cof_selection, cof_definition)
 export(cim_scan, cim_char)
-export(draw_phase, get_segr, r2_ls)
-export(calc_probs, calc_genoprobs, colin_check, geno_class_identify, model_select_lg, model_select, prob2cof, unlink2cof, get_phase)
+export(draw_phase, r2_ls, get_segr)
 
 # S3 methods
 S3method(print, fullsib)
@@ -24,3 +23,5 @@ S3method(plot, fullsib_perm)
 S3method(plot, fullsib_cofactors)
 S3method(summary, fullsib_scan)
 S3method(summary, fullsib_perm)
+
+useDynLib(fullsibQTL, .registration = TRUE)

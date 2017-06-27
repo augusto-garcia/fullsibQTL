@@ -1,15 +1,17 @@
 Package: fullsibQTL
 Title: Software for QTL Mapping using a Full-Sib Progeny
-Version: 1.0.0
+Version: 0.0.9000
 Date: 2017-06-22
 Authors@R: c(person("Rodrigo","Gazaffi",    role = "aut", email = "rgazaffi@gmail.com"),
-             person("Rodrigo", "Amadeu",    role = "aut", email = "rodrigo.amadeu@usp.br"),
+             person("Rodrigo", "Amadeu",    role = c("aut","cre"), email = "rodrigo.amadeu@usp.br"),
   	         person("Marcelo", "Mollinari", role = "ctb", email = "mmollina@usp.br"), 
              person("Gabriel", "Margarido", role = "ctb", email = "gramarga@gmail.com"),
-             person("João",    "Rosa",      role = "ctb", email = "jrbachega@gmail.com"),
+             person("Joao",    "Rosa",      role = "ctb", email = "jrbachega@gmail.com"),
              person("Karl",    "Broman",    role = "ctb", email = "kbroman@biostat.wisc.edu"),
-             person("Augusto", "Garcia",    role = c("ctb","cre"), email = "augusto.garcia@usp.br"))
+             person("Augusto", "Garcia",    role = "ctb", email = "augusto.garcia@usp.br"))
 Depends: R (>= 3.4.0), onemap (>= 2.0.7)
+Suggests: knitr,
+    rmarkdown
 Description: QTL mapping in outbred (outcrossing) species, considering a full-sib cross 
   (or F1 population) as a mapping population. It is assumed a previous genetic map obtained
   with 'onemap' package. The method is based on maximum likelihood approach using mixture 
@@ -19,10 +21,11 @@ Description: QTL mapping in outbred (outcrossing) species, considering a full-si
   for QTLs and after locating them, one can characterize these loci, i.e., it is possible to 
   estimate their effects, segregation pattern and the linkage phase between QTL and markers.
 License: GPL-3
-Author: Rodrigo Gazaffi [aut], Rodrigo Amadeu [aut], Augusto Garcia [ctb,cre]
+Author: Rodrigo Gazaffi [aut], Rodrigo Amadeu [aut, cre], Augusto Garcia [ctb]
 BugReports: https://github.com/augusto-garcia/fullsibQTL/wiki
 Repository: CRAN
 URL: https://github.com/augusto-garcia/fullsibQTL
-Maintainer: Augusto Garcia <augusto.garcia@usp.br>
+Maintainer: Rodrigo Amadeu <rramadeu@gmail.com>
 NeedsCompilation: yes
-
+VignetteBuilder: knitr
+LazyData: true

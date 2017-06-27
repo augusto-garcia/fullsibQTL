@@ -1,0 +1,13 @@
+citHeader("To cite fullsibQTL in publications use:")
+
+citEntry(entry = "Article",
+  title        = "Application notes: fullsibQTL: R package for QTL mapping using a full-sib progeny",
+  author       = "Rodrigo Gazaffi, Rodrigo Amadeu, Joao Rosa, Augusto Garcia",
+  journal      = "Journal",
+  year         = "2017",
+  volume       = "1",
+  number       = "1",
+  pages        = "1--2",
+  url          = "http://www.github.com/augusto-garcia/fullsibQTL",
+  textVersion  = "Gazaffi, R., Amadeu, R. R., Rosa, J. R. B. F., Garcia, A. A. F. (2017).Application notes: fullsibQTL: R package for QTL mapping using a full-sib progeny, Journal, v(x), pages()."
+  )
