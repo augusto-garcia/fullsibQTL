@@ -25,19 +25,19 @@ Prints the object of class \emph{fullsib_scan} created by \code{im_scan} or
 \code{cim_scan}.
 }
 \examples{
-  data(example_QTLfullsib)
-  fullsib <- create_fullsib(example_QTLfullsib,
-                            list(LG1_final, LG2_final, LG3_final, LG4_final), 
-                            step = 0, map.function = "kosambi",
-                            condIndex = 3.5)
+  data( "example_QTLfullsib" )
+  fullsib <- create_fullsib( example_QTLfullsib,
+                             list( LG1_final, LG2_final, LG3_final, LG4_final ), 
+                             step = 0, map.function = "kosambi",
+                             condIndex = 3.5)
 
   ## running im_scan:
-  im1 <- im_scan(fullsib, lg = "all", pheno.col = 1, LOD = TRUE)
+  im1 <- im_scan( fullsib, lg = "all", pheno.col = 1, LOD = TRUE )
 
   im1
-  print(im1, lg=2)
-  print(im1, lg=2, pos="M27")
-  print(im1, lg=c(1,4))
+  print( im1, lg = 2 )
+  print( im1, lg = 2, pos = "M27" )
+  print( im1, lg = c( 1, 4 ) )
 
 }
 \seealso{

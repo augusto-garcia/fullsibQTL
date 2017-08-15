@@ -80,49 +80,49 @@ format.
 }
 \examples{
 
-  library(fullsibQTL)
-  data("example_QTLfullsib")
-  fullsib <- create_fullsib(example_QTLfullsib,
-                             list(LG1_final, LG2_final, LG3_final, LG4_final),
-                             step=1,map.function="kosambi",condIndex=3.5)
+  library( fullsibQTL )
+  data( "example_QTLfullsib" )
+  fullsib <- create_fullsib( example_QTLfullsib,
+                             list( LG1_final, LG2_final, LG3_final, LG4_final ),
+                             step = 1, map.function = "kosambi", condIndex = 3.5 )
 
   ## IM
-  im <- im_scan(fullsib)
-  qtls.im <- r2_ls(fullsib, pheno.col=1, lg=c(1,1,2,2,2,3,3,4),
-                 pos=c("loc13","M12","loc45","loc77","loc108","M33","loc65","M52"))
+  im <- im_scan( fullsib )
+  qtls.im <- r2_ls( fullsib, pheno.col = 1, lg = c( 1, 1, 2, 2, 2, 3, 3, 4 ),
+                    pos = c( "loc13", "M12", "loc45", "loc77", "loc108", "M33", "loc65", "M52" ) )
   ## CIM
-  cofs.fs <- cof_selection(fullsib, pheno.col=1, k=log(300), n.cofactor = 10)
-  cim<-cim_scan(cofs.fs)
-  qtls.cim <- r2_ls(fullsib, pheno.col=1, lg=c(1,1,2,2,2,3,3,4),
-                    pos=c("loc13","M12","loc45","loc77","loc108","M33","loc65","M52"))
+  cofs.fs <- cof_selection( fullsib, pheno.col = 1, k = log( 300 ), n.cofactor = 10 )
+  cim <- cim_scan( cofs.fs )
+  qtls.cim <- r2_ls( fullsib, pheno.col = 1, lg = c( 1, 1, 2, 2, 2, 3, 3, 4 ),
+                    pos = c( "loc13", "M12", "loc45", "loc77", "loc108", "M33", "loc65", "M52" ) )
 
   ## Minimal plot
-  plot_fullsibQTL(fullsib=fullsib,
-                  fullsib.scan=list(cim,im))
+  plot_fullsibQTL( fullsib = fullsib,
+                   fullsib.scan = list( cim, im ) )
   
   ## QTL plot
-  plot_fullsibQTL(fullsib=fullsib,
-                    fullsib.scan=list(cim,im),
-                    r2ls.out=list(qtls.cim,qtls.im))
+  plot_fullsibQTL( fullsib = fullsib,
+                   fullsib.scan = list( cim, im ),
+                   r2ls.out = list( qtls.cim, qtls.im ) )
   
   ## Customizing
-  plot_fullsibQTL(fullsib=fullsib,
-                  fullsib.scan=list(cim,im),
-                  r2ls.out=list(qtls.cim,qtls.im),
-                  qtlmapping=c("cim","im"))
+  plot_fullsibQTL( fullsib = fullsib,
+                   fullsib.scan = list( cim, im ),
+                   r2ls.out = list( qtls.cim, qtls.im ),
+                   qtlmapping = c( "cim", "im" ) )
                   
-  plot_fullsibQTL(fullsib=fullsib,
-                  fullsib.scan=list(cim,im),
-                  r2ls.out=list(qtls.cim,qtls.im),
-                  qtlmapping=c("cim","im"),
-                  grayscale=TRUE,
-                  thr=c(3.5,4))
+  plot_fullsibQTL( fullsib = fullsib,
+                   fullsib.scan = list( cim, im ),
+                   r2ls.out = list( qtls.cim, qtls.im ),
+                   qtlmapping = c( "cim", "im" ),
+                   grayscale = TRUE,
+                   thr = c( 3.5, 4 ) )
                   
-  plot_fullsibQTL(fullsib=fullsib,
-                  fullsib.scan=list(cim,im),
-                  r2ls.out=list(qtls.cim,qtls.im),
-                  qtlmapping=c("cim","im"),
-                  interact=TRUE)
+  plot_fullsibQTL( fullsib = fullsib,
+                   fullsib.scan = list( cim, im ),
+                   r2ls.out = list( qtls.cim, qtls.im ),
+                   qtlmapping = c( "cim", "im" ),
+                   interact = TRUE )
 
 }
 \seealso{

@@ -70,17 +70,17 @@ not about to change its significance.
 \examples{
   data(example_QTLfullsib)
 
-  fullsib <- create_fullsib(example_QTLfullsib,
-                            list(LG1_final, LG2_final, LG3_final, LG4_final),
-                            step=0,map.function="kosambi",condIndex=3.5)
+  fullsib <- create_fullsib( example_QTLfullsib,
+                             list( LG1_final, LG2_final, LG3_final, LG4_final ),
+                             step = 0, map.function = "kosambi", condIndex = 3.5 )
 
-  r2_ls(fullsib, pheno.col=1, lg=c(1,1,2,2,2,3,4),
-     pos=c("M3","M12","M20","M24","M27","M37","M52"))
+  r2_ls( fullsib, pheno.col = 1, lg = c( 1, 1, 2, 2, 2, 3, 4),
+         pos = c( "M3", "M12", "M20", "M24", "M27", "M37", "M52" ) )
 
-  covar <- matrix(rep(c(1,-1), each=150), ncol=1)
-  r2_ls(fullsib, pheno.col=2, addcovar = covar, lg=c(1,1,2,2,2,3,4),
-     pos=c("M3","M12","M20","M24","M27","M37","M52"),
-     ls.estimation=TRUE) 
+  covar <- matrix( rep( c( 1, -1 ), each = 150 ), ncol = 1 )
+  r2_ls( fullsib, pheno.col = 2, addcovar = covar, lg = c( 1, 1, 2, 2, 2, 3, 4 ),
+         pos = c( "M3", "M12", "M20", "M24", "M27", "M37", "M52" ),
+         ls.estimation = TRUE ) 
 
 }
 \seealso{

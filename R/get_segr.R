@@ -9,11 +9,12 @@
 #                                                                     #
 # An adaption by Rodrigo Gazaffi, for the print.sequence function     #
 # present in onemap package                                           #
+# Updated by Rodrigo Amadeu                                           #
 #                                                                     #
 # copyright (c) 2011, Rodrigo Gazaffi                                 #
 #                                                                     #
 # First version: 09/30/2011 (american date format)                    #
-# Last  version: 09/30/2011 (american date format)                    #
+# Last  version: 08/15/2017 (american date format)                    #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
@@ -73,32 +74,32 @@
 #' 
 #' @keywords utilities
 #' @examples
-#'   data(example_QTLfullsib)
+#'   data( "example_QTLfullsib" )
 #' 
-#'   fullsib <- create_fullsib(example_QTLfullsib,
-#'                             list(LG1_final, LG2_final, LG3_final, LG4_final),
-#'                             step=0,map.function="kosambi",condIndex=3.5)
+#'   fullsib <- create_fullsib( example_QTLfullsib,
+#'                              list( LG1_final, LG2_final, LG3_final, LG4_final ),
+#'                              step = 0, map.function = "kosambi", condIndex = 3.5 )
 #' 
 #' 
 #'   ###############################################
 #'   ## cofactor selection using BIC (n.ind = 300)
-#'   cofs.fs <- cof_selection(fullsib, pheno.col=1, k = log(300),
-#'                            selection=1) 
+#'   cofs.fs <- cof_selection( fullsib, pheno.col = 1, k = log( 300 ),
+#'                             selection = 1 ) 
 #' 
 #'   \dontrun{
-#'   cim1 <- cim_scan(cofs.fs, pheno.col=1, ws = 22, LOD= TRUE, icim=FALSE)
-#'   summary(cim1)
-#'   plot(cim1)
+#'   cim1 <- cim_scan( cofs.fs, pheno.col = 1, ws = 22, LOD = TRUE, icim = FALSE )
+#'   summary( cim1 )
+#'   plot( cim1 )
 #'   }
 #' 
-#'   qtl.lg3 <- cim_char(cofs.fs, pheno.col=1, ws=22, lg=3, pos="M38")
-#'   get_segr(qtl.lg3, probs1=0.05, probs2=0.05)
+#'   qtl.lg3 <- cim_char( cofs.fs, pheno.col = 1, ws = 22, lg = 3, pos = "M38" )
+#'   get_segr( qtl.lg3 )
 #' 
-#'   qtl.lg4 <- cim_char(cofs.fs, pheno.col=1, ws=22, lg=4, pos="M52")
-#'   get_segr(qtl.lg4)
+#'   qtl.lg4 <- cim_char( cofs.fs, pheno.col = 1, ws = 22, lg = 4, pos = "M52" )
+#'   get_segr( qtl.lg4 )
 #' 
 
-get_segr <- function(fschar, probs1=.05, probs2=.05){
+get_segr <- function( fschar, probs1 = .05, probs2 = .05 ){
 
   if (!any(class(fschar) == "fullsib_char"))
     stop(sQuote(deparse(substitute(fschar))),

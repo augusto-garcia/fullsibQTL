@@ -8,10 +8,11 @@
 # im_char                                                             #
 #                                                                     #
 # Written by Rodrigo Gazaffi                                          #
+# Updated by Rodrigo Amadeu                                           #
 # copyright (c) 2011, Rodrigo Gazaffi                                 #
 #                                                                     #
 # First version: 09/30/2011                                           #
-# Last  version: 09/30/2011                                           #
+# Last  version: 08/15/2017                                           #
 # License: GPL-3                                                      #
 #                                                                     #
 #######################################################################
@@ -102,33 +103,33 @@
 #' @keywords utilities
 #' 
 #' @examples
-#'   data(example_QTLfullsib)
+#'   data( "example_QTLfullsib" )
 #' 
-#'   fullsib <- create_fullsib(example_QTLfullsib,
-#'                             list(LG1_final, LG2_final, LG3_final, LG4_final),
-#'                             step=3,map.function="kosambi",condIndex=3.5)
+#'   fullsib <- create_fullsib( example_QTLfullsib,
+#'                              list( LG1_final, LG2_final, LG3_final, LG4_final ),
+#'                              step = 3, map.function = "kosambi", condIndex = 3.5)
 #' 
 #'   \dontrun{
-#'   im1 <- im_scan(fullsib, pheno.col=1)
-#'   summary(im1)
+#'   im1 <- im_scan( fullsib, pheno.col = 1 )
+#'   summary( im1 )
 #'   }
 #' 
-#'   qtl1 <- im_char(fullsib, pheno.col=1, lg=1, pos="loc3")
-#'   qtl2 <- im_char(fullsib, pheno.col=1, lg=2, pos="M27")
-#'   qtl3 <- im_char(fullsib, pheno.col=1, lg=3, pos="loc63")
-#'   qtl4 <- im_char(fullsib, pheno.col=1, lg=4, pos="loc57")
+#'   qtl1 <- im_char( fullsib, pheno.col = 1, lg = 1, pos = "loc3" )
+#'   qtl2 <- im_char( fullsib, pheno.col = 1, lg = 2, pos = "M27" )
+#'   qtl3 <- im_char( fullsib, pheno.col = 1, lg = 3, pos = "loc63" )
+#'   qtl4 <- im_char( fullsib, pheno.col = 1, lg = 4, pos = "loc57" )
 #' 
 #'   \dontrun{
-#'   covar <- matrix(rep(c(1,-1), each=150), ncol=1)
-#'   im2 <- im_scan(fullsib, pheno.col=2, addcovar=covar)
-#'   summary(im2)
+#'   covar <- matrix( rep( c( 1, -1 ), each = 150 ), ncol = 1 )
+#'   im2 <- im_scan( fullsib, pheno.col = 2, addcovar = covar )
+#'   summary( im2 )
 #' 
-#'   qtl5 <- im_char(fullsib, pheno.col=1, addcovar=covar, lg=2, pos="M27")
+#'   qtl5 <- im_char( fullsib, pheno.col = 1, addcovar = covar, lg = 2, pos = "M27" )
 #'   }
 #' 
 
-im_char <- function(fullsib, pheno.col=1, addcovar=NULL, lg, pos,
-                    maxit=1000, tol=1e-10, verbose=FALSE){
+im_char <- function( fullsib, pheno.col = 1, addcovar = NULL, lg, pos,
+                     maxit = 1000, tol = 1e-10, verbose = FALSE ){
   
   ##checking input arguments
   if (!any(class(fullsib) == "fullsib"))

@@ -2,23 +2,24 @@
 #                                                                     #
 # Package: fullsibQTL                                                 #
 #                                                                     #
-# File: cof.selection.R                                               #
+# File: cof_selection.R                                               #
 #                                                                     # 
 # Contains:                                                           #
 # cof_selection                                                       #
 #                                                                     #
 # Written by Rodrigo Gazaffi                                          #
+# Updated by Rodrigo Amadeu                                           #
 # copyright (c) 2011, Rodrigo Gazaffi                                 #
 #                                                                     #
 # First version: 09/30/2011                                           #
-# Last  version: 09/30/2011                                           #
+# Last  version: 08/15/2017                                           #
 # License: GPL-3                                                      #
 #                                                                     #
 #######################################################################
 
 #######################################################################
 #                                                                     #
-# Function: cof.selection                                             #
+# Function: cof_selection                                             #
 #                                                                     #
 # Performs the selection of significative markers that is used as     #
 # cofactors in CIM analysis. It receives all the information, prepares#
@@ -143,11 +144,11 @@
 #' @keywords utilities
 #' 
 #' @examples
-#'   data(example_QTLfullsib)
+#'   data( "example_QTLfullsib" )
 #' 
-#'   fullsib <- create_fullsib(example_QTLfullsib,
-#'                             list(LG1_final, LG2_final, LG3_final, LG4_final),
-#'                             step=0,map.function="kosambi",condIndex=3.5)
+#'   fullsib <- create_fullsib( example_QTLfullsib,
+#'                              list( LG1_final, LG2_final, LG3_final, LG4_final ),
+#'                              step = 0, map.function = "kosambi" , condIndex = 3.5 )
 #' 
 #' 
 #' 
@@ -155,21 +156,21 @@
 #'   ## cofactor selection using BIC (n.ind = 300)
 #' 
 #'   ### just using markers that are placed on linkage groups (default)
-#'   cofs.fs <- cof_selection(fullsib, pheno.col=1, k = log(300), selection =1)
+#'   cofs.fs <- cof_selection( fullsib, pheno.col = 1, k = log( 300 ), selection = 1 )
 #'   cofs.fs
-#'   plot(cofs.fs)
+#'   plot( cofs.fs )
 #' 
 #' 
 #'   ###just markers that are not placed in LG
 #'   ###Attention: just used if there are markers that are not placed on
 #'   ###genetic map
 #'   \dontrun{
-#'   cofs.fs1 <- cof_selection(fullsib, pheno.col=1, k = log(300), selection =0)
+#'   cofs.fs1 <- cof_selection( fullsib, pheno.col = 1, k = log( 300 ), selection = 0 )
 #'   }
 #'   ###all markers are used
 #'   ###Attention: just used if fullsib$unlinked.mkr is not NULL
 #'   \dontrun{
-#'    cofs.fs2 <- cof_selection(fullsib, pheno.col=1, k = log(300), selection=2)
+#'    cofs.fs2 <- cof_selection( fullsib, pheno.col = 1, k = log( 300 ), selection = 2 )
 #'    }
 #' 
 #' 
@@ -179,30 +180,30 @@
 #' 
 #'   \dontrun{  
 #'   ### using AIC alowing at maximum of 20 markers
-#'   cofs.fs3 <- cof_selection(fullsib, pheno.col=1, k = 2, n.cofactor =  20)
-#'   plot(cofs.fs3)
+#'   cofs.fs3 <- cof_selection( fullsib, pheno.col = 1, k = 2, n.cofactor =  20 )
+#'   plot( cofs.fs3 )
 #' 
 #'   ### using AIC alowing at maximum of 5 markers
-#'   cofs.fs4 <- cof_selection(fullsib, pheno.col=1, k = 2, n.cofactor = 5)
-#'   plot(cofs.fs4)
+#'   cofs.fs4 <- cof_selection( fullsib, pheno.col = 1, k = 2, n.cofactor = 5 )
+#'   plot( cofs.fs4 )
 #' 
 #'   ### using AIC alowing the model with maximum of 18 D.f.
 #'   ### here 6 marker, because each cofactor has 3 effects
-#'   cofs.fs5 <- cof_selection(fullsib, pheno.col=1, k = 2, stoppage.df = 18)
-#'   plot(cofs.fs5)
+#'   cofs.fs5 <- cof_selection( fullsib, pheno.col = 1, k = 2, stoppage.df = 18 )
+#'   plot( cofs.fs5 )
 #' 
 #'   ### it is possible to see the selection process
-#'   cofs.fs6 <- cof_selection(fullsib, pheno.col=1, k=2, n.cofactor=5, trace=1)
-#'   plot(cofs.fs6)
+#'   cofs.fs6 <- cof_selection( fullsib, pheno.col = 1, k = 2, n.cofactor = 5, trace = 1 )
+#'   plot( cofs.fs6 )
 #' 
 #'   ### Same selection, but removing effects that are not signif. at 5%
-#'   cofs.fs7 <- cof_selection(fullsib, pheno.col=1, k = 2, n.cofactor = 5, thres.effect = 0.05) 
+#'   cofs.fs7 <- cof_selection( fullsib, pheno.col = 1, k = 2, n.cofactor = 5, thres.effect = 0.05 ) 
 #'   }
 #' 
 #'   ##cofactor selection using additive covariate
 #'   \dontrun{
-#'   covar <- matrix(rep(c(1,-1), each=150), ncol=1)
-#'   cofs.fs8 <- cof_selection(fullsib, pheno.col=2, addcovar=covar, k = 2)
+#'   covar <- matrix( rep( c( 1, -1 ), each = 150 ), ncol = 1 )
+#'   cofs.fs8 <- cof_selection( fullsib, pheno.col = 2, addcovar = covar, k = 2 )
 #'   }
 #' 
 

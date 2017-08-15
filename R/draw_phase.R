@@ -11,9 +11,10 @@
 # present in onemap package                                           #
 #                                                                     #
 # copyright (c) 2011, Rodrigo Gazaffi                                 #
+# Updated by Rodrigo Amadeu                                           #
 #                                                                     #
 # First version: 09/30/2011 (american date format)                    #
-# Last  version: 09/30/2011 (american date format)                    #
+# Last  version: 08/15/2011 (american date format)                    #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
@@ -57,29 +58,29 @@
 #' @examples
 #' 
 #' 
-#'   data(example_QTLfullsib)
+#'   data( "example_QTLfullsib" )
 #' 
-#'   fullsib <- create_fullsib(example_QTLfullsib,
-#'                             list(LG1_final, LG2_final, LG3_final, LG4_final),
-#'                             step=0,map.function="kosambi",condIndex=3.5)
+#'   fullsib <- create_fullsib( example_QTLfullsib,
+#'                              list( LG1_final, LG2_final, LG3_final, LG4_final ),
+#'                              step = 0, map.function = "kosambi",condIndex = 3.5 )
 #' 
 #' 
 #'   ###############################################
 #'   ## cofactor selection using BIC (n.ind = 300)
-#'   cofs.fs <- cof_selection(fullsib, pheno.col=1, k = log(300),
-#'                            selection=1) 
+#'   cofs.fs <- cof_selection( fullsib, pheno.col = 1, k = log( 300 ),
+#'                             selection = 1 ) 
 #' 
 #'   \dontrun{
-#'   cim1 <- cim_scan(cofs.fs, pheno.col=1, ws = 22, LOD= TRUE, icim=FALSE)
-#'   summary(cim1)
-#'   plot(cim1)
+#'   cim1 <- cim_scan( cofs.fs, pheno.col = 1, ws = 22, LOD = TRUE, icim = FALSE )
+#'   summary( cim1 )
+#'   plot( cim1 )
 #'   }
 #' 
-#'   qtl.lg3 <- cim_char(cofs.fs, pheno.col=1, ws=22, lg=3, pos="M38")
-#'   draw_phase(cofs.fs, qtl.lg3, probs=0.05)
+#'   qtl.lg3 <- cim_char( cofs.fs, pheno.col = 1, ws = 22, lg = 3, pos = "M38" )
+#'   draw_phase( cofs.fs, qtl.lg3, probs = 0.05 )
 #' 
-#'   qtl.lg4 <- cim_char(cofs.fs, pheno.col=1, ws=22, lg=4, pos="M52")
-#'   draw_phase(cofs.fs, qtl.lg4, probs=0.05)
+#'   qtl.lg4 <- cim_char( cofs.fs, pheno.col = 1, ws = 22, lg = 4, pos = "M52" )
+#'   draw_phase( cofs.fs, qtl.lg4, probs = 0.05 )
 #' 
  
 draw_phase <- function(fullsib, fschar, probs=0.05){

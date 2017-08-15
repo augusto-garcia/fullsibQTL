@@ -121,32 +121,32 @@ Individuals with missing phenotypes are dropped.
 \examples{
 
 
-  data(example_QTLfullsib)
+  data( "example_QTLfullsib" )
 
-  fullsib <- create_fullsib(example_QTLfullsib,
-                            list(LG1_final, LG2_final, LG3_final, LG4_final),
-                            step=0,map.function="kosambi",condIndex=3.5)
+  fullsib <- create_fullsib( example_QTLfullsib,
+                             list( LG1_final, LG2_final, LG3_final, LG4_final ),
+                             step = 0 , map.function = "kosambi", condIndex = 3.5 )
 
 
   ###############################################
   ## cofactor selection using BIC (n.ind = 300)
-  cofs.fs <- cof_selection(fullsib, pheno.col=1, k = log(300),
-                           selection=1) 
+  cofs.fs <- cof_selection( fullsib, pheno.col = 1, k = log( 300 ),
+                            selection = 1 ) 
 
-  cim1 <- cim_scan(cofs.fs, pheno.col=1, ws = 22, LOD= TRUE, icim=FALSE)
+  cim1 <- cim_scan( cofs.fs, pheno.col = 1, ws = 22, LOD = TRUE, icim = FALSE )
 
   \dontrun{
-  covar <- matrix(rep(c(1,-1), each=150), ncol=1)
-  cofs.fs <- cof_selection(fullsib, pheno.col=2, addcovar=covar, k=log(300))
-  cim2 <- cim_scan(cofs.fs, pheno.col=2, ws = 22, LOD= TRUE, icim=TRUE) 
+  covar <- matrix( rep( c( 1, -1 ), each = 150 ), ncol = 1 )
+  cofs.fs <- cof_selection( fullsib, pheno.col = 2, addcovar = covar, k = log(300) )
+  cim2 <- cim_scan( cofs.fs, pheno.col = 2, ws = 22, LOD = TRUE, icim = TRUE ) 
   ## cim with covariate, one just indicate the additive covar on
   ## cof_selection or cof_definition
 
   ##permutation test:
-  cim.perm <- cim_scan(cofs.fs, pheno.col=1, ws = 22, LOD = FALSE,
-                       n.perm=1000) 
-  summary(cim.perm) # threshold values
-  summary(cim.perm, alpha=0.10)
+  cim.perm <- cim_scan( cofs.fs, pheno.col = 1, ws = 22, LOD = FALSE,
+                        n.perm=1000) 
+  summary( cim.perm ) # threshold values
+  summary( cim.perm, alpha = 0.10 )
   }
 
 }

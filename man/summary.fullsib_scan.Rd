@@ -33,15 +33,15 @@ some situations.
 }
 \examples{
 
-  data(example_QTLfullsib)
+  data("example_QTLfullsib")
 
-  fullsib <- create_fullsib(example_QTLfullsib,
-                            list(LG1_final, LG2_final, LG3_final, LG4_final), 
-                            step=0, map.function="kosambi", condIndex = 3.5) 
+  fullsib <- create_fullsib( example_QTLfullsib,
+                             list( LG1_final, LG2_final, LG3_final, LG4_final ), 
+                             step = 0, map.function = "kosambi", condIndex = 3.5) 
 
-  im1 <- im_scan(fullsib, lg="all", pheno.col=1, LOD=TRUE)
-  summary(im1)
-  summary(im1, thr=6.5)
+  im1 <- im_scan( fullsib, lg = "all", pheno.col = 1, LOD = TRUE )
+  summary( im1 )
+  summary( im1, thr = 6.5 )
 
 
 }

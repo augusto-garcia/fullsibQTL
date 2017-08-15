@@ -108,53 +108,52 @@ Individuals with missing phenotypes are dropped.
 \examples{
   data(example_QTLfullsib)
 
-  fsib <- create_fullsib(example_QTLfullsib,
-                         list(LG1_final, LG2_final, LG3_final, LG4_final), 
-                         step=0, map.function="kosambi", condIndex = 3.5) 
+  fsib <- create_fullsib( example_QTLfullsib,
+                             list( LG1_final, LG2_final, LG3_final, LG4_final ),
+                             step = 0, map.function = "kosambi", condIndex = 3.5 )
 
 
   ## running im_scan:
 
-  im1 <- im_scan(fsib, lg="all", pheno.col=1, LOD=TRUE)
+  im1 <- im_scan( fsib, lg = "all", pheno.col = 1, LOD = TRUE )
   ## results in LOD Score for all linkage groups
 
-  im2 <- im_scan(fsib, lg=1:4, pheno.col=1, LOD=FALSE)
+  im2 <- im_scan( fsib, lg = 1:4, pheno.col = 1, LOD = FALSE )
   ## results in -log10(pvalue) for all linkage groups
 
   ## im_scan with using additive covariate
-  covar <- matrix(rep(c(1,-1), each=150), ncol=1)
-  im3 <- im_scan(fsib, lg=c(2,3), pheno.col=2, addcovar=covar, LOD=FALSE)
+  covar <- matrix( rep( c( 1, -1 ), each = 150 ), ncol = 1 )
+  im3 <- im_scan( fsib, lg = c( 2, 3 ), pheno.col = 2, addcovar = covar, LOD = FALSE )
 
   \dontrun{
   ## RESULTS:
   im1
-  print(im1,lg=3) ## printing only one linkage group
+  print( im1, lg = 3 ) ## printing only one linkage group
 
   ## detecting QTL peaks
-  summary(im1)
-  summary(im1, thr=6.5)
-
+  summary( im1 )
+  summary( im1, thr = 6.5 )
 
   ##plotting
-  plot(im1)
+  plot( im1 )
 
-  plot(im1,im2, col=c("black","blue"), label.lg=c("A","B","C","D"))
-  abline(3,0) ##threshold
-  legend("topleft",legend=c("LOD","-log10(pvalue)"),
-          col=c("black","blue"), lwd=c(2,2), text.col=c("black","blue"))
+  plot( im1, im2, col = c( "black", "blue" ), label.lg = c( "A", "B", "C", "D" ) )
+  abline( 3, 0 ) ##threshold
+  legend( "topleft",legend = c( "LOD", "-log10(pvalue)" ),
+           col = c( "black", "blue" ), lwd = c( 2, 2 ), text.col = c( "black", "blue" ) )
 
-  plot(im2,lg=2)
-  plot(im2,lg=2, incl.mkr="points")
-  plot(im2,lg=2, incl.mkr="name")
+  plot( im2, lg = 2 )
+  plot( im2, lg = 2, incl.mkr = "points" )
+  plot( im2, lg = 2, incl.mkr = "name" )
   }
 
   ## permutation test:
   \dontrun{
-  im.perm <- im_scan(fsib, lg=c(2,4), pheno.col=1, LOD=TRUE,
-                     n.perm=1000, write.perm="perm_values.txt")
+  im.perm <- im_scan( fsib, lg = c( 2, 4 ), pheno.col = 1, LOD = TRUE,
+                      n.perm = 1000, write.perm = "perm_values.txt" )
   ## permutations done just using linkage groups 2 and 4
-  summary(im.perm)
-  plot(im.perm, peak=1)
+  summary( im.perm )
+  plot( im.perm, peak = 1 )
 }
 
 }

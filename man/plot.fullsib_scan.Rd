@@ -80,34 +80,33 @@ adapted for this package. We also adapt the functions to receive more object
 to plot QTL profile.
 }
 \examples{
-  data(example_QTLfullsib)
+  data( "example_QTLfullsib" )
 
-  fullsib <- create_fullsib(example_QTLfullsib,
-                            list(LG1_final, LG2_final, LG3_final, LG4_final), 
-                            step=0, map.function="kosambi", condIndex = 3.5) 
+  fullsib <- create_fullsib( example_QTLfullsib,
+                             list( LG1_final, LG2_final, LG3_final, LG4_final ), 
+                             step = 0, map.function = "kosambi", condIndex = 3.5 ) 
 
 
 
   ## running im_scan:
-  im1 <- im_scan(fullsib, lg="all", pheno.col=1, LOD=TRUE)
+  im1 <- im_scan( fullsib, lg = "all", pheno.col = 1, LOD = TRUE )
   ## results in LOD Score for all linkage groups
 
-  im2 <- im_scan(fullsib, lg=1:4, pheno.col=1, LOD=FALSE)
+  im2 <- im_scan( fullsib, lg = 1:4, pheno.col = 1, LOD = FALSE )
   ## results in -log10(pvalue) for all linkage groups
 
-
-  plot(im1) ##default
+  plot( im1 ) ##default
   ##customizing graphics
-  plot(im1, lty=3, lwd=2, incl.mkr="points")
-  plot(im1, lty=3, lwd=2, incl.mkr="name")
-  plot(im1, lty=3, lwd=2, incl.mkr="name", cex.incl=0.5)
-  plot(im1, im2, label.lg=c("1st LG", "2nd LG","3rd LG","4th LG"))
-  plot(im1, im2, label.lg=c("1st LG", "2nd LG","3rd LG","4th LG"),
-  alternate.lgid=TRUE)
+  plot( im1, lty = 3, lwd = 2, incl.mkr = "points" )
+  plot( im1, lty = 3, lwd = 2, incl.mkr = "name" )
+  plot( im1, lty = 3, lwd = 2, incl.mkr = "name", cex.incl = 0.5 )
+  plot( im1, im2, label.lg = c( "1st LG", "2nd LG","3rd LG","4th LG" ) )
+  plot( im1, im2, label.lg = c( "1st LG", "2nd LG","3rd LG","4th LG" ),
+        alternate.lgid=TRUE)
 
   #add argument is another way of overlapping QTL results
-  plot(im1,lg=2, incl.mkr="name")
-  plot(im2,lg=2, incl.mkr="name", add=TRUE)
+  plot( im1, lg = 2, incl.mkr = "name" )
+  plot( im2, lg = 2, incl.mkr = "name", add = TRUE )
 
 
 }

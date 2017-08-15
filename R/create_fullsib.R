@@ -9,10 +9,11 @@
 # print_fullsib                                                       #
 #                                                                     #
 # Written by Rodrigo Gazaffi                                          #
+# Updated by Rodrigo Amadeu                                           #
 # copyright (c) 2011, Rodrigo Gazaffi                                 #
 #                                                                     #
 # First version: 09/30/2011                                           #
-# Last  version: 09/30/2011                                           #
+# Last  version: 08/15/2017                                           #
 # License: GPL-3                                                      #
 #                                                                     #
 #######################################################################
@@ -139,9 +140,9 @@
 #' 
 #'   ##fullsib is main object to perform QTL maping
 #' 
-#'   fsib <- create_fullsib(example_QTLfullsib,
-#'                          list(LG1_final, LG2_final, LG3_final, LG4_final),
-#'                          step=1,map.function="kosambi",condIndex=3.5)
+#'   fsib <- create_fullsib( example_QTLfullsib,
+#'                           list( LG1_final, LG2_final, LG3_final, LG4_final ),
+#'                           step = 1, map.function = "kosambi" , condIndex = 3.5 )
 #' 
 
 create_fullsib <- function(input.obj, map.list, step=0, error.prob=1e-4,

@@ -39,20 +39,20 @@ a quantile function to calculate the thresholds, using default of function
 \examples{
 
   \dontrun{
-  data(example_QTLfullsib)
+  data( "example_QTLfullsib" )
 
-  fullsib <- create_fullsib(example_QTLfullsib,
-                            list(LG1_final, LG2_final, LG3_final, LG4_final), 
-                            step=0, map.function="kosambi", condIndex = 3.5) 
+  fullsib <- create_fullsib( example_QTLfullsib,
+                             list( LG1_final, LG2_final, LG3_final, LG4_final ), 
+                             step = 0, map.function = "kosambi", condIndex = 3.5 ) 
 
-  im_perm <- im_scan(example_QTLfullsib, pheno.col=1, LOD=TRUE, n.perm=1000,
-                     write.perm="perm_values.txt") 
-  summary(im_perm)
-  summary(im_perm, alpha = 0.05)
+  im_perm <- im_scan( example_QTLfullsib, pheno.col = 1, LOD = TRUE, n.perm = 1000,
+                      write.perm = "perm_values.txt" ) 
+  summary( im_perm )
+  summary( im_perm, alpha = 0.05 )
   ## first peak: churchill and doerge (1994)
   ## second peak: chen and storey (2006)
   
-  summary(im_perm, alpha = 0.05, verbose=FALSE)
+  summary( im_perm, alpha = 0.05, verbose = FALSE )
   }
 
 

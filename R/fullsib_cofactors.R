@@ -52,11 +52,11 @@
 #' 
 #' @keywords utilities
 #' @examples
-#'   data(example_QTLfullsib)
+#'   data( "example_QTLfullsib" )
 #' 
-#'   fullsib <- create_fullsib(example_QTLfullsib,
-#'                             list(LG1_final, LG2_final, LG3_final, LG4_final),
-#'                             step=0,map.function="kosambi",condIndex=3.5)
+#'   fullsib <- create_fullsib( example_QTLfullsib,
+#'                              list( LG1_final, LG2_final, LG3_final, LG4_final ),
+#'                              step = 0, map.function = "kosambi", condIndex = 3.5 )
 #' 
 #' 
 #' 
@@ -64,10 +64,10 @@
 #'   ## cofactor selection using BIC (n.ind = 300)
 #' 
 #'   ### just using markers that are placed on linkage groups (default)
-#'   cofs.fs <- cof_selection(fullsib, pheno.col=1, k = log(300), selection =1)
+#'   cofs.fs <- cof_selection( fullsib, pheno.col = 1, k = log( 300 ), selection =1 )
 #'   cofs.fs
-#'   plot(cofs.fs)
-#'   plot(cofs.fs, horizontal = TRUE, grid = TRUE, cex.mrk = 2.5, cex.grp = 1)
+#'   plot( cofs.fs )
+#'   plot( cofs.fs, horizontal = TRUE, grid = TRUE, cex.mrk = 2.5, cex.grp = 1 )
 #'   
 
 plot.fullsib_cofactors  <- function(x, horizontal = FALSE, grid = FALSE,

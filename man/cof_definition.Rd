@@ -68,41 +68,42 @@ Finally, with the development of \code{cof_definition} and
 with selection of markers to be used in CIM.
 }
 \examples{
-  data(example_QTLfullsib)
+  data( "example_QTLfullsib" )
 
-  fullsib <- create_fullsib(example_QTLfullsib,
-                            list(LG1_final, LG2_final, LG3_final, LG4_final),
-                            step=0,map.function="kosambi",condIndex=3.5)
+  fullsib <- create_fullsib( example_QTLfullsib,
+                             list( LG1_final, LG2_final, LG3_final, LG4_final ),
+                             step = 0, map.function = "kosambi", condIndex = 3.5 )
 
  \dontrun{
-  im1 <- im_scan(fullsib, pheno.col=1, LOD = TRUE)
-  summary(im1)
+  im1 <- im_scan( fullsib, pheno.col = 1, LOD = TRUE )
+  summary( im1 )
   }
 
   ## using 4 QTL as cofactors (QTL peaks detected using im_scan)
-  cofs <- matrix(c("1","M2",
-                   "2","M27",
-                   "3","M37",
-                   "4","M52"),4,2, byrow=TRUE)
+  cofs <- matrix( c( "1", "M2",
+                     "2", "M27",
+                     "3", "M37",
+                     "4", "M52"), 4, 2, byrow = TRUE )
 
-  cof_def <- cof_definition(fullsib, pheno.col=1, cof.pos=cofs)
+  cof_def <- cof_definition( fullsib, pheno.col = 1, cof.pos = cofs )
   cof_def
-  plot(cof_def)
+  plot( cof_def )
 
   \dontrun{
-  covar <- matrix(rep(c(1,-1), each=150), ncol=1)
+  covar <- matrix( rep( c( 1, -1 ), each = 150 ), ncol = 1 )
  
   ##using 4 QTL as cofactors + 1 unlinked marker (just for illustration)
-  cofs2 <- matrix(c("1","M2",
-                    "2","M27",
-                    "3","M37",
-                    "4","M52",
-                    NA, "M64"),5,2, byrow=TRUE)
+  cofs2 <- matrix( c( "1", "M2",
+                      "2", "M27",
+                      "3", "M37",
+                      "4", "M52",
+                       NA, "M64" ), 5, 2, byrow = TRUE )
 
-  cof2.def <- cof_definition(fullsib, pheno.col=2, addcovar=covar, cof.pos=cofs2, thres.effect=1)
+  cof2.def <- cof_definition( fullsib, pheno.col = 2, addcovar = covar, 
+              cof.pos = cofs2, thres.effect = 1 )
   cof2.def
 
-  cof3.def <- cof_definition(fullsib, pheno.col=1, cof.pos=cofs2, thres.effect=0.05)
+  cof3.def <- cof_definition( fullsib, pheno.col = 1, cof.pos = cofs2, thres.effect = 0.05 )
   cof3.def
   ### realize with thres.effect = 0.05, the 5th cofactor is removed,
   ### because it is non significative (never was selected on cof_selection)

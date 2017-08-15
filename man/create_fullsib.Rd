@@ -109,9 +109,9 @@ as well the markers location. If a selected marker is not in the map,
 
   ##fullsib is main object to perform QTL maping
 
-  fsib <- create_fullsib(example_QTLfullsib,
-                         list(LG1_final, LG2_final, LG3_final, LG4_final),
-                         step=1,map.function="kosambi",condIndex=3.5)
+  fsib <- create_fullsib( example_QTLfullsib,
+                          list( LG1_final, LG2_final, LG3_final, LG4_final ),
+                          step = 1, map.function = "kosambi" , condIndex = 3.5 )
 
 }
 \references{
