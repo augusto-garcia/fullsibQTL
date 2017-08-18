@@ -1,16 +1,26 @@
-<!--
-%\VignetteEngine{knitr::docco_linear}
-%\VignetteIndexEntry{fullsibQTL}
--->
+---
+title: "`fullsibQTL` Tutorial"
+date: "`r Sys.Date()`"
+author: "[Statistical Genetics Lab](http://statgen.esalq.usp.br) <br/> Department of Genetics, Luiz de Queiroz College of Agriculture, University of São Paulo"
+output: 
+    rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{fullsibQTL Tutorial}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
 
-# fullsibQTL Tutorial
+```{r knitr_init, echo=FALSE, cache=FALSE}
+library(knitr)
+library(rmdformats)
 
-```{r, globalsetup, echo=FALSE, results='hide', cache=FALSE}
-#opts_chunk$set(cache=FALSE, autodep=TRUE)
-knitr::opts_chunk$set(fig.width=10)
+## From ggplot2 rmd vignette options
+knitr::opts_chunk$set(collapse = TRUE, 
+                      comment = "#>", 
+                      fig.width = 7, 
+                      fig.height = 7, 
+                      fig.align = "center")
 ```
-
-This tutorial was developed under the following softwares: `R 3.4.0`, `onemap 2.0.7`, and `fullsibQTL 1.0.0`.
 
 `fullsibQTL` is an `R` package to perform QTL mapping in outbred/outcrossing species. We consider as a mapping population a full-sib progeny (or *F1* population) derived by a bi-parental cross between two non homozygous parents, with a genetic map obtained with markers showing different segregation patterns. Here, we assumed the phenotypes are continuous having normal distribution and the genetic map was previously obtained with `onemap` package. If you are not familiar with `onemap`, we strongly encourage you to read `onemap` [vignettes](https://github.com/augusto-garcia/onemap/tree/master) (Margarido et al., 2007).
 
@@ -29,20 +39,20 @@ Additionally, this tutorial has three appendices:
 
 - [Appendix C: Graphical options with `plot`](#appendixc)
 
-## Citation
+# Citation
 To cite the methodology for QTL mapping in full-sib progeny:
 Gazaffi, R., Margarido, G. R., Pastina, M. M., Mollinari, M., Garcia, A. A. F. (2014). A model for quantitative trait loci mapping, linkage phase, and segregation pattern estimation for a full-sib progeny. *Tree Genetics & Genomes*, 10(4), 791-801.
 
 To cite this R package:
 Gazaffi, R., Amadeu, R. R., Rosa, J. R. B. F., Garcia, A. A. F. (2017). Application notes: fullsibQTL: R package for QTL mapping using a full-sib progeny, *Journal*, v(x), pages().
 
-### Installation from CRAN (stable version)
+## Installation from CRAN (stable version)
 Within R:
 ```{r, eval=FALSE}
 install.packages("fullsibQTL")
 ```
 
-### Installation from github (version under development)
+## Installation from github (version under development)
 Within R:
 ```{r, eval=FALSE}
 ## Installing and loading devtools
@@ -53,7 +63,7 @@ library(devtools)
 install_github("augusto-garcia/fullsibQTL")
 ```
 
-## Functions
+# Functions
 The following table presents the `fullsibQTL` functions which can be directly called by users:
 
 <font size="2">
@@ -62,16 +72,12 @@ The following table presents the `fullsibQTL` functions which can be directly ca
 |----------------------------|----------------------------|------------------------------------------------------------------------------------------------|
 | input                      | `read_outcross_pheno`      | Reads the data file containing markers and phenotypic values                                   |
 |                            | `create_fullsib`           | Creates the object to perform QTL                                                              |
-| &nbsp; | | |
 | interval mapping           | `im_scan`                  | Scan the genome using IM approach                                                              |
 |                            | `im_char`                  | Provides the genetic effects, LOD Score and the p-values of complementary testes               |
-| &nbsp; | | |
 | cofactors                  | `cof_selection`            | Selects cofactors using multiple linear regression                                             |
 |                            | `cof_definition`           | Defines locations on the genome to be used as cofactors                                        |
-| &nbsp; | | |
 | composite interval mapping | `cim_scan`                 | Scan the genome using CIM approach                                                        |
 |                            | `cim_char`                 | Provides the genetic effects, LOD Score and the p-values of complementary testes               |
-| &nbsp; | | |
 | summaries <br> (S3 Methods)  | `print`                   | class `fullsib`: Prints a summary for the object of class fullsib                              |
 | 			     | `print`                    | class `fullsib_scan`: Prints the result of im_scan or cim_scan                                 |
 |                            | `summary`                  | class `fullsib_scan`: Summarizes the QTL search for im_scan or cim_scan                        |
@@ -84,7 +90,7 @@ The following table presents the `fullsibQTL` functions which can be directly ca
 
 </font>
 
-## Required data
+# Required data
 The input file of `fullsibQTL` is the same as the one required by `onemap` package, you can find more information at `onemap` [vignette](http://htmlpreview.github.io/?https://github.com/augusto-garcia/onemap/blob/master/inst/doc/Outcrossing_Populations.html). Above there is an example of such file. The header line indicates the data type, the following line with `10 5 0 0 2` indicates that the data has, respectively, 10 individuals, 5 markers, no (0) chromosome information, 0 (no) physical position information, and 2 traits as phenotypic data. It is very similar to a `MAPMAKER/EXP` file, but has additional information about the crosstype. It uses the symbol `-` for missing data.
 
 ```
@@ -100,7 +106,7 @@ I1 I2 I3 I4 I5 I6 I7 I8 I9 I10
 *pheno2 5 -5.8 - 14.8 -2.4 -1.9 -1.1 8.1 -11.1 4.8
 ```
 
-## Creating the working object
+# Creating the working object
 Hopefully you already had used the `onemap` to build your linkage maps an also are familiar with this data type. Within the available file, you can import it. First you need to read it with `onemap::read_onemap` function and after you can combine it with your linkages groups with `create_fullsib` function. Your final object will have the `onemap` raw object, the linkage groups and some parameters information. In the following example we import the raw data and a `list` with 4 linkages groups, we set as mapping function `kosambi` (Kosambi, 1944) with `map.function` argument, and, at last, we set the `step` argument as 1. The `step` argument is used for the computation of the conditional multipoint probability which defines the distance in cM (centiMorgan) the conditional probability are obtained. If `step=0`, the probabilities will be computed only in the positions of each marker.
 
 ```{r, eval=FALSE}
@@ -151,10 +157,10 @@ fsib
 
 This object contains the genetic map composed by 4 LGs, with their length and segregation patterns above indicated. There is also shown the number of unlinked makers, *i.e.*, how many markers of the `example_QTLfullsib` object are not present in any LG. This may be helpful for species where the map does not cover the whole genome. Finally, there is the number of the available phenotypes for the QTL mapping, as well the chosen distance (`step`) to obtain the conditional probability and the mapping function.  It is also keep the map function, in this case `kosambi`. In this tutorial we will use just the first trait.
 
-## Interval mapping
+# Interval mapping
 In order to proceed with interval mapping, there are two implemented functions `im_scan` and `im_char`. `im_scan` scans all the genome computing associations between genotype and phenotype trying to detect QTLs. `im_char` shows the genetic effects and their significance tests. It also shows additional tests to infer the QTL segregation pattern.
 
-### Genome scan
+## Genome scan
 The genome scan can be performed with the function `im_scan`, such as:
 ```{r, eval=TRUE, cache=FALSE}
 im <- im_scan(fullsib = fsib, lg="all", pheno.col=1, LOD=TRUE)
@@ -178,7 +184,7 @@ The resulting object of `im_scan` is a matrix with 4 columns and *k* lines, wher
 summary(im)
 ```
 
-#### QTL mapping plot options
+## QTL mapping plot options
 To obtain a graphical plot about the QTL mapping you have two options: `plot` and `plot_fullsibQTL`. `plot` is the lighter one and should be used for faster purposes. `plot_fullsibQTL` is the heavier one and should be used for analytical purposes.  
 
 For `plot`:
@@ -198,10 +204,9 @@ Within such function there the option to be a interactive graphic:
 ```{r, eval=FALSE, cache=FALSE}
 plot_fullsibQTL(fullsib=fsib, fullsib.scan=im,interact = TRUE)
 ```
-
-<iframe src='http://statgen.esalq.usp.br/fullsibQTL_graphics/im.html', height="600", width = "800">
-
-</iframe>
+<div>
+<iframe src='http://statgen.esalq.usp.br/fullsibQTL_graphics/im.html', height="600", width = "650"></iframe>
+</div>
 
 You can find more information about `plot_fullsibQTL` in [Appendix B](#appendixb)
 
@@ -209,7 +214,7 @@ You can find more information about `plot` in [Appendix C](#appendixc)
 
 In order to have a lighter tutorial, here, we will use just the graphics from `plot` function. However, we strongly recommend to use the `plot_fullsibQTL` graphics in your analysis.
 
-### Covariate
+## Covariate
 Finally, to improve the mapping flexibility, it is possible to set a covariate (as a fixed effect) within the model in order to control the variability of the aimed phenotype. To set a full-rank matrix which controls the phenotypic variance, first you need to define a incidence vector, and, then, set it as an argument of the `im_scan`. An example follows:
 
 ```{r, eval=TRUE, cache=FALSE}
@@ -217,7 +222,7 @@ covar <- matrix(rep(c(1,-1), each=150), ncol=1)
 im_covar <- im_scan(fsib, pheno.col=1, addcovar=covar)
 ```
 
-### Permutation test
+## Permutation test
 The threshold for QTL detection can be set using permutation tests (Churchill and Doerge, 1994) adding the argument `n.perm` in the `im_scan` function. As the permutation test is a re-sample process, it is recommended to the user to set a seed before the permutations. With this seed, the permutation can be repeated achieving the same result. The argument `write.perm` allows the user to save a text file with all the permutations performed. In this tutorial, the permutation test object `im_perm` with the seed `1234` is already created and is part of the `example_QTLfullsib` ealier loaded, there is no necessity to run the following lines. However, an example of how to perform the permutation follows:
 ```{r, eval=FALSE, cache=FALSE, collapse=TRUE}
 ## Perfoming the permutation
@@ -267,7 +272,7 @@ abline(v=3.419819,col="blue")
 abline(v=2.497431,col="red")
 ```
 
-### QTL characterization
+## QTL characterization
 After the determination of the number and position of the QTLs, the user can characterize the QTLs. In other words, to identify the significant effects, the segregation pattern and linkage phases between QTLs and flanking markers. The already created object `im` shows the presence of at least 4 QTLs:
 
 ```{r, eval=TRUE, cache=FALSE}
@@ -305,10 +310,10 @@ get_segr(qtl2)
 get_segr(qtl3)
 get_segr(qtl4)
 ```
-## Cofactor selection
+# Cofactor selection
 Before composite interval mapping (CIP), it is necessary to define which markers will be cofactors. To do it, there are two functions: `cof_selection` and `cof_definition`.
 
-### Cofactor selection using multiple linear regression
+## Cofactor selection using multiple linear regression
 The function `cof_selection` allows to select cofactors using multiple linear regression through *stepwise* approach. The criteria information is utilized to determine if a given possible cofactor is kept or not kept. Basically, this function first prepares the data and then uses `step` from `stats` package. For more information about `?cof_selection`. An example follows:
 
 ```{r, eval=TRUE, cache=FALSE}
@@ -329,7 +334,7 @@ After the cofactor selection, `thres.effect=0.05` verifies if there is no signif
 
 If you want more information about this function, we recommend to look at the function help (`?cof_selection`).
 
-### Cofactor ad-hoc definition
+## Cofactor ad-hoc definition
 The user can also define the cofactors *ad-hoc* with the `cof_definition` function:
 ```{r}
 cofs <- matrix(c("1","M2",
@@ -339,16 +344,16 @@ cofs <- matrix(c("1","M2",
 cofs_fsdef <- cof_definition(fsib,pheno.col = 1,thres.effect = 0.05,cof.pos = cofs)
 ```
 
-## Composite Interval mapping
+# Composite Interval mapping
 In order to proceed with composite interval mapping, there are two implemented functions `cim_scan` and `cim_char`. They have analogous opitions to the `im_scan` and `im_char`. The first one scan all the genome computing associations between genotype and phenotype trying to detect QTLs. The second one shows the genetic effects and their significance tests. It also shows additional tests to infer the QTL segregation pattern. The mapping procedure is performed similar as present in im_scan. However the inclusion of cofactors can locate QTL with more precision with higher statistical power in comparison of interval mapping approach. For more information about `?cim_scan` and `?cim_char`.
 
-### Genome scan
+## Genome scan
 The genome scan can be performed with the function `cim_scan` indicating the cofactors object (class: `fullsib_cofactors`) ealier created with `cof_selection` or `cof_definition`.
 ```{r, eval=TRUE, cache=FALSE}
 cim <- cim_scan(fullsib = cofs_fs, lg="all", ws=10, pheno.col=1, LOD=TRUE)
 ```
 
-### Permutation test
+## Permutation test
 The threshold for QTL detection can be set using permutation tests (Churchill and Doerge, 1994) adding the argument `n.perm` in the `cim_scan` function. As the permutation test is a re-sample process, it is recommended to the user to set a seed before the permutations. With this seed, the permutation can be repeated achieving the same result. The argument `write.perm` allows the user to save a text file with all the permutations performed. In this tutorial, the permutation test object `cim_perm` with the seed `4321` is already created and is part of the `example_QTLfullsib` ealier loaded, there is no necessity to run the following lines. However, an example of how to perform the permutation follows:
 ```{r, eval=FALSE, cache=FALSE}
 set.seed(4321)
@@ -392,7 +397,7 @@ plot(cim_perm, peak=2)
 abline(v=cim.peak2,col="red")
 ```
 
-### QTL characterization
+## QTL characterization
 After the determination of the number and position of the QTLs, the user can characterize the QTLs. In other words, to identify the significant effects, the segregation pattern and linkage phases between QTLs and flanking markers. 
 
 The already created object `cim` shows the presence of at least 4 QTLs:
@@ -491,7 +496,7 @@ draw_phase(cofs_fs,cim_QTL2_lg3)
 draw_phase(cofs_fs,cim_QTL1_lg4)
 ```
 
-### Estimating the QTL effects with Least Squares
+## Estimating the QTL effects with Least Squares
 The `r2_l2` function calculates the proportion of all QTL together (and also separetely) explain from total phenotipic variation using least square estimation. For more information about `?r2_l2`. Here we proceed with the CIM analysis estimating its QTL effects:
 
 ```{r}
@@ -508,8 +513,9 @@ covar <- matrix(rep(c(1,-1), each=150), ncol=1)
 r2_ls(fsib, pheno.col=2, addcovar = covar, lg=c(1,1,2,2,2,3,3,4),
       pos=c("loc13","M12","loc45","loc77","loc108","M33","loc65","M52"))
 ```
+
+# Appendix A - QTL mapping with partially informative markers
 <a name="appendixa">
-## Appendix A: QTL mapping with partially informative markers
 </a>
 The appendix must be read as Supplementary information of Gazaffi et al. (2014).
 
@@ -604,8 +610,9 @@ In the case $viii$, if it is assumed an self-polinization or a cross between two
 
 For cases from $ix$ to $xii$, the colinearity is originated due to the similarity between three genotypic classes which only allows to estimate a genetic effect represented by a linear combination between $\alpha_p^{\ast}$, $\alpha_q^{\ast}$ and $\delta_{pq}^{\ast}$. In such cases, it is not possible the correct understanding of the segregation and linkage phases between QTLs and markers. Moreover, it is emphasized that to limit those contrasts it was used the coefficient $1/3$ for similar genotypes and $-1$ for the different genotype. Such contrasts are not orthogonals in relation to the other and can leads to a burdensome QTL mapping process. As an example, using Multiple Interval Mapping models to epistasis study. Thus, other strategies may be applied when this type of situation is verified.
 
+
+# Appendix B - Graphical options with plot_fullsibQTL
 <a name="appendixb">
-## Appendix B: Graphical options with plot_fullsibQTL
 </a>
 In this section we show how to plot different graphics with the `plot_fullsibQTL` function. A complete description can be viewed through `?plot_fullsibQTL`. As an example we will use the example data from the package:
 
@@ -626,7 +633,7 @@ In this section we show how to plot different graphics with the `plot_fullsibQTL
   qtls.cim <- r2_ls(fullsib, pheno.col=1, lg=c(1,1,2,2,2,3,3,4),
                     pos=c("loc13","M12","loc45","loc77","loc108","M33","loc65","M52"))
 ```
-### Customizing Graphics
+## Customizing Graphics
 
 The minimal plot has to have the fullsib object and at list one result of `fullsib_scan`. At the bottom of the graphic it is shown the genetic map.
 ```{r}
@@ -641,7 +648,7 @@ plot_fullsibQTL(fullsib=fullsib,
                 qtlmapping="CIM")
 ```
 
-### Graphical comparision between different `(c)im_scan`
+## Graphical comparision between different `(c)im_scan`
 There is the option to insert multiple results from `(c)im_scan` with listing them with `list()`. Those multiple results can be different traits, a same trait in different environments, comparision of IM $\times$ CIM, and so on. Here we compare IM $\times$ CIM
 
 ```{r}
@@ -650,7 +657,7 @@ plot_fullsibQTL(fullsib=fullsib,
                 qtlmapping=c("CIM","IM"))
 ```
 
-### Adding QTL location to the graphic
+## Adding QTL location to the graphic
 You can insert the QTLs position from the `r2_ls` function for each one of the `(c)im_scan`. In order to do it, you need to use the argument `r2ls.out`:
 
 ```{r}
@@ -712,7 +719,7 @@ plot_fullsibQTL(fullsib=fullsib,
                 lgs=c(2,4))
 ```
 
-### Interactive plot
+## Interactive plot
 There is also the option to plot a interactive graphic. Inside the function, we use the package `plotly` as the engine. With the option `interact=TRUE` it will be created an interactive `html` graphic in you working directory folder or you can set the folder name to create the `html`. The plot will be returned in your default browser. If you do not want to open the browser, set `browser=FALSE`
 
 ```{r, eval=FALSE}
@@ -749,13 +756,13 @@ plot_fullsibQTL(fullsib=fullsib,
 
 The above script creates the following graphic. It is a interactive `plotly`. *Click on legend entries to toggle traces, click-and-drag on the chart to zoom, double-click to autoscale, shift-and-drag to pan* ([plotly website](https://plot.ly/r/getting-started/)). Additionaly, it is included in the tooltip the LOD score, the QTL estimated effect, and marker names in the map.
 
-<iframe src='http://statgen.esalq.usp.br/fullsibQTL_graphics/cim_im_greens/cim_im.html', height="600", width = "800">
-
-</iframe>
+<div>
+<iframe src='http://statgen.esalq.usp.br/fullsibQTL_graphics/cim_im_greens/cim_im.html', height="600", width = "650"></iframe>
+</div>
 
 The user can also set the height and width of the interact plot within the arguments `height` and `width`, they are the same as the arguments of `plotly` function. The default of `height` is 500 pixels and for `width` is 250 $\times$ the number of LGs to be plot. All the arguments can be combined in the interactive plot. 
 
-### Changing colors
+## Changing colors
 
 There is the option to choose the colors for each LG, the argument `lg.colors` will pass its values to the `ggplot2::scale_colour_manual` function. You can check more colors options at this [cheatsheet](https://www.nceas.ucsb.edu/~frazier/RSpatialGuides/colorPaletteCheatsheet.pdf) or at this color [guide](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf).
 
@@ -776,13 +783,12 @@ plot_fullsibQTL(fullsib=fullsib,
                 folder="/home/your_user_name/Pictures")
 ```
 
-<iframe src='http://statgen.esalq.usp.br/fullsibQTL_graphics/cim_im_greens.html', height="650", width = "800">
+<div>
+<iframe src='http://statgen.esalq.usp.br/fullsibQTL_graphics/cim_im_greens.html', height="600", width = "650"> </iframe>
+</div>
 
-</iframe>
-
-<a name="appendixc">
-## Appendix C: Graphical options with plot
-</a>
+# Appendix C - Graphical options with plot
+<a name="appendixc"> </a>
 In this section we show how to plot different graphics with the `plot` function. A complete description can be viewed through `?plot.fullsib_scan`. As an example we will use the example data from the package:
 
 ```{r}
@@ -809,7 +815,7 @@ The basic graphic
 
 You can check more colors options at this [cheatsheet](https://www.nceas.ucsb.edu/~frazier/RSpatialGuides/colorPaletteCheatsheet.pdf) or at this color [guide](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf) 
 
-### Customizing Graphics
+## Customizing Graphics
 ```{r}
 plot(im)
 
@@ -880,7 +886,7 @@ abline(h=im.peak2, lty=3)
 legend("topleft", lty=c(1,2,3,0), cex=0.75, col=c("red","black","black"), legend=c("IM","1st Peak Threshold","2nd Peak Threshold"))
 ```
 
-### Graphical comparision between `(c)im_scan`
+## Graphical comparision between `(c)im_scan`
 The IM and CIM mapping results can be compared in a graphical way with the following codes:
 ```{r}
 plot(im,cim, lty = c(2,1), lwd = 2, incl.mkr = "name", cex.incl = 0.7, gap=50,
@@ -898,7 +904,7 @@ legend("topleft", lty=c(2,1,2,2), cex=0.5, col=c("red","blue","black","black"), 
 
 ## Adding QTLs
 ```
-### Adding QTL location to the graphic
+## Adding QTL location to the graphic
 Our QTLs are the following:
 ```{r}
 print(cim,lg=1,pos=c("loc13","M12"))
@@ -930,7 +936,7 @@ points(y=rep(0,8),x=points.loc, pch=17, col="dark green")
 legend("topleft", lty=c(2,1,2,2,0), cex=0.75, pch = c(NA,NA,NA,NA,17),col = c("red", "blue", "black", "black", "dark green"), legend = c("IM","CIM","1st Threshold","2nd Threshold","QTL"),bty='n',y.intersp=.75)
 ```
 
-## References
+# References
 Belsley, D. A., Edwin K., and Roy E. W. (2005). **_Regression diagnostics: Identifying influential data and sources of collinearity_**. Vol. 571. John Wiley | Sons.
 
 Cockerham, C. C. (1954). An extension of the concept of partitioning hereditary variance for analysis of covariances among relatives when epistasis is present. **_Genetics_** 39(6), 859.
@@ -954,99 +960,8 @@ species. **_Theoretical Population Biology_** 61, 349-363, 2002a.
 Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. Linkage mapping of
 sex-specific differences. **_Genetical Research_** 79, 85-96, 2002b.
 
-```{r, eval=FALSE,echo=FALSE}
+# Session Info
 
-## Onemap References
-# 
-# Adler, J. **_R in a Nutshell_** A Desktop Quick Reference, 2009.
-# 
-# Broman, K. W., Wu, H., Churchill, G., Sen, S., Yandell, B. **_qtl:
-# Tools for analyzing QTL experiments_** R package version
-# 1.09-43, 2008. [http://www.rqtl.org/](http://www.rqtl.org/)
-# 
-# Buetow, K. H., Chakravarti, A. Multipoint gene mapping using
-# seriation. I. General methods. **_American Journal of Human
-# Genetics_** 41, 180-188, 1987.
-# 
-# Doerge, R.W. Constructing genetic maps by rapid chain delineation.
-# **_Journal of Agricultural Genomics_** 2, 1996.
-# 
-# Garcia, A.A.F., Kido, E.A., Meza, A.N., Souza, H.M.B., Pinto, L.R.,
-# Pastina, M.M., Leite, C.S., Silva, J.A.G., Ulian, E.C., Figueira, A.
-# and Souza, A.P. Development of an integrated genetic map of a
-# sugarcane _Saccharum spp._ commercial cross, based on a
-# maximum-likelihood approach for estimation of linkage and linkage
-# phases. **_Theoretical and Applied Genetics_** 112, 298-314, 2006.
-# 
-# Haldane, J. B. S. The combination of linkage values and the
-# calculation of distance between the loci of linked factors. **_Journal
-# of Genetics_** 8, 299-309, 1919.
-# 
-# Jiang, C. and Zeng, Z.-B. Mapping quantitative trait loci with
-# dominant and missing markers in various crosses from two inbred lines.
-# **_Genetica_** 101, 47-58, 1997.
-# 
-# Kosambi, D. D. The estimation of map distance from recombination
-# values. **_Annuaire of Eugenetics_** 12, 172-175, 1944.
-# 
-# Lander, E. S. and Green, P. Construction of multilocus genetic linkage
-# maps in humans. **_Proc. Natl. Acad. Sci. USA_** 84, 2363-2367, 1987.
-# 
-# Lander, E.S., Green, P., Abrahanson, J., Barlow, A., Daly, M.J.,
-# Lincoln, S.E. and Newburg, L. MAPMAKER, An interactive computing
-# package for constructing primary genetic linkage maps of experimental
-# and natural populations. **_Genomics_** 1, 174-181, 1987.
-# 
-# Lincoln, S. E., Daly, M. J. and Lander, E. S. Constructing genetic
-# linkage maps with MAPMAKER/EXP Version 3.0: a tutorial and reference
-# manual. **_A Whitehead Institute for Biomedical Research Technical
-# Report_** 1993.
-# 
-# Matloff, N. **_The Art of R Programming_**. 2011. 1st ed. San
-# Francisco, CA: No Starch Press, Inc., 404 pages.
-# 
-# 
-# 
-# Mollinari, M., Margarido, G. R. A., Vencovsky, R. and Garcia, A. A. F.
-# Evaluation of algorithms used to order markers on genetics maps.
-# **_Heredity_** 103, 494-502, 2009.
-# 
-# Oliveira, K.M., Pinto, L.R., Marconi, T.G., Margarido, G.R.A.,
-# Pastina, M.M., Teixeira, L.H.M., Figueira, A.M., Ulian, E.C., Garcia,
-# A.A.F., Souza, A.P. Functional genetic linkage map on EST-markers for
-# a sugarcane (_Saccharum spp._) commercial cross. **_Molecular
-# Breeding_** 20, 189-208, 2007.
-# 
-# Oliveira, E. J., Vieira, M. L. C., Garcia, A. A. F., Munhoz, C.
-# F.,Margarido, G. R.A., Consoli, L., Matta, F. P., Moraes, M. C.,
-# Zucchi, M. I., and Fungaro,M. H. P. An Integrated Molecular Map of
-# Yellow Passion Fruit Based on Simultaneous Maximum-likelihood
-# Estimation of Linkage and Linkage Phases **_J. Amer. Soc. Hort.
-# Sci._** 133, 35-41, 2008.
-# 
-# Tan, Y., Fu, Y. A novel method for estimating linkage maps.
-# **_Genetics_** 173, 2383-2390, 2006.
-# 
-# Van Os H, Stam P, Visser R.G.F., Van Eck H.J. RECORD: a novel method
-# for ordering loci on a genetic linkage map. **_Theor Appl Genet_**
-# 112, 30-40, 2005.
-# 
-# Voorrips, R.E. MapChart: software for the graphical presentation of
-# linkage maps and QTLs. **_Journal of Heredity_** 93, 77-78, 2002.
-# 
-# Wang S., Basten, C. J. and Zeng Z.-B. Windows QTL Cartographer 2.5.
-# Department of Statistics, North Carolina State University, Raleigh,
-# NC, 2010.
-# [http://statgen.ncsu.edu/qtlcart/WQTLCart.htm](http://statgen.ncsu.edu/qtlcart/WQTLCart.htm)
-# 
-# Wu, R., Ma, C.X., Painter, I. and Zeng, Z.-B. Simultaneous maximum
-# likelihood estimation of linkage and linkage phases in outcrossing
-# species. **_Theoretical Population Biology_** 61, 349-363, 2002a.
-# 
-# Wu, R., Ma, C.-X., Wu, S. S. and Zeng, Z.-B. Linkage mapping of
-# sex-specific differences. **_Genetical Research_** 79, 85-96, 2002b.
+```{r}
+sessionInfo()
 ```
-
-
-
-
