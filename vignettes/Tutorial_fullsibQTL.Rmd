@@ -199,7 +199,7 @@ Within such function there the option to be a interactive graphic:
 plot_fullsibQTL(fullsib=fsib, fullsib.scan=im,interact = TRUE)
 ```
 
-<iframe src='figure/im.html', height="600", width = "800">
+<iframe src='http://statgen.esalq.usp.br/fullsibQTL_graphics/im.html', height="600", width = "800">
 
 </iframe>
 
@@ -259,10 +259,12 @@ If the user wants to see the maximum distribution, he or she can use the `plot` 
 
 ```{r, eval=TRUE, cache=FALSE}
 plot(im_perm, peak=1)
+abline(v=im.peak1)
 abline(v=im.peak1,col="red")
 
 plot(im_perm, peak=2)
-abline(v=im.peak2,col="red")
+abline(v=3.419819,col="blue")
+abline(v=2.497431,col="red")
 ```
 
 ### QTL characterization
@@ -393,7 +395,7 @@ abline(v=cim.peak2,col="red")
 ### QTL characterization
 After the determination of the number and position of the QTLs, the user can characterize the QTLs. In other words, to identify the significant effects, the segregation pattern and linkage phases between QTLs and flanking markers. 
 
-The already created object `im` shows the presence of at least 4 QTLs:
+The already created object `cim` shows the presence of at least 4 QTLs:
 ```{r, eval=TRUE, cache=FALSE}
 summary(cim)
 ```
@@ -410,7 +412,11 @@ abline(h = cim.peak2, lty = 2, lwd = 2, col = "black")
 ## Visual Analysis LG1
 ## QTLs peak at loc13 and M12
 print(cim,lg = 1)
+```
 
+You can visualize the others LGs with likely apporach:
+
+```{r, eval=FALSE, cache=FALSE}
 ## Visual Analysis LG2
 ## QTLs peak loc45, loc77, and loc 108
 print(cim,lg = 2)
@@ -427,6 +433,11 @@ print(cim,lg = 4)
 Through the visual analysis we found the following 8 QTLs peaks corresponding to locations next to the 8 cofactors.
 ```{r}
 print(cim,lg=1,pos=c("loc13","M12","loc45"))
+```
+
+You can visualize the others QTLs with likely apporach:
+
+```{r, eval=FALSE, cache=FALSE}
 print(cim,lg=2,pos=c("loc45","loc77","loc108"))
 print(cim,lg=3,pos=c("M33","loc65"))
 print(cim,lg=4,pos="M52")
@@ -447,6 +458,7 @@ cim_QTL1_lg4 <- cim_char(fullsib = cofs_fs, lg=4, pheno.col=1,pos="M52")
 ## Printing the object
 cim_QTL1_lg1
 ```
+
 `cim_QTL1_lg1` is a matrix with 1 column and 15 lines. The flaking markers of this QTL are in the header. Then, the first line has the LG information. The second line has the position in centiMorgan which the region is localized. The third and fourth lines shows, respectively, $-log_{10}(p_{value})$) and LOD Score, values next to the ones obtained using `im_scan`. The fifth line (`mu`) is the intercept effect of the model. The lines `alpha.p`, `alpha.q`, and `delta.pq` represent the QTL genetic effects. The lines `LOD.alpha.p`, `LOD.alpha.q`, and `LOD.delta.pq` are the statistics of the marginal tests of these genetic effects. All of these three tests was performed with 1 degree of freedom (testing just if the effect differs than zero). In this case, a LOD score above or equal $0.83$ indicates a significant given effect (LOD $= 0.83$ is the same as a LRT $= 3.81$ which under $\chi^2$ distribution with 1 degree of freedom has significance level of $5%$). The lines `H4.pvalue`, `H5.pvalue`, and `H6.pvalue` show the p-values for the complementary test in order to detect the QTL segregation. For more information about it, please see Gazaffi et al. (2014). At last, the line `model` shows which model was studied, see details on section 9. In some cases, a given test cannot be evaluated, in these cases the cells will have `NA` values.
 
 We can also print all the QTLs in a single table with:
@@ -664,7 +676,6 @@ summary(cim_perm)
 
 plot_fullsibQTL(fullsib=fullsib,
                 fullsib.scan=list(cim,im),
-                r2ls.out=list(qtls.cim,qtls.im),
                 qtlmapping=c("CIM","IM"),
                 thr = c(4.023724, 2.900906))
 ```
@@ -738,7 +749,7 @@ plot_fullsibQTL(fullsib=fullsib,
 
 The above script creates the following graphic. It is a interactive `plotly`. *Click on legend entries to toggle traces, click-and-drag on the chart to zoom, double-click to autoscale, shift-and-drag to pan* ([plotly website](https://plot.ly/r/getting-started/)). Additionaly, it is included in the tooltip the LOD score, the QTL estimated effect, and marker names in the map.
 
-<iframe src='figure/cim_im.html', height="600", width = "800">
+<iframe src='http://statgen.esalq.usp.br/fullsibQTL_graphics/cim_im_greens/cim_im.html', height="600", width = "800">
 
 </iframe>
 
@@ -765,7 +776,7 @@ plot_fullsibQTL(fullsib=fullsib,
                 folder="/home/your_user_name/Pictures")
 ```
 
-<iframe src='figure/cim_im_greens.html', height="650", width = "800">
+<iframe src='http://statgen.esalq.usp.br/fullsibQTL_graphics/cim_im_greens.html', height="650", width = "800">
 
 </iframe>
 

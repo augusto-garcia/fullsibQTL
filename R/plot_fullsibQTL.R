@@ -212,14 +212,12 @@ plot_fullsibQTL <- function(fullsib = NULL, fullsib.scan = NULL,
     ## Setting theme
     if(grayscale){
       p <- p + scale_color_grey(" ") + theme_classic()
-      print("grayscale")
+      #print("grayscale")
     }else{
       if(is.null(lg.colors)){
       p <- p + scale_color_discrete(" ")
-      print("color discrete")
       }else{
         p <- p + scale_color_manual(" ",values = lg.colors)
-        print("color manual")
       }
     }
     
