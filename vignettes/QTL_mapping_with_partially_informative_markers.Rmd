@@ -1,11 +1,14 @@
 ---
 title: "QTL mapping with partially informative markers"
 date: "`r Sys.Date()`"
-author: "[Statistical Genetics Lab](http://statgen.esalq.usp.br) <br/> Department of Genetics, Luiz de Queiroz College of Agriculture, University of São Paulo"
+author: "[Statistical Genetics Lab](http://statgen.esalq.usp.br) <br/> Department of Genetics <br/> Luiz de Queiroz College of Agriculture <br/> University of São Paulo"
 output: 
-    rmarkdown::html_vignette
+  prettydoc::html_pretty:
+    theme: leonids
+    css: statgen.css
+    highlight: github
 vignette: >
-  %\VignetteIndexEntry{QTL mapping with partially informative markers}
+  %\VignetteIndexEntry{fullsibQTL Tutorial}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -13,11 +16,12 @@ vignette: >
 ```{r knitr_init, echo=FALSE, cache=FALSE}
 library(knitr)
 library(rmdformats)
+library(prettydoc)
 
 ## From ggplot2 rmd vignette options
-knitr::opts_chunk$set(collapse = TRUE, 
+knitr::opts_chunk$set(collapse = FALSE,
                       comment = "#>", 
-                      fig.width = 5, 
+                      fig.width = 4, 
                       fig.height = 4, 
                       fig.align = "center")
 ```

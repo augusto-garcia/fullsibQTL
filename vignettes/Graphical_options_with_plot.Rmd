@@ -1,11 +1,14 @@
 ---
 title: "Graphical options with `plot`"
 date: "`r Sys.Date()`"
-author: "[Statistical Genetics Lab](http://statgen.esalq.usp.br) <br/> Department of Genetics, Luiz de Queiroz College of Agriculture, University of São Paulo"
+author: "[Statistical Genetics Lab](http://statgen.esalq.usp.br) <br/> Department of Genetics <br/> Luiz de Queiroz College of Agriculture <br/> University of São Paulo"
 output: 
-    rmarkdown::html_vignette
+  prettydoc::html_pretty:
+    theme: leonids
+    css: statgen.css
+    highlight: github
 vignette: >
-  %\VignetteIndexEntry{Graphical options with plot}
+  %\VignetteIndexEntry{fullsibQTL Tutorial}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -13,9 +16,10 @@ vignette: >
 ```{r knitr_init, echo=FALSE, cache=FALSE}
 library(knitr)
 library(rmdformats)
+library(prettydoc)
 
 ## From ggplot2 rmd vignette options
-knitr::opts_chunk$set(collapse = TRUE, 
+knitr::opts_chunk$set(collapse = TRUE,
                       comment = "#>", 
                       fig.width = 7, 
                       fig.height = 5, 
@@ -24,158 +28,190 @@ knitr::opts_chunk$set(collapse = TRUE,
 
 In this section we show how to plot different graphics with the `plot` function. A complete description can be viewed through `?plot.fullsib_scan`. As an example we will use the example data from the package:
 
-```{r}
-  library(fullsibQTL)
-  data("example_QTLfullsib")
-  fullsib <- create_fullsib(example_QTLfullsib,
-                             list(LG1_final, LG2_final, LG3_final, LG4_final),
-                             step=1,map.function="kosambi",condIndex=3.5)
+As an example we will use the example data from the package, the below step are described at the *`fullsibQTL` Tutorial* vignette.
+```{r, eval=TRUE, echo=FALSE,results='hide', cache=FALSE}
+  library(onemap)
+```
+
+```{r, eval=TRUE, echo=TRUE, results='hide'}
+  library( "fullsibQTL" )
+  data( "example_QTLfullsib" )
+  fullsib <- create_fullsib( example_QTLfullsib,
+                             list( LG1_final, LG2_final, LG3_final, LG4_final ),
+                             step = 1,
+                             map.function = "kosambi",
+                             condIndex = 3.5 )
 
   ## IM
-  im <- im_scan(fullsib)
-  qtls.im <- r2_ls(fullsib, pheno.col=1, lg=c(1,1,2,2,2,3,3,4),
-                 pos=c("loc13","M12","loc45","loc77","loc108","M33","loc65","M52"))
+  im <- im_scan( fullsib )
+  qtls.im <- r2_ls( fullsib, 
+                    pheno.col = 1, 
+                    lg = c( 1, 1, 2, 2, 2, 3, 3, 4 ),
+                    pos = c( "loc13", "M12", "loc45", "loc77", "loc108", "M33", "loc65", "M52" ) )
+  
   ## CIM
-  cofs.fs <- cof_selection(fullsib, pheno.col=1, k=log(300), n.cofactor = 10)
-  cim<-cim_scan(cofs.fs)
-  qtls.cim <- r2_ls(fullsib, pheno.col=1, lg=c(1,1,2,2,2,3,3,4),
-                    pos=c("loc13","M12","loc45","loc77","loc108","M33","loc65","M52"))
+  cofs.fs <- cof_selection( fullsib, 
+                            pheno.col = 1, 
+                            k=log(300), 
+                            n.cofactor = 10)
+  cim <- cim_scan( cofs.fs )
+  qtls.cim <- r2_ls( fullsib, 
+                     pheno.col = 1, 
+                     lg = c( 1, 1, 2, 2, 2, 3, 3, 4 ),
+                     pos = c( "loc13", "M12", "loc45", "loc77", "loc108", "M33", "loc65", "M52" ) )
   
-  ## Getting im and cim peaks for alpha 0.05. 
-  ## between () for created and print the object
-  im.peak1 <- summary(im_perm,alpha=0.05)[1,1]
-  im.peak2 <- summary(im_perm,alpha=0.05)[1,2]
+  ## Getting im and cim peaks for alpha 0.05.
+  im.peak1 <- summary( im_perm, alpha = 0.05 )[ 1, 1 ]
+  im.peak2 <- summary( im_perm, alpha = 0.05 )[ 1, 2 ]
   
-  cim.peak1 <- summary(cim_perm, alpha=0.05)[1,1]
-  cim.peak2 <- summary(cim_perm, alpha=0.05)[1,2]
+  cim.peak1 <- summary( cim_perm, alpha = 0.05 )[ 1, 1 ]
+  cim.peak2 <- summary( cim_perm, alpha = 0.05 )[ 1, 2 ]
 ```
 
-# The basic graphic
+To plot the basic graphic
 ```{r}
-plot(im)
+plot( im )
 ```
-
-You can check more colors options at this [cheatsheet](https://www.nceas.ucsb.edu/~frazier/RSpatialGuides/colorPaletteCheatsheet.pdf) or at this color [guide](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf) 
 
 ## Customizing Graphics
 ```{r}
-plot(im)
-
 ## argument lty
 ## Changes the line type
-## There is a total of 6 different line types as follow:
-plot(im)
-abline(h=c(1,2,3,4,5,6),lty=c(1,2,3,4,5,6))
+## There are 6 different line types as follow:
+plot( im )
+abline( h = c( 1, 2, 3, 4, 5, 6 ), lty = c ( 1, 2, 3, 4, 5, 6 ) )
 
 ## argument lwd
-## Changes the line width
-## It is changed in a relative proportion to the default. 2 is twice the default width, 3 is triple of the default, and so on.
-plot(im)
-abline(h=c(.5,1,2,3,4,5,6),lwd=c(.5,1,2,3,4,5,6))
+### changes the line width. It changes in a relative proportion to 
+### the default. 2 is twice the default width, 3 is triple of the 
+### default, and so on.
 
-## You can set any of them with the plot with:
-plot(im, lty=3, lwd=2)
+## You can set any of them with the plot:
+plot( im, lty = 3, lwd = 2 )
 
 ## argument lg
+### selects which LG to plot
 ## Plotting just LG1
-plot(im, lty=3, lwd=2, lg=1)
+plot( im, lty = 3, lwd = 2, lg = 1 )
 
 ## Plotting LG1 and LG2
-plot(im, lty=3, lwd=2, lg=c(1,2))
+plot( im, lty=3, lwd = 2, lg = c ( 1 , 2 ) )
 
 ## argument label.lg
-## Labels the LGs
-plot(im, lty=3, lwd=2, lg=c(1,2), label.lg=c("Chr 1","Chr 2"))
+### labels the LGs
+plot( im, lty = 3, lwd = 2, lg = c( 1, 2 ), 
+      label.lg = c( "Chr 1", "Chr 2" ) )
 
 ## argument cex.axis  
-## Changes the magnification of axis annotation relative to cex
-plot(im, lty=3, lwd=2, lg=c(1,2), label.lg=c("Chr 1","Chr 2"), cex.axis=1)
-plot(im, lty=3, lwd=2, lg=c(1,2), label.lg=c("Chr 1","Chr 2"), cex.axis=1.5)
+### changes the magnification of axis annotation relative to cex
+plot( im, lty = 3, lwd = 2, lg = c( 1, 2 ), 
+      label.lg = c( "Chr 1", "Chr 2" ), cex.axis = 1 )
+plot( im, lty = 3, lwd = 2, lg = c( 1, 2 ), 
+      label.lg = c("Chr 1","Chr 2"), cex.axis = 1.5 )
 
 ## argument incl.mkr
-## Includes the marker position
-## There are 3 options: `points`, `name`, and, `none`. `none` is default.
-plot(im, lty=3, lwd=2, lg=c(1,2), label.lg=c("Chr 1","Chr 2"), cex.axis=1.2, incl.mkr="points")
+### includes the marker position there are 3 options: 
+### `points`, `name`, and, `none`. `none` is default.
+plot( im, lty = 3, lwd = 2, lg = c( 1, 2 ), 
+      label.lg = c( "Chr 1", "Chr 2" ), cex.axis = 1.2, 
+      incl.mkr = "points" )
 
 ## argument cex.incl
-## Changes the magnification of incl.mrk annotation relative to cex.
-plot(im, lty=3, lwd=2, lg=c(1,2), label.lg=c("Chr 1","Chr 2"), cex.axis=1.2, incl.mkr="name", cex.incl = .75)
+### changes the magnification of incl.mrk annotation 
+### relative to cex.
+plot( im, lty = 3, lwd = 2, lg = c( 1, 2 ), 
+      label.lg = c( "Chr 1", "Chr 2" ), cex.axis = 1.2, 
+      incl.mkr = "name", cex.incl = .75 )
 
 ## argument gap
-## Enlarges the gap between chromosomes (in CM)
-plot(im, lty=3, lwd=2, lg=c(1,2), label.lg=c("Chr 1","Chr 2"), cex.axis=1.2, incl.mkr="name", cex.incl = .75, gap = 50)
+### enlarges the gap between chromosomes (in CM)
+plot( im, lty = 3, lwd = 2, lg = c( 1, 2 ), 
+      label.lg = c( "Chr 1", "Chr 2" ), cex.axis = 1.2, 
+      incl.mkr = "name", cex.incl = .75, gap = 50 )
 
 ## argument col
-## Changes the line colors
-plot(im, lty=3, lwd=2, lg=c(1,2), label.lg=c("Chr 1","Chr 2"), cex.axis=1.2, incl.mkr="name", cex.incl = .75, gap = 50, col="red")
+### changes the line colors
+plot( im, lty = 3, lwd = 2, lg = c( 1, 2 ), 
+      label.lg = c( "Chr 1", "Chr 2" ), cex.axis = 1.2, 
+      incl.mkr = "name", cex.incl = .75, gap = 50, col="red")
 ```
 
 You can check more colors options at this [cheatsheet](https://www.nceas.ucsb.edu/~frazier/RSpatialGuides/colorPaletteCheatsheet.pdf) or at this color [guide](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf) 
 
-You can also customize the plot with the default R plot options as `main`, `ylab`, `xlab`, `yaxt`, `ylim`, etc. 
+You can also customize the plot with the default R `plot.default` options as `main`, `ylab`, `xlab`, `yaxt`, `ylim`, etc. 
 
 ```{r}
-plot(im, lty=1, lwd=2, lg=c(1,2), cex.axis=1.2, incl.mkr="name", cex.incl = .9, gap = 50, col="red", alternate.lgid = TRUE,
-     ## Configuring with R plot options:
-     main = "IM - Trait - Crop", 
-     xlab = "Linkage Group", 
-     ylab = "LOD score", 
-     yaxt = "n",
-     ylim = c(0,10))
-axis(side=2,at=seq(0,10,1),lwd=1)
-abline(h=im.peak1, lty=2)
-abline(h=im.peak2, lty=3)
-legend("topleft", lty=c(1,2,3,0), cex=0.75, col=c("red","black","black"), legend=c("IM","1st Peak Threshold","2nd Peak Threshold"))
+plot( im, lty=1, lwd=2, lg=c(1,2), cex.axis=1.2, 
+      incl.mkr="name", cex.incl = .9, gap = 50, col="red", 
+      alternate.lgid = TRUE,
+      ## Configuring with R plot options:
+      main = "IM - Trait - Crop", 
+      xlab = "Linkage Group", 
+      ylab = "LOD score", 
+      yaxt = "n",
+      ylim = c(0,10))
+axis( side = 2, at = seq( 0, 10, 1 ), lwd = 1 )
+abline( h = im.peak1, lty = 2 )
+abline( h = im.peak2, lty = 3 )
+legend( "topleft", lty = c( 1, 2, 3, 0 ), cex = 0.75, 
+        col = c( "red", "black", "black" ), 
+        legend = c( "IM", "1st Peak Threshold", "2nd Peak Threshold" ) )
 ```
 
 ## Graphical comparision between `(c)im_scan`
 The IM and CIM mapping results can be compared in a graphical way with the following codes:
 ```{r}
-plot(im,cim, lty = c(2,1), lwd = 2, incl.mkr = "name", cex.incl = 0.7, gap=50,
-     cex.axis = 0.8, col = c("blue","red"),
-     main = "IM - Trait - Crop", 
-     xlab = "Linkage Group", 
-     ylab = "LOD score", 
-     yaxt = "n",
-     ylim = c(0,15))
-axis(side=2,at=seq(0,15,1),lwd=1)
-abline(h = im.peak1, lty = 2, lwd = 0.75)
-abline(h = cim.peak1, lty = 2, lwd = 0.75)
-legend("topleft", lty=c(2,1,2,2), cex=0.5, col=c("red","blue","black","black"), legend=c("IM","CIM","1st Threshold","2nd Threshold"))
-
-
-## Adding QTLs
+plot( im,cim, lty = c(2,1), lwd = 2, incl.mkr = "name", 
+      cex.incl = 0.7, gap = 50, cex.axis = 0.8, 
+      col = c("blue","red"),
+      main = "IM - Trait - Crop", 
+      xlab = "Linkage Group", 
+      ylab = "LOD score", 
+      yaxt = "n",
+      ylim = c( 0, 15 ) )
+axis( side = 2, at = seq( 0, 15, 1 ), lwd = 1 )
+abline( h = im.peak1, lty = 2, lwd = 0.75 )
+abline( h = cim.peak1, lty = 2, lwd = 0.75 )
+legend( "topleft", lty = c( 2, 1, 2, 2 ), cex = 0.5, 
+        col = c( "red", "blue", "black", "black" ), 
+        legend = c( "IM", "CIM", "1st Threshold","2nd Threshold") )
 ```
+
 ## Adding QTL location to the graphic
-Our QTLs are the following:
+Our QTLs are the same ones of the *`fullsibQTL` Tutorial* vignette as follows:
 ```{r}
-print(cim,lg=1,pos=c("loc13","M12"))
-print(cim,lg=2,pos=c("loc45","loc77","loc108"))
-print(cim,lg=3,pos=c("M33","loc65"))
-print(cim,lg=4,pos="M52")
+print( cim, lg = 1, pos = c( "loc13", "M12" ) )
+print( cim, lg = 2, pos = c( "loc45", "loc77" ,"loc108" ) )
+print( cim, lg = 3, pos = c( "M33", "loc65" ) )
+print( cim, lg = 4, pos = "M52" )
 ```
-To add them to the graphic we can use the function `points` as follows. Knowing that the `gap` space is `50`, we can add this to the total size of each LG and get the position. The points will be localized at:
+The `plot` function is not so straighforward to add QTL location as the `plot_fullsibQTL` function. Here, to add them to the graphic we can use the function `points` as follows. Knowing that the `gap` space is `50`, we can add this to the total size of each LG and get the position. The points will be localized at:
 ```{r}
-points.loc <- c(13,110,45,77,108,20,65,60)
-points.loc <- points.loc + c(0,0,
-                             140+50,140+50,140+50,
-                             140+50+140+50,140+50+140+50,
-                             140+50+140+50+140+50)
+points.loc <- c( 13, 110, 45, 77, 108, 20, 65, 60 )
+points.loc <- points.loc + c( 0, 0,
+                              140 + 50, 140 + 50, 140 + 50,
+                              140 + 50 + 140 + 50, 140 + 50 + 140 + 50,
+                              140 + 50 + 140 + 50 + 140 + 50 )
 ```
 Therefore:
 ```{r}
-plot(im,cim, lty = c(2,1), lwd = 2, incl.mkr = "name", cex.incl = 0.5, gap=50,
-     cex.axis = 0.8, col = c("blue","red"),
-     main = "IM - Trait - Crop", 
-     xlab = "Linkage Group", 
-     ylab = "LOD score", 
-     yaxt = "n",
-     ylim = c(-2,15))
-axis(side=2,at=seq(0,15,1),lwd=1)
-abline(h = im.peak1, lty = 2, lwd = 0.75)
-abline(h = cim.peak1, lty = 2, lwd = 0.75)
-points(y=rep(0,8),x=points.loc, pch=17, col="dark green")
-legend("topleft", lty=c(2,1,2,2,0), cex=0.75, pch = c(NA,NA,NA,NA,17),col = c("red", "blue", "black", "black", "dark green"), legend = c("IM","CIM","1st Threshold","2nd Threshold","QTL"),bty='n',y.intersp=.75)
+plot( im, cim, lty = c( 2, 1 ), lwd = 2, 
+      incl.mkr = "name", cex.incl = 0.5, gap = 50,
+      cex.axis = 0.8, col = c( "blue", "red" ),
+      main = "IM - Trait - Crop", 
+      xlab = "Linkage Group", 
+      ylab = "LOD score", 
+      yaxt = "n",
+      ylim = c( -2, 15 ) )
+axis( side=2, at = seq( 0, 15, 1 ), lwd = 1 )
+abline( h = im.peak1, lty = 2, lwd = 0.75 )
+abline( h = cim.peak1, lty = 2, lwd = 0.75 )
+points( y = rep( 0, 8 ), x = points.loc, pch = 17, col = "dark green" )
+legend( "topleft", lty = c( 2, 1, 2, 2, 0 ), cex = 0.75, 
+        pch = c( NA, NA, NA, NA, 17 ), 
+        col = c( "red", "blue", "black", "black", "dark green" ), 
+        legend = c( "IM", "CIM", "1st Threshold", "2nd Threshold", "QTL"),
+        bty = 'n', y.intersp = .75 )
 ```
 
 # Session Info
