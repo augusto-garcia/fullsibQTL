@@ -1,8 +1,8 @@
 Package: fullsibQTL
 Title: Software for QTL Mapping using a Full-Sib Progeny
-Version: 0.0.9002
-Date: 2017-08-15
-Authors@R: c(person("Rodrigo","Gazaffi",    role = "aut", email = "rgazaffi@gmail.com"),
+Version: 0.0.9003
+Date: 2017-08-19
+Authors@R: c(person("Rodrigo", "Gazaffi",   role = "aut", email = "rgazaffi@gmail.com"),
              person("Rodrigo", "Amadeu",    role = c("aut","cre"), email = "rodrigo.amadeu@usp.br"),
   	         person("Marcelo", "Mollinari", role = "ctb", email = "mmollina@usp.br"), 
              person("Gabriel", "Margarido", role = "ctb", email = "gramarga@gmail.com"),
@@ -10,11 +10,11 @@ Authors@R: c(person("Rodrigo","Gazaffi",    role = "aut", email = "rgazaffi@gmai
              person("Karl",    "Broman",    role = "ctb", email = "kbroman@biostat.wisc.edu"),
              person("Augusto", "Garcia",    role = "ctb", email = "augusto.garcia@usp.br"))
 Depends: R (>= 3.4.0),
-          onemap (>= 2.0.7)
+          onemap (>= 2.1.0000)
 Imports: ggplot2 (>= 2.2.1),
           scales  (>= 0.4.1),
-          plotly  (>= 4.7.0),
-          htmlwidgets (>= 0.8)
+          plotly  (>= 4.7.1),
+          htmlwidgets (>= 0.9)
 Suggests: knitr,
           rmarkdown,
           prettydoc
@@ -27,7 +27,6 @@ Description: QTL mapping in outbred (outcrossing) species, considering a full-si
   for QTLs and after locating them, one can characterize these loci, i.e., it is possible to 
   estimate their effects, segregation pattern and the linkage phase between QTL and markers.
 License: GPL-3
-Author: Rodrigo Gazaffi [aut], Rodrigo Amadeu [aut, cre], Augusto Garcia [ctb]
 BugReports: https://github.com/augusto-garcia/fullsibQTL/wiki
 Repository: CRAN
 URL: https://github.com/augusto-garcia/fullsibQTL
