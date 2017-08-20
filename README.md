@@ -34,6 +34,8 @@ Within R, you need to install and load the package `devtools`:
 install.packages( "devtools" )
 library( "devtools" )
 
+2
+=======
 install_github( "augusto-garcia/fullsibQTL" )
 ```
 
@@ -53,5 +55,7 @@ You can read _fullsibQTL_ tutorial going to the vignettes of the installed packa
 
 # Additional material
 [Graphical options with plot_fullsibQTL](https://rramadeu.github.io/fullsibQTL/inst/doc/Graphical_options_with_plot_fullsibQTL.html)
+
 [Graphical options with plot](https://rramadeu.github.io/fullsibQTL/inst/doc/Graphical_options_with_plot.html)
+
 [QTL mapping with partially informative markers](https://rramadeu.github.io/fullsibQTL/inst/doc/QTL_mapping_with_partially_informative_markers.html)
