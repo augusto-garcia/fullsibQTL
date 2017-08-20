@@ -21,7 +21,7 @@ This github page has its version under development. New functions will be added 
 It is easy, just type (within R):
 
 ```R
-install.packages("fullsibQTL")
+install.packages( "fullsibQTL" )
 ```
 
 The `onemap` package is a dependency, if you are having trouble installing it please check its git page (https://github.com/augusto-garcia/onemap)
@@ -31,8 +31,8 @@ The `onemap` package is a dependency, if you are having trouble installing it pl
 Within R, you need to install and load the package `devtools`:
 
 ```R
-install.packages("devtools")
-library(devtools)
+install.packages( "devtools" )
+library( "devtools" )
 
 install_github( "augusto-garcia/fullsibQTL" )
 ```
