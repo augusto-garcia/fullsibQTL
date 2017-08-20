@@ -28,14 +28,12 @@ The `onemap` package is a dependency, if you are having trouble installing it pl
 
 ## From github (version under development)
 
-Within R, you need to install and load the package `devtools`:
+Within R, you need to install and load the package `devtools` and install `fullsibQTL` from this very repository:
 
 ```R
 install.packages( "devtools" )
 library( "devtools" )
 
-2
-=======
 install_github( "augusto-garcia/fullsibQTL" )
 ```
 
