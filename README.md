@@ -49,7 +49,7 @@ install_github( "augusto-garcia/fullsibQTL" )
 
 # Tutorials
 
-You can read _fullsibQTL_ tutorial going to the vignettes of the installed package, or clicking below.
+You can read `fullsibQTL` tutorial going to the vignettes of the installed package, or clicking below.
 
 [fullsibQTL Tutorial](http://htmlpreview.github.com/?https://rramadeu.github.io/fullsibQTL/inst/doc/fullsibQTL_Tutorial.html)
 
