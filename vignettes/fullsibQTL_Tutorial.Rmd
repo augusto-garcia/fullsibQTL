@@ -35,16 +35,16 @@ vignette [Introduction to R](http://htmlpreview.github.io/?https://github.com/au
 
 Additionally, to this tutorial, there are three additional tutorials:
 
-- *QTL mapping with partially informative markers*
+- [QTL mapping with partially informative markers](https://rramadeu.github.io/fullsibQTL/inst/doc/QTL_mapping_with_partially_informative_markers.html)
 ```{r, eval=FALSE}
 vignette( "QTL_mapping_with_partially_informative_markers", package = "fullsibQTL" )
 ```
 
-- *Graphical options with `plot_fullsibQTL`*
+- [Graphical options with `plot_fullsibQTL`](https://rramadeu.github.io/fullsibQTL/inst/doc/Graphical_options_with_plot_fullsibQTL.html)
 ```{r, eval=FALSE}
 vignette( "Graphical_options_with_plot_fullsibQTL", package = "fullsibQTL" )
 ```
-- *Graphical options with `plot`*
+- [Graphical options with `plot`](https://rramadeu.github.io/fullsibQTL/inst/doc/Graphical_options_with_plot.html)
 ```{r, eval=FALSE}
 vignette( "Graphical_options_with_plot", package = "fullsibQTL" )
 ```
