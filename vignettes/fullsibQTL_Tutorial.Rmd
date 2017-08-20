@@ -226,7 +226,7 @@ There are the option to plot an interactive graphic:
 plot_fullsibQTL( fullsib = fsib, fullsib.scan = im, interact = TRUE )
 ```
 
-It will generate this HTML [graphic](http://statgen.esalq.usp.br/fullsibQTL_graphics/im.h).
+It will generate this HTML [graphic](http://statgen.esalq.usp.br/fullsibQTL_graphics/im.html).
 
 You can find more information about `plot_fullsibQTL`:
 ```{r, eval=FALSE, cache=FALSE}
