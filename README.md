@@ -6,13 +6,13 @@
 
 # fullsibQTL
 
-`fullsibQTL` is a software for for QTL mapping in outbred (outcrossing) species, considering a full-sib cross (or F1 population) as a mapping population. It is assumed a previous genetic map obtained with 'onemap' package. The method is based on maximum likelihood approach using mixture models and EM algorithm. The probabilities for QTL genotypes are inferred using multipoint approach based on Hidden Markov Models. We implemented functions to perform interval mapping (IM) and composite interval mapping (CIM). In a first step one need to scan the genome for QTLs and after locating them, one can characterize these loci, i.e., it is possible to estimate their effects, segregation pattern and the linkage phase between QTL and markers.
+`fullsibQTL` is a software for for QTL mapping in outbred (outcrossing) species, considering a full-sib cross (or F1 population) as a mapping population. It is assumed a previous genetic map obtained with `onemap` package. The method is based on maximum likelihood approach using mixture models and EM algorithm. The probabilities for QTL genotypes are inferred using multipoint approach based on Hidden Markov Models. We implemented functions to perform interval mapping (IM) and composite interval mapping (CIM). In a first step one need to scan the genome for QTLs and after locating them, one can characterize these loci, *i.e.*, it is possible to estimate their effects, segregation pattern and the linkage phase between QTL and markers.
 
-It has been available on CRAN (http://cran.r-project.org/web/packages/fullsibQTL/index.html). Its last version was updated on YYYY-MM-DD. CRAN has fullsibQTL's stable version, which is recommended for most users.
+It has been available on CRAN (http://cran.r-project.org/web/packages/fullsibQTL/index.html). Its last version was updated on YYYY-MM-DD. CRAN has `fullsibQTL`'s stable version, which is recommended for most users.
 
-This github page has its version under development. New functions will be added (experimental work) and, once it is done, we will synchronizethe repositories and add it to CRAN.
+This github page has its version under development. New functions will be added (test phase) and, once it is done, we will synchronizethe repositories and add it to CRAN.
 
-`fullsibQTL` comprises a set of functions that allows users to build a linkage map. Some functions are used internally by the package, and should not be used directly.
+`fullsibQTL` comprises a set of functions that allows users to QTL mapping. Some functions are used internally by the package, and should not be used directly.
 
 # How to install
 
