@@ -5,7 +5,7 @@ author: "[Statistical Genetics Lab](http://statgen.esalq.usp.br) <br/> Departmen
 output: 
   prettydoc::html_pretty:
     theme: leonids
-    css: statgen.css
+    css: ../css/statgen.css
     highlight: github
 vignette: >
   %\VignetteIndexEntry{fullsibQTL Tutorial}
@@ -69,7 +69,7 @@ Within R:
 ```{r, eval=FALSE}
 ## Installing and loading devtools
 install.packages( "devtools" )
-library( devtools )
+library( "devtools" )
 
 ## Installing from github the fullsibQTL
 install_github( "augusto-garcia/fullsibQTL" )
@@ -147,7 +147,7 @@ fsib
 
 If you want to see this data file in its raw format, type the following line to see where in your machine it is located:
 ```{r, eval=FALSE}
-system.file("extdata", "example_QTLfullsib.raw", package = "fullsibQTL")
+system.file( "extdata", "example_QTLfullsib.raw", package = "fullsibQTL" )
 ```
 
 ```{r, eval=TRUE, echo=FALSE}
@@ -158,7 +158,7 @@ library(fullsibQTL)
 In this tutorial we will use the data example available in this same package. In this data, there are 6 objects, a raw data in the `onemap` format (`example_QTLfullsib`), 4 ordered linkage groups (`LG1_final`, `LG2_final`, `LG3_final`, and `LG4_final`), and 2 objects with permutations which will be later explained (`im_perm` and `cim_perm`). They are the same ones described at Gazaffi et al. (2014). To load the data:
 ```{r, eval=TRUE,cache=FALSE}
 ## Loading the example data
-data(example_QTLfullsib) 
+data( "example_QTLfullsib" ) 
 
 ## Checking if the objects were loaded
 ls() 
@@ -170,9 +170,9 @@ LG1_final
 
 Now, we have to combine the raw data with the linkage groups (hereafter LG) in a single object with the function `create_fullsib`:
 ```{r, eval=TRUE, cache=FALSE}
-fsib <- create_fullsib(example_QTLfullsib,
-                       map.list=list(LG1_final, LG2_final, LG3_final, LG4_final),
-                       step=1, map.function="kosambi")
+fsib <- create_fullsib( example_QTLfullsib,
+                        map.list = list( LG1_final, LG2_final, LG3_final, LG4_final ),
+                       step = 1, map.function = "kosambi" )
 ## Printing it
 fsib
 ```
@@ -268,9 +268,9 @@ summary( im_perm )
 summary( im_perm, alpha = 0.05 )
 
 ## Getting the peaks for alpha 0.05.
-im.peak1 <- summary( im_perm, alpha=0.05)[1,1]
+im.peak1 <- summary( im_perm, alpha = 0.05 )[ 1, 1 ]
 im.peak1
-im.peak2 <- summary( im_perm,alpha=0.05)[1,2]
+im.peak2 <- summary( im_perm,alpha = 0.05 )[ 1, 2 ]
 im.peak2
 
 ## Plotting the second peak in the graphic
@@ -289,7 +289,7 @@ abline( h = im.peak2, lty = 2, lwd = 2, col = "black" )
 If the user wants to see the maximum distribution, he or she can use the `plot` function with `perm` object. If the user set the `peak` argument for `2`, the distribution of the second highest peaks will be shown. The vertical line represents the cut-off threshold for $\alpha=0.05$.
 
 ```{r, eval=TRUE, cache=FALSE}
-plot( im_perm, peak=1 )
+plot( im_perm, peak = 1 )
 abline( v = im.peak1 )
 abline( v = im.peak1, col = "red" )
 
