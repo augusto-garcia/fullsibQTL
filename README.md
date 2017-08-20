@@ -33,18 +33,25 @@ Within R, you need to install and load the package `devtools`:
 ```R
 install.packages("devtools")
 library(devtools)
+
+install_github( "augusto-garcia/fullsibQTL" )
 ```
 
-This will allow you to automatically build and install packages from github. If you use Windows, first install [Rtools](https://cran.r-project.org/bin/windows/Rtools/). If you are facing problems with Rtools installation, try to do it by selecting *Run as Admnistrator* option with right mouse button. On a Mac, you will need Xcode (available on the App Store). On Linux, you may need to install `r-cran-tkrplot`.
+This will allow you to automatically build and install packages from github. If you use Windows and the above script did not work, try to install [Rtools](https://cran.r-project.org/bin/windows/Rtools/) first. If you are facing problems with Rtools installation, try to do it by selecting *Run as Admnistrator* option with right mouse button. On a Mac, you will need Xcode (available on the App Store). On Linux, you may need to install `r-cran-tkrplot`.
 
 Then, to install `fullsibQTL` from github (this very repo):
 
 ```R
-install_github("augusto-garcia/fullsibQTL")
+install_github( "augusto-garcia/fullsibQTL" )
 ```
 
 # Tutorials
 
 You can read _fullsibQTL_ tutorial going to the vignettes of the installed package, or clicking below.
 
-[Tutorial fullsibQTL](http://htmlpreview.github.com/?https://github.com/rramadeu/fullsibQTL/blob/master/inst/doc/Tutorial_fullsibQTL.html)
+[fullsibQTL Tutorial](http://htmlpreview.github.com/?https://rramadeu.github.io/fullsibQTL/inst/doc/fullsibQTL_Tutorial.html)
+
+# Additional material
+[Graphical options with plot_fullsibQTL](https://rramadeu.github.io/fullsibQTL/inst/doc/Graphical_options_with_plot_fullsibQTL.html)
+[Graphical options with plot](https://rramadeu.github.io/fullsibQTL/inst/doc/Graphical_options_with_plot.html)
+[QTL mapping with partially informative markers](https://rramadeu.github.io/fullsibQTL/inst/doc/QTL_mapping_with_partially_informative_markers.html)
