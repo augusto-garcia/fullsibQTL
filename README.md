@@ -49,7 +49,7 @@ install_github( "augusto-garcia/fullsibQTL" )
 
 You can read `fullsibQTL` tutorial going to the vignettes of the installed package, or clicking below.
 
-[fullsibQTL Tutorial](http://htmlpreview.github.com/?https://rramadeu.github.io/fullsibQTL/vignettes_highres/fullsibQTL_Tutorial.html)
+[fullsibQTL Tutorial](https://rramadeu.github.io/fullsibQTL/vignettes_highres/fullsibQTL_Tutorial.html)
 
 # Additional material
 [Graphical options with plot_fullsibQTL](https://rramadeu.github.io/fullsibQTL/vignettes_highres/Graphical_options_with_plot_fullsibQTL.html)
