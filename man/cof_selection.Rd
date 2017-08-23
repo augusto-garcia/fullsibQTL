@@ -30,9 +30,9 @@ details.}
 
 \item{stoppage.df}{controls the maximum number of markers to be included in
 the model, using the model's degree of freedom as a limit to stop the
-process. Default is NULL (not considering this argument), but
-\eqn{2\times\sqrt(n)} (being \eqn{n} is number of individuals phenotyped)
-can be used as a limit to control the maximum number of cofactors.}
+process. Default is NULL, which uses \eqn{2\times\sqrt(n)} (being \eqn{n} is the 
+number of individuals phenotyped) as a limit to control the maximum number of cofactors. 
+If FALSE, this argument is not considered.}
 
 \item{trace}{If zero is considered none information about the selection
 process is showed, if non-negative integer is considered, one can see
