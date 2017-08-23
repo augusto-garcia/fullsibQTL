@@ -12,7 +12,7 @@
 # copyright (c) 2011, Rodrigo Gazaffi                                 #
 #                                                                     #
 # First version: 09/30/2011                                           #
-# Last  version: 08/15/2017                                           #
+# Last  version: 08/23/2017                                           #
 # License: GPL-3                                                      #
 #                                                                     #
 #######################################################################
@@ -96,9 +96,9 @@
 #' details.
 #' @param stoppage.df controls the maximum number of markers to be included in
 #' the model, using the model's degree of freedom as a limit to stop the
-#' process. Default is NULL (not considering this argument), but
-#' \eqn{2\times\sqrt(n)} (being \eqn{n} is number of individuals phenotyped)
-#' can be used as a limit to control the maximum number of cofactors.
+#' process. Default is NULL, which uses \eqn{2\times\sqrt(n)} (being \eqn{n} is the 
+#' number of individuals phenotyped) as a limit to control the maximum number of cofactors. 
+#' If FALSE, this argument is not considered.
 #' @param trace If zero is considered none information about the selection
 #' process is showed, if non-negative integer is considered, one can see
 #' additional information during the running process. This argument is the same
@@ -305,11 +305,13 @@ cof_selection <- function(fullsib, pheno.col=1, addcovar=NULL, k=2,
   get.env <- environment()
   environment(step) <- get.env
 
-
-  ##if is NULL add until the maximum number of individuals
-  ##here the algorithm stops considering Inf. Crit. or n.cofactor
-  if(is.null(stoppage.df))
+  ##if FALSE, do not use limit
+  if(stoppage.df==FALSE)
     stoppage.df <- length(pheno.index)
+  
+  ##if is NULL, uses 2 x sqrt(n)
+  if(is.null(stoppage.df))
+    stoppage.df <- 2*round(sqrt(length(pheno.index)))
   
   if (trace == 0) cat("Number of Cofactors selected: ")
   while( (check.DF < stoppage.df) && (n.iter <= n.cofactor) ){
