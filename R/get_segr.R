@@ -14,7 +14,7 @@
 # copyright (c) 2011, Rodrigo Gazaffi                                 #
 #                                                                     #
 # First version: 09/30/2011 (american date format)                    #
-# Last  version: 08/15/2017 (american date format)                    #
+# Last  version: 08/23/2017 (american date format)                    #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################
@@ -132,29 +132,43 @@ get_segr <- function( fschar, probs1 = .05, probs2 = .05 ){
     if (sum(signif.lod) == 0) # no signif ef.
       return(cat("No QTL is considered with probs1 = ", probs1, "\n"))
     
-    if (sum(signif.lod) == 1) # only one signif ef.
-      return(cat("QTL segregation is 1:1\n"))
+    x<-function(){cat("QTL segregation is 1:1");return(invisible("1:1"))}
     
+    if (sum(signif.lod) == 1){ # only one signif ef.
+      cat("QTL segregation is 1:1")
+      return("1:1")
+    }
     if (sum(signif.lod) == 2){ # two signf ef.
       signif.lod <- paste(which(signif.lod),collapse=":")
       switch(EXPR = signif.lod,
              '1:2' = {
-               if(step2[1] < probs2)
-                 return(cat("QTL segregation is 1:1:1:1\n"))
-               else
-                 return(cat("QTL segregation is 1:2:1\n"))
+               if(step2[1] < probs2){
+                 cat("QTL segregation is 1:1:1:1\n")
+                 return(invisible("1:1:1:1"))
+               }else{
+                 cat("QTL segregation is 1:2:1\n")
+                 return(invisible("1:2:1"))
+               }
              },
              '1:3' = {
-               if(step2[2] < probs2)
-                 return(cat("QTL segregation is 1:1:1:1\n"))
-               else
-                 return(cat("QTL segregation is 1:2:1\n"))
+               if(step2[2] < probs2){
+                 cat("QTL segregation is 1:1:1:1\n")
+                 return(invisible("1:1:1:1"))
+               }
+               else{
+                 cat("QTL segregation is 1:2:1\n")
+                 return(invisible("1:2:1"))
+               }
              },
              '2:3' = {
-               if(step2[3] < probs2)
-                 return(cat("QTL segregation is 1:1:1:1\n"))
-               else
-                 return(cat("QTL segregation is 1:2:1\n"))
+               if(step2[3] < probs2){
+                 cat("QTL segregation is 1:1:1:1\n")
+                 return(invisible("1:1:1:1"))
+               }
+               else{
+                 cat("QTL segregation is 1:2:1\n")
+                 return(invisible("1:2:1"))
+               }
                
              })#end-switch
     }
@@ -162,9 +176,9 @@ get_segr <- function( fschar, probs1 = .05, probs2 = .05 ){
     if (sum(signif.lod) == 3){ # three signf ef.
       signif.pvalue <- as.character(sum(step2 > probs2))
       switch(EXPR = signif.pvalue,
-             '3' = {return(cat("QTL segregation is 3:1\n"))},
-             '1' = {return(cat("QTL segregation is 1:2:1\n"))},
-             {return(cat("QTL segregation is 1:1:1:1\n"))})
+             '3' = {cat("QTL segregation is 3:1\n");return(invisible("3:1"))},
+             '1' = {cat("QTL segregation is 1:2:1\n");return(invisible("1:2:1"))},
+             {cat("QTL segregation is 1:1:1:1\n");return(invisible("1:1:1:1"))})
     }
   } #end - used.model==0
 
@@ -173,16 +187,18 @@ get_segr <- function( fschar, probs1 = .05, probs2 = .05 ){
   #######################################################
   
   if(used.model == 1){ ## just ap is estimable
-    if(step1[1] > thr.lod)
-      return(cat("QTL segregation is 1:1\n"))
-    else
+    if(step1[1] > thr.lod){
+        cat("QTL segregation is 1:1\n")
+        return(invisible("1:1"))
+    }else
       return(cat("No QTL is considered with probs1 = ", probs1, "\n"))
   }
 
   if(used.model == 2){ ## just aq is estimable
-    if(step1[2] > thr.lod)
-      return(cat("QTL segregation is 1:1\n"))
-    else
+    if(step1[2] > thr.lod){
+      cat("QTL segregation is 1:1\n")
+      return(invisible("1:1"))
+    }else
       return(cat("No QTL is considered with probs1 = ", probs1, "\n"))
   }
   
@@ -194,14 +210,23 @@ get_segr <- function( fschar, probs1 = .05, probs2 = .05 ){
     signif.lod <- step1[1:2] > thr.lod
     if(sum(signif.lod, na.rm=T) == 0) return(cat("No QTL is considered with probs1 =", probs1, "\n"))
     if(sum(signif.lod, na.rm=T) == 1){
-      if(signif.lod[1] == TRUE) return(cat("QTL segregation is 1:1\n"))
-      if(signif.lod[2] == TRUE) return(cat("QTL segregation is 1:2:1\n"))
+      if(signif.lod[1] == TRUE){
+        cat("QTL segregation is 1:1\n")
+        return(invisible("1:1"))
+      }
+      if(signif.lod[2] == TRUE){
+        cat("QTL segregation is 1:2:1\n")
+        return(invisible("1:2:1"))
+      }
     }
     if(sum(signif.lod, na.rm=T) == 2){
-      if(step2[1] < probs2)
-        return(cat("QTL segregation is 1:2:1\n"))
-      else
-        return(cat("QTL segregation is 3:1\n"))
+      if(step2[1] < probs2){
+        cat("QTL segregation is 1:2:1\n")
+        return(invisible("1:2:1"))
+      }else{
+        cat("QTL segregation is 3:1\n")
+        return(invisible("3:1"))
+      }
     }
   }
 
@@ -209,14 +234,23 @@ get_segr <- function( fschar, probs1 = .05, probs2 = .05 ){
     signif.lod <- step1[1:2] > thr.lod
     if(sum(signif.lod, na.rm=T) == 0) return(cat("No QTL is considered with probs1 =", probs1, "\n"))
     if(sum(signif.lod, na.rm=T) == 1){
-      if(signif.lod[1] == TRUE) return(cat("QTL segregation is 1:2:1\n"))
-      if(signif.lod[2] == TRUE) return(cat("QTL segregation is 1:1\n"))
+      if(signif.lod[1] == TRUE){
+        cat("QTL segregation is 1:2:1\n")
+        return(invisible("1:2:1"))
+      }
+      if(signif.lod[2] == TRUE){
+        cat("QTL segregation is 1:1\n")
+        return(invisible("1:1"))
+      }
     }
     if(sum(signif.lod, na.rm=T) == 2){
-      if(step2[1] < probs2)
-        return(cat("QTL segregation is 1:2:1\n"))
-      else
-        return(cat("QTL segregation is 3:1\n"))
+      if(step2[1] < probs2){
+        cat("QTL segregation is 1:2:1\n")
+        return(invisible("1:2:1"))
+      }else{
+        cat("QTL segregation is 3:1\n")
+        return(invisible("3:1"))
+      }
     }
   }
   
@@ -224,14 +258,23 @@ get_segr <- function( fschar, probs1 = .05, probs2 = .05 ){
     signif.lod <- step1[c(1,3)] > thr.lod
     if(sum(signif.lod, na.rm=T) == 0) return(cat("No QTL is considered with probs1 =", probs1, "\n"))
     if(sum(signif.lod, na.rm=T) == 1){
-      if(signif.lod[1] == TRUE) return(cat("QTL segregation is 1:2:1\n"))
-      if(signif.lod[2] == TRUE) return(cat("QTL segregation is 1:1\n"))
+      if(signif.lod[1] == TRUE){
+        cat("QTL segregation is 1:2:1\n")
+        return(invisible("1:2:1"))
+      }
+      if(signif.lod[2] == TRUE){
+        cat("QTL segregation is 1:1\n")
+        return(invisible("1:1"))
+      }
     }
     if(sum(signif.lod, na.rm=T) == 2){
-      if(step2[2] < probs2)
-        return(cat("QTL segregation is 1:2:1\n"))
-      else
-        return(cat("QTL segregation is 3:1\n"))
+      if(step2[2] < probs2){
+        cat("QTL segregation is 1:2:1\n")
+        return(invisible("1:2:1"))
+      }else{
+        cat("QTL segregation is 3:1\n")
+        return(invisible("3:1"))
+      }
     }              
   }
   
@@ -240,10 +283,12 @@ get_segr <- function( fschar, probs1 = .05, probs2 = .05 ){
   #######################################################
 
   if(used.model > 8) {
-    if(step1[1] > thr.lod)
-      return(cat("QTL segregation is 3:1\n"))
-    else
+    if(step1[1] > thr.lod){
+      cat("QTL segregation is 3:1\n")
+      return(invisible("3:1"))
+    }else
       return(cat("No QTL is considered with probs1 =", probs1, "\n"))
   }
   
 }
+
