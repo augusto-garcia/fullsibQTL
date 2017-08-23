@@ -209,7 +209,8 @@ plot_fullsibQTL( fullsib = fullsib,
                  file = "cim_im_greens.html",
                  folder="/home/your_user_name/graphics" )
 ```
-(cim_im_greens.html)[http://statgen.esalq.usp.br/fullsibQTL_graphics/cim_im_greens.html]
+[cim_im_greens.html](http://statgen.esalq.usp.br/fullsibQTL_graphics/cim_im_greens.html)
+
 <div>
 <iframe src='http://statgen.esalq.usp.br/fullsibQTL_graphics/cim_im_greens.html', height="700", width = "650"> </iframe>
 </div>
