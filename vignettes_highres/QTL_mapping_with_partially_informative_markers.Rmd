@@ -1,0 +1,137 @@
+---
+title: "QTL mapping with partially informative markers"
+date: "`r Sys.Date()`"
+author: "[Statistical Genetics Lab](http://statgen.esalq.usp.br) <br/> Department of Genetics <br/> Luiz de Queiroz College of Agriculture <br/> University of São Paulo"
+output: 
+  prettydoc::html_pretty:
+    theme: leonids
+    css: ../css/statgen.css
+    highlight: github
+vignette: >
+  %\VignetteIndexEntry{fullsibQTL Tutorial}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r knitr_init, echo=FALSE, cache=FALSE}
+library(knitr)
+library(rmdformats)
+library(prettydoc)
+
+## From ggplot2 rmd vignette options
+knitr::opts_chunk$set(collapse = FALSE,
+                      comment = "#>", 
+                      fig.width = 4, 
+                      fig.height = 4, 
+                      fig.align = "center")
+```
+
+The material must be read as Supplementary information of Gazaffi et al. (2014).
+
+The model presented by Gazaffi et al. (2014) was developed considering a given locus that segregates in $1:1:1:1$ fashion. This would result in four different conditional probabilities for QTL genotypes ($P^1Q^1$, $P^1Q^2$, $P^2Q^1$, $P^2Q^2$). However, for situations in which the genetic map is composed with partially informative markers may be limitations on the level of information that the odds may contain. An such example is a genome region where the those four genotypic classes are not present.
+
+The statistical-genetic model of Gazaffi et al. (2014) was developed considering a locus with the four genotypic classes. With such classes, it is possible to model until three genetic effects using three contrasts: additive effects of the QTL alleles of parent P, additive effects of the QTL alleles of parent Q, and the intra-locus interaction (dominance) between both additive effects.  More information at the Methodology section of Gazaffi et al. (2014). However, depending upon the markers presenting in the study and dispite the use of multipoint probabilities, some regions of the linkage map could no have enough information to estimate all the genetic effects. This may occur in cases where a linkage group has only one or two marker types (*e.g.*, $C$ and $D_1$, or, $C$ and $D_2$) more information about marker types at Wu et al. (2002a).
+
+In order to identify colinearity problems between the QTL conditional probabilities, we used a criteria described in Belsley et al. (1980) based on diagnosis of singular value decomposition using condition index. Belsley et al. (1980) suggests collinearity problems occur at condition index over 30. However, we had preliminary results in QTL mapping where a threshold of 3.5 provided good results.
+
+In cases where the problems of colinearity do not verify, it is used the contrasts 1, 2, and 3 of the contrasts matrix to obtain the mapping model. Seggregation and linkage phase are inferred using the proceeding presented by Gazaffi et al. (2014). Although, when it is identified a dependence relationship between QTL genotypes probabilities, it is suggested the removal ou adaptation of the contrasts to define the genetic effects (contrasts 4 to 13). Table 1 estabilishes all the contrasts that the algorithm can verify. The notation in this section is the same of Gazaffi et. al (2014). In this same paper is described the contrasts 1, 2, and 3. Contrasts 1 and 2 are similar to a backcross model. Contrasts 3 and 9 are similar to an $F_2$ model.
+
+<center>
+**Table 1: Contrasts**
+
+
+| Contrast |&nbsp; &nbsp; &nbsp; &nbsp;| $P^{1}Q^{1}$ | $P^{1}Q^{2}$ | $P^{2}Q^{1}$ | $P^{2}Q^{2}$ |
+|:--------:|:----:|:------------:|:------------:|:------------:|:------------:|
+| 1        |&nbsp; &nbsp;| 1            | 1            | -1           | -1           |
+| 2        |&nbsp;| 1            | -1           | 1            | -1           |
+| 3        |&nbsp;| 1            | -1           | -1           | 1            |
+| 4        |&nbsp;| 0            | 0            | 1            | -1           |
+| 5        |&nbsp;| 1            | -1           | 0            | 0            |
+| 6        |&nbsp;| 0            | 1            | 0            | -1           |
+| 7        |&nbsp;| 1            | 0            | -1           | 0            |
+| 8        |&nbsp;| 0            | 1            | -1           | 0            |
+| 9        |&nbsp;| 1            | 0            | 0            | -1           |
+| 10       |&nbsp;| 1/3          | 1/3          | 1/3          | -1           |
+| 11       |&nbsp;| 1/3          | 1/3          | -1           | 1/3          |
+| 12       |&nbsp;| 1/3          | -1           | 1/3          | 1/3          |
+| 13       |&nbsp;| -1           | 1/3          | 1/3          | 1/3          |
+
+</center>
+
+When it is used the original contrasts (1, 2, 3) to perform the QTL mapping, the segregation pattern is inferred based on the following complementary hypotheses. First, it is verified the significance of the effects $\alpha_p^{\ast}$, $\alpha_q^{\ast}$ e $\delta_{pq}^{\ast}$ using the hypotheses: $H_{01}: \alpha_p^{\ast}=0$, $H_{02}: \alpha_q^{\ast}=0$, and $H_{03}: \delta_{pq}^{\ast}=0$, respectivally. If it is observed more than one significant effect, it is checked the following additional hypotheses to test the equality of the estimates: $H_{04}:$ $|\alpha_p^{\ast}|=|\alpha_q^{\ast}|$, $H_{05}:$ $|\alpha_p^{\ast}|$ = $|\delta_{pq}^{\ast}|$, and $H_{06}:$ $|\alpha_q^{\ast}|=|\delta_{pq}^{\ast}|$. If just one genetic effect is significant, it is assumed the QTL has segregation 1:1. If two genetic effects are significant, a complementary test is performed to infer if the segregation pattern is $1:2:1$ (non-rejected complementary hypothesis) or $1:1:1:1$ (rejected complementary hypothesis). If there are three significant genetic effects, it is considered the QTL is: i) $3:1$ if the three complementary hypotheses were not rejected, ii) $1:2:1$ if just one between the three hypotheses was not rejected, and, iii) $1:1:1:1$ for other cases. The linkage phase between QTL and markers is inferred through the signal interpretation of $\alpha_p^{\ast}$ and $\alpha_q^{\ast}$. The default model assumes the configuration:
+
+<center>
+$P^1_mP^1P^1_{m+1}/P^2_mP^2P^2_{m+1} \times Q^1_mQ^1Q^1_{m+1}/Q^2_mQ^2Q^2_{m+1}$
+</center>
+
+Which is the both parents on coupling phase. If this is the case, the estimates of  $\alpha^{\ast}_p$ and $\alpha^{\ast}_q$ will be positives. In the other configurations, the estimates will show inverted signals (Gazaffi et al 2014).
+
+On the other hand, it is not possible to use a model  with all the parameters in a less informative genome region. In such cases, the QTLs characterization are restrained. Within Table 2 (based upon the dependence relationship between QTLs genotypes), it is possible to infer which QTL effects are estimable, as well as their expectations and characterizations.
+
+<center>
+**Table 2: Identification of estimable effects and QTL characterization from the possible colinearity relationships between genotypes and mapped QTL$^{*}$**
+
+<font size="0.5">
+
+| Case |&nbsp; &nbsp; &nbsp; &nbsp;| Colinearity			|&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;| *D* contrasts	|&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;| Estimable effects|&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;| Contrast espected mean                      		|&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;| Rejected hypothesis     |&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;| Observed segregation$^{**}$ |&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;|         Phases |
+|:----:|:----:|:-------------------------------------:|:----:|:--------------------:|:----:|:--------------------:|:----:|:------------------------------------------------------------:|:----:|:-----------------------------:|:----:|:--------------------------:|:----:|:--------------------:|
+|   i  |&nbsp; &nbsp; &nbsp; &nbsp;|$P^1Q^1 = P^1Q^2$ and $P^2Q^1 = P^2Q^2$|&nbsp; &nbsp; &nbsp; &nbsp;| $(1)$                |&nbsp; &nbsp; &nbsp; &nbsp;| $\alpha_p^\ast$      |&nbsp; &nbsp; &nbsp; &nbsp;| $\alpha_p^\ast$						|&nbsp; &nbsp; &nbsp; &nbsp;|$H_{01}$: $\alpha_p^{\ast} = 0$|&nbsp; &nbsp; &nbsp; &nbsp;| 1:1                        |&nbsp; &nbsp; &nbsp; &nbsp;| $P^1P^2$ or $P^2P^1$ |
+|  ii  ||$P^1Q^1 = P^2Q^1$ and $P^1Q^2 = P^2Q^2$|| $(2)$                || $\alpha_q^\ast$      || $\alpha_q^\ast$                                              ||$H_{02}$: $\alpha_q^{\ast}=0$  || 1:1                        || $Q^1Q^2$ or $Q^2Q^1$ |
+|  iii ||$P^1Q^1 = P^1Q^2$                      || $(1)$                || $\alpha_p^{\ast}$    || $\alpha_p^{\ast}$                                            ||$H_{01}$                       || 1:1                        || $P^1P^2$ or $P^2P^1$ |
+|      ||                                       || $(4)$                || $\alpha_q^{\ast}$    || $(1/2)(\alpha_q^{\ast}-\delta_{pq}^{\ast})$                  ||$H_{02}$                       || 1:2:1                      ||   unsolved           |
+|      ||                                       ||                      ||                      ||                                                              ||$H_{01}$ and  $H_{02}$         || 1:2:1 or 3:1               || $P^1P^2$ or $P^2P^1$ |
+|  iv  ||$P^2Q^1 = P^2Q^2$                      || $(1)$                || $\alpha_p^{\ast}$    || $\alpha_p^{\ast}$                                            ||$H_{01}$                       || 1:1                        || $P^1P^2$ or $P^2P^1$ |
+|      ||                                       || $(5)$                || $\alpha_q^{\ast}$    || $(1/2)(\alpha_q^{\ast}+\delta_{pq}^{\ast})$                  ||$H_{02}$                       || 1:2:1                      ||   unsolved           |
+|      ||                                       ||                      ||                      ||                                                              ||$H_{01}$ and $H_{02}$          || 1:2:1 or 3:1               || $P^1P^2$ or $P^2P^1$ |
+|   v  ||$P^1Q^1 = P^2Q^1$                      || $(6)$                || $\alpha_p^{\ast}$    || $(1/2)(\alpha_p^{\ast}-\delta_{pq}^{\ast})$                  ||$H_{01}$                       || 1:2:1                      ||   unsolved           |
+|      ||                                       || $(2)$                || $\alpha_q^{\ast}$    || $\alpha_q^\ast$                                              ||$H_{02}$                       || 1:1          	       || $Q^1Q^2$ or $Q^2Q^1$ |
+|      ||				      	|| 		      	||			|| 						                ||$H_{01}$ and  $H_{02}$  	 || 1:2:1 or 3:1	       || $Q^1Q^2$ or $Q^2Q^1$ |
+|  vi  ||$P^1Q^2 = P^2Q^2$		       	|| $(7)$		|| $\alpha_p^{\ast}$    || $(1/2)(\alpha_p^{\ast}+\delta_{pq}^{\ast})$          	||$H_{01}$      	 	 || 1:2:1    	               ||   unsolved   	       |
+|      ||                 		       	|| $(2)$ 	      	|| $\alpha_q^{\ast}$    ||  $\alpha_q^\ast$                                             ||$H_{02}$	                 || 1:1			       || $Q^1Q^2$ or $Q^2Q^1$ |
+|      ||                   		       	||         	      	||                      ||                                                              ||$H_{01}$ and  $H_{02}$	 || 1:2:1 or 3:1 	       || $Q^1Q^2$ or $Q^2Q^1$ |
+|  vii ||$P^1Q^1 = P^2Q^2$		       	|| $(8)$ 	      	|| $\alpha_p^{\ast}$    ||  $(1/2)(\alpha_p^{\ast}-\alpha_{q}^{\ast})$                  ||$H_{01}$                	 || 1:2:1       	       ||   unsolved  	       |
+|      || 	  			       	|| $(3)$	      	|| $\delta_{pq}^{\ast}$ || $\delta_{pq}^\ast$   			   		||$H_{03}: \delta_{pq}^{\ast}=0$ || 1:1			       ||   unsolved	       |
+|      ||      				       	||                      ||            	        ||  				 	   		    	||$H_{01}$ and  $H_{03}$ 	 || 1:2:1 or 3:1	       ||   unsolved           |
+| viii ||$P^1Q^2 = P^2Q^1$		       	|| $(9)$ 	      	|| $\alpha_p^{\ast}$    || $(1/2)(\alpha_p^{\ast}+\alpha_{q}^{\ast})$  		    	||$H_{01}$                	 || 1:2:1         	       ||   unsolved           |
+|      || 		  		       	|| $(3)$		|| $\delta_{pq}^{\ast}$ || $\delta_{pq}^\ast$                          		    	||$H_{03}$                	 || 1:1          	       ||   unsolved	       |
+|      ||         			       	||                      ||                      ||  					   		    	||$H_{01}$ and  $H_{03}$	 || 1:2:1 or 3:1	       ||   unsolved	       |
+|  ix  ||$P^1Q^1 = P^1Q^2 = P^2Q^1$	       	|| $(10)$ 	      	|| $\alpha_p^{\ast}$    || $(4/3)( \alpha_p^{\ast}+\alpha_p^{\ast}-\delta_{pq}^{\ast})$ ||$H_{01}$ 	                 || 3:1      		       ||   unsolved	       |
+|  x   ||$P^1Q^1 = P^1Q^2 = P^2Q^2$	       	|| $(11)$ 	      	|| $\alpha_p^{\ast}$    || $(4/3)( \alpha_p^{\ast}-\alpha_p^{\ast}+\delta_{pq}^{\ast})$ ||$H_{01}$                       || 3:1      		       ||   unsolved	       |
+|  xi  ||$P^1Q^1 = P^2Q^1 = P^2Q^2$	       	|| $(12)$ 	      	|| $\alpha_p^{\ast}$    || $(4/3)(-\alpha_p^{\ast}+\alpha_p^{\ast}+\delta_{pq}^{\ast})$ ||$H_{01}$               	 || 3:1 		       ||   unsolved	       |
+|  xii ||$P^1Q^2 = P^2Q^1 = P^2Q^2$	       	|| $(13)$ 	      	|| $\alpha_p^{\ast}$    || $(4/3)(-\alpha_p^{\ast}-\alpha_p^{\ast}-\delta_{pq}^{\ast})$ ||$H_{01}$               	 || 3:1 		       ||   unsolved	       |
+
+</center>
+
+($*$) For clarity reasons, only the QTL alleles are represented; $P^1P^2$ represents the configuration $P^1_mP^1P^1_{m+1}/P^2_mP^2P^2_{m+1}$, and so on. If it is considered a cross between two parents $P$ and $Q$ genetically equal (or an inbreeding phenomenon), the real segregation would be equivalent to the observed in the mapping population ($1:2:1$) with known linkage phases between QTLs and markers as $P^1P^2 \times Q^1Q^2$ or $P^2P^1 \times Q^2Q^1$.
+($**$): Due to colinearity between QTLs genotypes probabilities it is not possible to estimate the real QTL segregation. As some of the effects are not possible to independently estimate, the QTL can be just partialy characterized using the available information.
+
+</font>
+
+For cases $i$ and $ii$, it only possible to estimate one parent effect, which allows to detect a QTL with 1:1 pattern (similar to a backcross population). Yet, some considerations about it: 
+
+- For a QTL presented in a region with such colinearity, it is only possible to test the QTL presence segregating in one parent. In this case, even if the QTL would present more significant effects they would not have a possible estimation. This is due to low marker information which indicates that the observed QTL segregation would only be partially consistent with the real QTL segregation.
+
+- Even though some regions permit QTL detection with a genetic effect similar to a backcross - which can be compared to the fullsib progeny of a pseudo-testcross approach (Grattapaglia and Sederoff, 1994) - the present model has as advantage the possiblity to incorporate cofactors, regions with different segregation pattern with respect to the mapping local. In this way, it increases the statistical power to the QTL detection.
+
+In the case $iii$, it is possible to estimate the effect of  $\alpha_p^{\ast}$. However, due to the conditional probabilities of genotypes $P^1Q^1$ and $P^1Q^2$ being the same, it is not possible to isolate the effects $\alpha_q^\ast$ e $\delta_{pq}^\ast$. In such case, the strategy of the algorithm is to test the existence of a genetic effect $\alpha_q^\ast$ within the informative genotypes ($P^2Q^1$ and $P^2Q^2$) - contrast 4 of Table 1. However, this contrast tests a possible combination between $\alpha_q^\ast$ and $\delta_{pq}^\ast$ effects which would difficult identification of the effect origin and its correct segregation pattern. Moreover, if only the effect $\alpha_p^{\ast}$ is significant, the QTL would segregate in this progeny in a $1:1$ fashion. If only the effect  $\alpha_q^\ast$ is significant, the segregation pattern in the progeny would be in the $1:2:1$ proportion. In cases where both effects are significants, the observed segregation will be $1:2:1$ or $3:1$. The $3:1$ pattern rises when the absolute value of $\alpha_q^\ast$ is the double of the absolute value of $\alpha_p^\ast$. In this type of colinearity the identification of the QTL segregation pattern - as well as the linkage phase between the markers - is partially informative because there are among markers which are not possible to distinctly estimate their genetic effects. Therefore, the future input of markers with different segregation patterns could provide results more precises for the QTL mapping, even changing the segregation pattern ealier inferred. This same situation can be analysed for cases $iv$, $v$, $vi$, $vii$, and $viii$.
+
+In the case $viii$, if it is assumed an self-polinization or a cross between two parents genetically equals, it can be assumed a situation similar to a $F_2$ population, therefore,  $\alpha_p^\ast$ and $\alpha_q^\ast$ would be equal providing a unbiased estimate for the segregation and linkage phase between QTLs and markers $(P^1P^2 \times Q^1Q^2$ (if $\alpha_p^\ast$ positive) or $P^2P^1 \times Q^2Q^1$ (if $\alpha_p$ negative). To obtain the dominance estimate as proposed by Cockerham (1954), it should be considered half of the effect of $\delta_{pq}^\ast$.
+
+For cases from $ix$ to $xii$, the colinearity is originated due to the similarity between three genotypic classes which only allows to estimate a genetic effect represented by a linear combination between $\alpha_p^{\ast}$, $\alpha_q^{\ast}$ and $\delta_{pq}^{\ast}$. In such cases, it is not possible the correct understanding of the segregation and linkage phases between QTLs and markers. Moreover, it is emphasized that to limit those contrasts it was used the coefficient $1/3$ for similar genotypes and $-1$ for the different genotype. Such contrasts are not orthogonals in relation to the other and can leads to a burdensome QTL mapping process. As an example, using Multiple Interval Mapping models to epistasis study. Thus, other strategies may be applied when this type of situation is verified.
+
+# References
+Belsley, D. A., Edwin K., and Roy E. W. (2005). **_Regression diagnostics: Identifying influential data and sources of collinearity_**. Vol. 571. John Wiley | Sons.
+
+Gazaffi, R., Margarido, G. R., Pastina, M. M., Mollinari, M., Garcia, A. A. F. (2014). A model for quantitative trait loci mapping, linkage phase, and segregation pattern estimation for a full-sib progeny. **_Tree Genetics & Genomes_**, 10(4), 791-801.
+
+Grattapaglia, D., and Sederoff, R. (1994). Genetic linkage maps of Eucalyptus grandis and Eucalyptus urophylla using a pseudo-testcross: mapping strategy and RAPD markers. **_Genetics_**, 137(4), 1121-1137.
+
+Wu, R., Ma, C.X., Painter, I. and Zeng, Z.-B. Simultaneous maximum
+likelihood estimation of linkage and linkage phases in outcrossing
+species. **_Theoretical Population Biology_** 61, 349-363, 2002a.
+
+# Session Info
+
+```{r}
+sessionInfo()
+```
