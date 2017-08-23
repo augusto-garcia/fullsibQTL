@@ -45,9 +45,7 @@ Then, to install `fullsibQTL` from github (this very repo):
 install_github( "augusto-garcia/fullsibQTL" )
 ```
 
-<div>
-<iframe src='https://rramadeu.github.io/fullsibQTL/vignettes_highres/graphics/cim_im.html', height="600", width = "650"></iframe>
-</div>
+![teste](https://rramadeu.github.io/fullsibQTL/vignettes_highres/graphics/cim_im.html', height="600")
 
 # Tutorials
 
