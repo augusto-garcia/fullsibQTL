@@ -77,7 +77,7 @@
 #' regression for all QTL providing the effects and their significance. If
 #' \code{FALSE} no extra details is given.
 #' 
-#' @return It returns a vector with \eqn{q+1} position (\eqn{q} is the number
+#' @return It returns a data frame with \eqn{q+1} lines (\eqn{q} is the number
 #' of QTL) with \eqn{R^2} estimation. In the first position one finds the value
 #' for a model fitted with all QTLs simultaneously (identified as
 #' \sQuote{R2.trait}), the others positions provides the \eqn{R^2} for each QTL
@@ -171,13 +171,16 @@ r2_ls <- function( fullsib, lg, pos, pheno.col = 1, addcovar = NULL, ls.estimati
   else
     qtls <- unique(colnames(full.mat))
 
-  r2.qtls <- rep(NA, length(qtls))
-  for (i in 1:length(qtls)){
-    ef2rm <- which(qtls[i] == colnames(full.mat))
-    ss.qtl <- anova(lm(pheno ~ full.mat[,-ef2rm]))["Residuals", 2]
-    r2.qtls[i] <- (ss.qtl - ss.full)/ss.null
+  if(length(qtls)==1){
+    r2.qtls <- (ss.null - ss.full)/ss.null
+  }else{
+    r2.qtls <- rep(NA, length(qtls))
+    for (i in 1:length(qtls)) {
+      ef2rm <- which(qtls[i] == colnames(full.mat))
+      ss.qtl <- anova(lm(pheno ~ full.mat[,-ef2rm]))["Residuals", 2]
+      r2.qtls[i] <- (ss.qtl - ss.full)/ss.null
+    }
   }
-
   ##print(summary(lm.full))
 
   if(ls.estimation){
@@ -187,7 +190,7 @@ r2_ls <- function( fullsib, lg, pos, pheno.col = 1, addcovar = NULL, ls.estimati
   
   r2.output <- round(c(r2.trait, r2.qtls) * 100, 4)
   names(r2.output) <- c("R2.trait", paste("R2", qtls, sep="."))
-  r2.output <- data.frame(lg=c(NA,lg),loc=c("Intercept",pos),r2=r2.output)
+  r2.output <- data.frame(lg=c(NA,lg),loc=c("All",pos),r2=r2.output)
   class(r2.output) <- c("data.frame","r2ls_out")
   return(r2.output)
 }
