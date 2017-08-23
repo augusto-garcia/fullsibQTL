@@ -2,27 +2,20 @@
 title: "Graphical options with `plot`"
 date: "`r Sys.Date()`"
 author: "[Statistical Genetics Lab](http://statgen.esalq.usp.br) <br/> Department of Genetics <br/> Luiz de Queiroz College of Agriculture <br/> University of São Paulo"
-output: 
-  prettydoc::html_pretty:
-    theme: leonids
-    css: statgen.css
-    highlight: github
-vignette: >
-  %\VignetteIndexEntry{fullsibQTL Tutorial}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+output:
+    rmdformats::readthedown:
+      css: readthedownstatgen.css
 ---
 
 ```{r knitr_init, echo=FALSE, cache=FALSE}
 library(knitr)
 library(rmdformats)
-library(prettydoc)
 
 ## From ggplot2 rmd vignette options
 knitr::opts_chunk$set(collapse = TRUE,
                       comment = "#>", 
-                      fig.width = 7, 
-                      fig.height = 5, 
+                      fig.width = 6, 
+                      fig.height = 6, 
                       fig.align = "center")
 ```
 

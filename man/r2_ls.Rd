@@ -29,7 +29,7 @@ regression for all QTL providing the effects and their significance. If
 \code{FALSE} no extra details is given.}
 }
 \value{
-It returns a vector with \eqn{q+1} position (\eqn{q} is the number
+It returns a data frame with \eqn{q+1} lines (\eqn{q} is the number
 of QTL) with \eqn{R^2} estimation. In the first position one finds the value
 for a model fitted with all QTLs simultaneously (identified as
 \sQuote{R2.trait}), the others positions provides the \eqn{R^2} for each QTL

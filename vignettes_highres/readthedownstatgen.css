@@ -56,7 +56,7 @@
 #main .nav-pills > li.active > a:hover,
 #main .nav-pills > li.active > a:focus {
   color: #FFFFFF !important;
-  background-color: #003350;
+  background-color: #003859;
 }
 
 /* Chi-squared results */
@@ -1095,5 +1095,5 @@ code > span.bn { color: #000000; } /* BaseN */
 code > span.fl { color: #000000; } /* Float */
 code > span.ch { color: #000000; } /* Char */
 code > span.st { color: #000000; } /* String */
-code > span.co { color: #0081cc; font-style: italic; } /* Comment */
+code > span.co { color: #003B5E; font-style: italic; } /* Comment */
 code > span.ot { color: #000000; } /* Other */

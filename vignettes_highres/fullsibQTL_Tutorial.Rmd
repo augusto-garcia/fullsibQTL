@@ -5,10 +5,6 @@ author: "[Statistical Genetics Lab](http://statgen.esalq.usp.br) <br/> Departmen
 output:
     rmdformats::readthedown:
       css: readthedownstatgen.css
-vignette: >
-  %\VignetteIndexEntry{fullsibQTL Tutorial}
-  %\VignetteEngine{knitr::rmdformats}
-  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r knitr_init, echo=FALSE, cache=FALSE}
@@ -166,11 +162,14 @@ LG1_final
 ```
 
 Now, we have to combine the raw data with the linkage groups (hereafter LG) in a single object with the function `create_fullsib`:
-```{r, eval=TRUE, cache=FALSE}
+```{r, eval=TRUE, results='hide'}
 fsib <- create_fullsib( example_QTLfullsib,
                         map.list = list( LG1_final, LG2_final, LG3_final, LG4_final ),
-                       step = 1, map.function = "kosambi" )
-## Printing it
+                        step = 1, map.function = "kosambi" )
+```
+
+Printing it
+```{r, eval=TRUE}
 fsib
 ```
 
@@ -181,7 +180,7 @@ In order to proceed with interval mapping, there are two implemented functions `
 
 ## IM Genome scan
 The genome scan can be performed with the function `im_scan`, such as:
-```{r, eval=TRUE, cache=FALSE}
+```{r, eval=TRUE, cache=TRUE, results='hide'}
 im <- im_scan( fullsib = fsib, lg = "all", pheno.col = 1, LOD = TRUE )
 ```
 The argument `fullsib` refers to the object created using `create_fullsib`, `lg` indicates which linkage groups must be scanned for the QTL mapping. Another way to represent it is `lg=1:4`. The function default is `lg=all`, *i.e.*, scan every LG. The argument `pheno.col` indicates which phenotype must be used, default is to use the first trait, it must be an integer. The argument `LOD=TRUE` indicates that the mapping result must be shown with the LOD score, if `FALSE`, the scale will be shown as $-log_{10}(p_{value})$.
@@ -238,14 +237,14 @@ In order to have a lighter tutorial, here, we will use just the graphics from `p
 ## Covariate
 To improve the mapping flexibility, it is possible to set a covariate (as a fixed effect) within the model in order to control the variability of the aimed phenotype. To set a full-rank matrix which controls the phenotypic variance, first you need to define a incidence vector, and, then, set it as an argument of the `im_scan`. An example follows:
 
-```{r, eval=TRUE, cache=FALSE}
+```{r, eval=TRUE, cache=FALSE, results='hide'}
 covar <- matrix( rep( c( 1 ,-1 ), each = 150 ), ncol = 1 )
 im_covar <- im_scan( fsib, pheno.col = 1, addcovar = covar )
 ```
 
 ## IM Permutation test
 The threshold for QTL detection can be set using permutation tests (Churchill and Doerge, 1994) adding the argument `n.perm` in the `im_scan` function. As the permutation test is a re-sample process, it is recommended to the user to set a seed before the permutations. With this seed, the permutation can be repeated achieving the same result. The argument `write.perm` allows the user to save a text file with all the permutations performed. In this tutorial, the permutation test object `im_perm` with the seed `1234` is already created and is part of the `example_QTLfullsib` ealier loaded, there is no necessity to run the following lines. However, an example of how to perform the permutation follows:
-```{r, eval=FALSE, cache=FALSE, collapse=TRUE}
+```{r, eval=FALSE, cache=FALSE, collapse=TRUE, results='hide'}
 ## Perfoming the permutation
 set.seed( 1234 )
 im_perm <- im_scan( fsib, pheno.col = 1, n.perm = 1000,
@@ -339,8 +338,10 @@ Before composite interval mapping (CIP), it is necessary to define which markers
 ## Cofactor selection using multiple linear regression
 The function `cof_selection` allows to select cofactors using multiple linear regression through *stepwise* approach. The criteria information is utilized to determine if a given possible cofactor is kept or not kept. Basically, this function first prepares the data and then uses `step` from `stats` package. For more information about `?cof_selection`. An example follows:
 
-```{r, eval=TRUE, cache=FALSE}
+```{r, eval=TRUE, cache=TRUE, results='hide'}
 cofs_fs <- cof_selection( fsib, pheno.col = 1, k = log( 300 ), n.cofactor = 10 )
+```
+```{r, eval=TRUE, cache=TRUE}
 plot( cofs_fs )
 ```
 
@@ -348,7 +349,7 @@ The object `fsib` is the same one created using `create_fullsib`, `pheno.col` in
 
 The following example shows how to proceed the cofactor selection in a situation where the fixed covariates are set to control the character variability. To do it, we used the argument `addcovar`. In a similar way of `im_scan` function:
 
-```{r, eval=TRUE, cache=FALSE}
+```{r, eval=TRUE, cache=FALSE,}
 covar <- matrix( rep( c( 1, -1 ), each = 150 ), ncol = 1 )
 cofs_fs2 <- cof_selection( fsib, pheno.col = 1, addcovar = covar, 
                            k = 2, thres.effect = 0.05 )
@@ -374,7 +375,7 @@ In order to proceed with composite interval mapping, there are two implemented f
 
 ## CIM Genome scan
 The genome scan can be performed with the function `cim_scan` indicating the cofactors object (class: `fullsib_cofactors`) ealier created with `cof_selection` or `cof_definition`.
-```{r, eval=TRUE, cache=FALSE}
+```{r, eval=TRUE, cache=FALSE, results='hide'}
 cim <- cim_scan( fullsib = cofs_fs, lg = "all", ws = 10, pheno.col = 1, LOD = TRUE )
 ```
 

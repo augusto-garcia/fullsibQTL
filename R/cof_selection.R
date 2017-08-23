@@ -304,14 +304,14 @@ cof_selection <- function(fullsib, pheno.col=1, addcovar=NULL, k=2,
   
   get.env <- environment()
   environment(step) <- get.env
-
-  ##if FALSE, do not use limit
-  if(stoppage.df==FALSE)
-    stoppage.df <- length(pheno.index)
   
   ##if is NULL, uses 2 x sqrt(n)
   if(is.null(stoppage.df))
     stoppage.df <- 2*round(sqrt(length(pheno.index)))
+  
+  ##if FALSE, do not use limit
+  if(stoppage.df==FALSE)
+    stoppage.df <- length(pheno.index)
   
   if (trace == 0) cat("Number of Cofactors selected: ")
   while( (check.DF < stoppage.df) && (n.iter <= n.cofactor) ){

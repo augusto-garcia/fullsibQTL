@@ -1,15 +1,4 @@
----
-title: "Graphical options with `plot`"
-date: "`r Sys.Date()`"
-author: "[Statistical Genetics Lab](http://statgen.esalq.usp.br) <br/> Department of Genetics <br/> Luiz de Queiroz College of Agriculture <br/> University of São Paulo"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{fullsibQTL Tutorial}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
----
-
-```{r knitr_init, echo=FALSE, cache=FALSE}
+## ----knitr_init, echo=FALSE, cache=FALSE---------------------------------
 library(knitr)
 
 ## From ggplot2 rmd vignette options
@@ -20,16 +9,11 @@ knitr::opts_chunk$set(collapse = TRUE,
                       fig.align = "center",
                       dev = 'png',
                       dpi = 36)
-```
 
-In this section we show how to plot different graphics with the `plot` function. A complete description can be viewed through `?plot.fullsib_scan`. As an example we will use the example data from the package:
-
-As an example we will use the example data from the package, the below step are described at the *`fullsibQTL` Tutorial* vignette.
-```{r, eval=TRUE, echo=FALSE,results='hide', cache=FALSE}
+## ---- eval=TRUE, echo=FALSE,results='hide', cache=FALSE------------------
   library(onemap)
-```
 
-```{r, eval=TRUE, echo=TRUE, results='hide'}
+## ---- eval=TRUE, echo=TRUE, results='hide'-------------------------------
   library( "fullsibQTL" )
   data( "example_QTLfullsib" )
   fullsib <- create_fullsib( example_QTLfullsib,
@@ -62,15 +46,11 @@ As an example we will use the example data from the package, the below step are 
   
   cim.peak1 <- summary( cim_perm, alpha = 0.05 )[ 1, 1 ]
   cim.peak2 <- summary( cim_perm, alpha = 0.05 )[ 1, 2 ]
-```
 
-To plot the basic graphic
-```{r}
+## ------------------------------------------------------------------------
 plot( im )
-```
 
-## Customizing Graphics
-```{r}
+## ------------------------------------------------------------------------
 ## argument lty
 ## Changes the line type
 ## There are 6 different line types as follow:
@@ -130,13 +110,8 @@ plot( im, lty = 3, lwd = 2, lg = c( 1, 2 ),
 plot( im, lty = 3, lwd = 2, lg = c( 1, 2 ), 
       label.lg = c( "Chr 1", "Chr 2" ), cex.axis = 1.2, 
       incl.mkr = "name", cex.incl = .75, gap = 50, col="red")
-```
 
-You can check more colors options at this [cheatsheet](https://www.nceas.ucsb.edu/~frazier/RSpatialGuides/colorPaletteCheatsheet.pdf) or at this color [guide](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf) 
-
-You can also customize the plot with the default R `plot.default` options as `main`, `ylab`, `xlab`, `yaxt`, `ylim`, etc. 
-
-```{r}
+## ------------------------------------------------------------------------
 plot( im, lty=1, lwd=2, lg=c(1,2), cex.axis=1.2, 
       incl.mkr="name", cex.incl = .9, gap = 50, col="red", 
       alternate.lgid = TRUE,
@@ -152,11 +127,8 @@ abline( h = im.peak2, lty = 3 )
 legend( "topleft", lty = c( 1, 2, 3, 0 ), cex = 0.75, 
         col = c( "red", "black", "black" ), 
         legend = c( "IM", "1st Peak Threshold", "2nd Peak Threshold" ) )
-```
 
-## Graphical comparision between `(c)im_scan`
-The IM and CIM mapping results can be compared in a graphical way with the following codes:
-```{r}
+## ------------------------------------------------------------------------
 plot( im,cim, lty = c(2,1), lwd = 2, incl.mkr = "name", 
       cex.incl = 0.7, gap = 50, cex.axis = 0.8, 
       col = c("blue","red"),
@@ -171,26 +143,21 @@ abline( h = cim.peak1, lty = 2, lwd = 0.75 )
 legend( "topleft", lty = c( 2, 1, 2, 2 ), cex = 0.5, 
         col = c( "red", "blue", "black", "black" ), 
         legend = c( "IM", "CIM", "1st Threshold","2nd Threshold") )
-```
 
-## Adding QTL location to the graphic
-Our QTLs are the same ones of the *`fullsibQTL` Tutorial* vignette as follows:
-```{r}
+## ------------------------------------------------------------------------
 print( cim, lg = 1, pos = c( "loc13", "M12" ) )
 print( cim, lg = 2, pos = c( "loc45", "loc77" ,"loc108" ) )
 print( cim, lg = 3, pos = c( "M33", "loc65" ) )
 print( cim, lg = 4, pos = "M52" )
-```
-The `plot` function is not so straighforward to add QTL location as the `plot_fullsibQTL` function. Here, to add them to the graphic we can use the function `points` as follows. Knowing that the `gap` space is `50`, we can add this to the total size of each LG and get the position. The points will be localized at:
-```{r}
+
+## ------------------------------------------------------------------------
 points.loc <- c( 13, 110, 45, 77, 108, 20, 65, 60 )
 points.loc <- points.loc + c( 0, 0,
                               140 + 50, 140 + 50, 140 + 50,
                               140 + 50 + 140 + 50, 140 + 50 + 140 + 50,
                               140 + 50 + 140 + 50 + 140 + 50 )
-```
-Therefore:
-```{r}
+
+## ------------------------------------------------------------------------
 plot( im, cim, lty = c( 2, 1 ), lwd = 2, 
       incl.mkr = "name", cex.incl = 0.5, gap = 50,
       cex.axis = 0.8, col = c( "blue", "red" ),
@@ -208,10 +175,7 @@ legend( "topleft", lty = c( 2, 1, 2, 2, 0 ), cex = 0.75,
         col = c( "red", "blue", "black", "black", "dark green" ), 
         legend = c( "IM", "CIM", "1st Threshold", "2nd Threshold", "QTL"),
         bty = 'n', y.intersp = .75 )
-```
 
-# Session Info
-
-```{r}
+## ------------------------------------------------------------------------
 sessionInfo()
-```
+
