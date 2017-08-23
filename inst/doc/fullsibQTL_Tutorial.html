@@ -253,7 +253,6 @@ fsib &lt;-<span class="st"> </span><span class="kw">create_fullsib</span>( fs_da
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fsib</code></pre></div>
 <p>If you want to see this data file in its raw format, type the following line to see where in your machine it is located:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">system.file</span>( <span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;example_QTLfullsib.raw&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;fullsibQTL&quot;</span> )</code></pre></div>
-<pre><code>#&gt; Loading required package: onemap</code></pre>
 <p>In this tutorial we will use the data example available in this same package. In this data, there are 6 objects, a raw data in the <code>onemap</code> format (<code>example_QTLfullsib</code>), 4 ordered linkage groups (<code>LG1_final</code>, <code>LG2_final</code>, <code>LG3_final</code>, and <code>LG4_final</code>), and 2 objects with permutations which will be later explained (<code>im_perm</code> and <code>cim_perm</code>). They are the same ones described at Gazaffi et al. (2014). To load the data:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Loading the example data
 <span class="kw">data</span>( <span class="st">&quot;example_QTLfullsib&quot;</span> ) 
@@ -1259,25 +1258,30 @@ covar &lt;-<span class="st"> </span><span class="kw">matrix</span>( <span class=
 <span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; other attached packages:</span>
-<span class="co">#&gt; [1] fullsibQTL_0.0.9003 onemap_2.1.0000     knitr_1.17         </span>
+<span class="co">#&gt; [1] prettydoc_0.2.0     rmdformats_0.3.3    knitr_1.17         </span>
+<span class="co">#&gt; [4] fullsibQTL_0.0.9004 onemap_2.1.0000    </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; loaded via a namespace (and not attached):</span>
-<span class="co">#&gt;  [1] Rcpp_0.12.12         compiler_3.4.0       plyr_1.8.4          </span>
-<span class="co">#&gt;  [4] bindr_0.1            tools_3.4.0          digest_0.6.12       </span>
-<span class="co">#&gt;  [7] tkrplot_0.0-23       viridisLite_0.2.0    jsonlite_1.5        </span>
-<span class="co">#&gt; [10] evaluate_0.10.1      tibble_1.3.3         gtable_0.2.0        </span>
-<span class="co">#&gt; [13] pkgconfig_2.0.1      rlang_0.1.2          yaml_2.1.14         </span>
-<span class="co">#&gt; [16] spam_1.4-0           bindrcpp_0.2         stringr_1.2.0       </span>
-<span class="co">#&gt; [19] dplyr_0.7.2          httr_1.2.1           htmlwidgets_0.9     </span>
-<span class="co">#&gt; [22] fields_9.0           maps_3.2.0           rprojroot_1.2       </span>
-<span class="co">#&gt; [25] grid_3.4.0           glue_1.1.1           data.table_1.10.4   </span>
-<span class="co">#&gt; [28] R6_2.2.2             plotly_4.7.1         tcltk_3.4.0         </span>
-<span class="co">#&gt; [31] rmarkdown_1.6.0.9001 reshape2_1.4.2       tidyr_0.6.3         </span>
-<span class="co">#&gt; [34] ggplot2_2.2.1.9000   purrr_0.2.3          magrittr_1.5        </span>
-<span class="co">#&gt; [37] codetools_0.2-15     backports_1.0.5      scales_0.4.1.9002   </span>
-<span class="co">#&gt; [40] htmltools_0.3.6      assertthat_0.2.0     colorspace_1.3-2    </span>
-<span class="co">#&gt; [43] labeling_0.3         stringi_1.1.5        lazyeval_0.2.0      </span>
-<span class="co">#&gt; [46] munsell_0.4.3</span></code></pre></div>
+<span class="co">#&gt;  [1] spam_1.4-0           purrr_0.2.3          reshape2_1.4.2      </span>
+<span class="co">#&gt;  [4] tcltk_3.4.0          colorspace_1.3-2     tkrplot_0.0-23      </span>
+<span class="co">#&gt;  [7] miniUI_0.1.1         htmltools_0.3.6      viridisLite_0.2.0   </span>
+<span class="co">#&gt; [10] yaml_2.1.14          plotly_4.7.1         rlang_0.1.2         </span>
+<span class="co">#&gt; [13] glue_1.1.1           withr_2.0.0          bindrcpp_0.2        </span>
+<span class="co">#&gt; [16] bindr_0.1            plyr_1.8.4           questionr_0.6.1     </span>
+<span class="co">#&gt; [19] stringr_1.2.0        fields_9.0           munsell_0.4.3       </span>
+<span class="co">#&gt; [22] gtable_0.2.0         htmlwidgets_0.9      devtools_1.12.0     </span>
+<span class="co">#&gt; [25] codetools_0.2-15     evaluate_0.10.1      memoise_1.1.0       </span>
+<span class="co">#&gt; [28] labeling_0.3         httpuv_1.3.3         highr_0.6           </span>
+<span class="co">#&gt; [31] Rcpp_0.12.12         xtable_1.8-2         scales_0.4.1.9002   </span>
+<span class="co">#&gt; [34] backports_1.0.5      jsonlite_1.5         mime_0.5            </span>
+<span class="co">#&gt; [37] ggplot2_2.2.1.9000   digest_0.6.12        stringi_1.1.5       </span>
+<span class="co">#&gt; [40] bookdown_0.5         dplyr_0.7.2          shiny_1.0.3         </span>
+<span class="co">#&gt; [43] grid_3.4.0           rprojroot_1.2        tools_3.4.0         </span>
+<span class="co">#&gt; [46] magrittr_1.5         maps_3.2.0           lazyeval_0.2.0      </span>
+<span class="co">#&gt; [49] tibble_1.3.3         tidyr_0.6.3          pkgconfig_2.0.1     </span>
+<span class="co">#&gt; [52] data.table_1.10.4    assertthat_0.2.0     rmarkdown_1.6.0.9001</span>
+<span class="co">#&gt; [55] httr_1.2.1           rstudioapi_0.6       R6_2.2.2            </span>
+<span class="co">#&gt; [58] compiler_3.4.0</span></code></pre></div>
 </div>
 
 

@@ -181,11 +181,7 @@ plot_fullsibQTL( fullsib = fullsib,
 
 The above script creates the following graphic. It is a interactive `plotly`. *Click on legend entries to toggle traces, click-and-drag on the chart to zoom, double-click to autoscale, shift-and-drag to pan* ([plotly website](https://plot.ly/r/getting-started/)). Additionaly, it is included in the tooltip the LOD score, the QTL estimated effect, and marker names in the map.
 
-[cim_im.html](http://statgen.esalq.usp.br/fullsibQTL_graphics/cim_im.html)
-
-<div>
-<iframe src='http://statgen.esalq.usp.br/fullsibQTL_graphics/cim_im.html', height="600", width = "650"></iframe>
-</div>
+[cim_im.html](https://rramadeu.github.io/fullsibQTL/vignettes_highres/graphics/cim_im.html)
 
 The user can also set the height and width of the interact plot within the arguments `height` and `width`, they are the same as the arguments of `plotly` function. The default of `height` is 500 pixels and for `width` is 250 $\times$ the number of LGs to be plot. All the arguments can be combined in the interactive plot. 
 
@@ -209,11 +205,7 @@ plot_fullsibQTL( fullsib = fullsib,
                  file = "cim_im_greens.html",
                  folder="/home/your_user_name/graphics" )
 ```
-[cim_im_greens.html](http://statgen.esalq.usp.br/fullsibQTL_graphics/cim_im_greens.html)
-
-<div>
-<iframe src='http://statgen.esalq.usp.br/fullsibQTL_graphics/cim_im_greens.html', height="700", width = "650"> </iframe>
-</div>
+[cim_im_greens.html](https://rramadeu.github.io/fullsibQTL/vignettes_highres/graphics/cim_im_greens.html)
 
 # Session Info
 
