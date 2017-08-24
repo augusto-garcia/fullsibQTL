@@ -1,0 +1,217 @@
+---
+title: "Graphical options with `plot_fullsibQTL`"
+date: "`r Sys.Date()`"
+author: "[Statistical Genetics Lab](http://statgen.esalq.usp.br) <br/> Department of Genetics <br/> Luiz de Queiroz College of Agriculture <br/> University of São Paulo"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{fullsibQTL Tutorial}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r knitr_init, echo=FALSE, cache=FALSE}
+library(knitr)
+
+## From ggplot2 rmd vignette options
+knitr::opts_chunk$set(collapse = FALSE,
+                      comment = "#>", 
+                      fig.width = 6, 
+                      fig.height = 6, 
+                      fig.align = "center",
+                      dev = 'png',
+                      dpi = 36)
+```
+In this tutorial we show how to plot different graphics with the `plot_fullsibQTL` function. A complete description can be viewed through `?plot_fullsibQTL`. As an example we will use the example data from the package, the below step are described at the *`fullsibQTL` Tutorial* vignette.
+```{r, eval=TRUE, echo=FALSE,results='hide', cache=FALSE}
+  library(onemap)
+```
+
+```{r, eval=TRUE, echo=TRUE, results='hide'}
+  library( "fullsibQTL" )
+  data( "example_QTLfullsib" )
+  fullsib <- create_fullsib( example_QTLfullsib,
+                             list( LG1_final, LG2_final, LG3_final, LG4_final ),
+                             step = 1,
+                             map.function = "kosambi",
+                             condIndex = 3.5 )
+
+  ## IM
+  im <- im_scan( fullsib )
+  qtls.im <- r2_ls( fullsib, 
+                    pheno.col = 1, 
+                    lg = c( 1, 1, 2, 2, 2, 3, 3, 4 ),
+                    pos = c( "loc13", "M12", "loc45", "loc77", "loc108", "M33", "loc65", "M52" ) )
+  
+  ## CIM
+  cofs.fs <- cof_selection( fullsib, 
+                            pheno.col = 1, 
+                            k=log(300), 
+                            n.cofactor = 10)
+  cim <- cim_scan( cofs.fs )
+  qtls.cim <- r2_ls( fullsib, 
+                     pheno.col = 1, 
+                     lg = c( 1, 1, 2, 2, 2, 3, 3, 4 ),
+                     pos = c( "loc13", "M12", "loc45", "loc77", "loc108", "M33", "loc65", "M52" ) )
+  
+  ## Getting im and cim peaks for alpha 0.05.
+  im.peak1 <- summary( im_perm, alpha = 0.05 )[ 1, 1 ]
+  im.peak2 <- summary( im_perm, alpha = 0.05 )[ 1, 2 ]
+  
+  cim.peak1 <- summary( cim_perm, alpha = 0.05 )[ 1, 1 ]
+  cim.peak2 <- summary( cim_perm, alpha = 0.05 )[ 1, 2 ]
+```
+## Customizing Graphics
+
+The minimal plot has to have the fullsib object and at list one result of `fullsib_scan`. At the bottom of the graphic it is shown the genetic map.
+```{r}
+plot_fullsibQTL( fullsib = fullsib,
+                 fullsib.scan = cim )
+```
+
+We can set the legend of the QTL mapping with the `qtlmapping` argument:
+```{r}
+plot_fullsibQTL( fullsib = fullsib,
+                 fullsib.scan = cim,
+                 qtlmapping = "CIM" )
+```
+
+## Graphical comparision between different `(c)im_scan`
+There is the option to insert multiple results from `(c)im_scan` with listing them with `list()`. Those multiple results can be different traits, a same trait in different environments, comparision of IM $\times$ CIM, and so on. Here we compare IM $\times$ CIM
+
+```{r}
+plot_fullsibQTL( fullsib=fullsib,
+                 fullsib.scan=list(cim,im),
+                 qtlmapping = c( "CIM", "IM" ) )
+```
+
+## Adding QTL location to the graphic
+You can insert the QTLs position from the `r2_ls` function for each one of the `(c)im_scan`. In order to do it, you need to use the argument `r2ls.out`:
+
+```{r}
+plot_fullsibQTL( fullsib = fullsib,
+                 fullsib.scan = cim,
+                 r2ls.out = qtls.cim,
+                 qtlmapping = "CIM" )
+```
+
+For multiple QTLs mappings:
+
+```{r}
+plot_fullsibQTL( fullsib = fullsib,
+                 fullsib.scan = list( cim, im ),
+                 r2ls.out = list( qtls.cim, qtls.im ),
+                 qtlmapping = c( "CIM", "IM" ) )
+```
+
+To set threshold lines, based on the `summary( cim_perm )` peaks 1 and 2 with $\alpha=0.05) results:
+
+```{r}
+summary( cim_perm )
+
+plot_fullsibQTL( fullsib = fullsib,
+                 fullsib.scan = list ( cim, im ),
+                 qtlmapping = c( "CIM", "IM" ),
+                 thr = c(4.023724, 2.900906 ) )
+```
+
+For printing purposes, another option is to change the graphic for a grayscale:
+
+```{r}
+plot_fullsibQTL( fullsib = fullsib,
+                 fullsib.scan = list( cim, im ),
+                 r2ls.out = list( qtls.cim, qtls.im ),
+                 qtlmapping = c( "CIM", "IM" ),
+                 thr = c( 4.023724, 2.900906 ),
+                 grayscale = TRUE )
+```
+
+There is the option to set which linkage groups you want to plot. To plot just LG 2:
+
+```{r}
+plot_fullsibQTL( fullsib = fullsib,
+                 fullsib.scan = list( cim, im ),
+                 r2ls.out = list( qtls.cim, qtls.im ),
+                 qtlmapping = c( "CIM", "IM" ),
+                 thr = c( 4.023724, 2.900906 ),
+                 lgs = 2 )
+```
+
+To plot LG 2 and 4:
+```{r}
+plot_fullsibQTL( fullsib = fullsib,
+                 fullsib.scan = list( cim, im ),
+                 r2ls.out = list( qtls.cim, qtls.im ),
+                 qtlmapping = c( "CIM", "IM" ),
+                 thr = c( 4.023724, 2.900906 ),
+                 lgs = c( 2, 4 ) )
+```
+
+## Interactive plot
+There is also the option to plot a interactive graphic. Inside the function, we use the package `plotly` as the engine. With the option `interact=TRUE` it will be created an interactive `html` graphic in you working directory folder or you can set the folder name to create the `html`. The plot will be returned in your default browser. If you do not want to open the browser, set `browser=FALSE`
+
+```{r, eval=FALSE}
+## Setting the file name
+plot_fullsibQTL( fullsib = fullsib,
+                 fullsib.scan = list( cim, im ),
+                 r2ls.out = list( qtls.cim, qtls.im ),
+                 qtlmapping = c ( "CIM", "IM" ),
+                 thr = c( 4.023724, 2.900906 ), 
+                 interact = TRUE, 
+                 file = "cim_im.html" )
+
+## Setting the folder name
+plot_fullsibQTL( fullsib = fullsib,
+                 fullsib.scan = list( cim, im ),
+                 r2ls.out = list( qtls.cim, qtls.im ),
+                 qtlmapping = c( "CIM", "IM" ),
+                 thr = c( 4.023724, 2.900906 ), 
+                 interact = TRUE, 
+                 file = "cim_im.html",
+                 folder = "/home/your_user_name/graphics" )
+
+## Setting to not open the browser
+plot_fullsibQTL( fullsib = fullsib,
+                 fullsib.scan = list( cim, im ),
+                 r2ls.out = list( qtls.cim, qtls.im ),
+                 qtlmapping = c( "CIM", "IM" ),
+                 thr = c( 4.023724, 2.900906 ), 
+                 interact = TRUE, 
+                 file = "cim_im.html",
+                 folder = "/home/your_user_name/Pictures",
+                 browser = FALSE )
+```
+
+The above script creates the following graphic. It is a interactive `plotly`. *Click on legend entries to toggle traces, click-and-drag on the chart to zoom, double-click to autoscale, shift-and-drag to pan* ([plotly website](https://plot.ly/r/getting-started/)). Additionaly, it is included in the tooltip the LOD score, the QTL estimated effect, and marker names in the map.
+
+[cim_im.html](https://rramadeu.github.io/fullsibQTL/vignettes_highres/graphics/cim_im.html)
+
+The user can also set the height and width of the interact plot within the arguments `height` and `width`, they are the same as the arguments of `plotly` function. The default of `height` is 500 pixels and for `width` is 250 $\times$ the number of LGs to be plot. All the arguments can be combined in the interactive plot. 
+
+## Changing colors
+
+There is the option to choose the colors for each LG, the argument `lg.colors` will pass its values to the `ggplot2::scale_colour_manual` function. You can check more colors options at this [cheatsheet](https://www.nceas.ucsb.edu/~frazier/RSpatialGuides/colorPaletteCheatsheet.pdf) or at this color [guide](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf).
+
+Here we plot an interactive plot in order to compare the CIM and IM mapping setting two threshold values, `darkgreen` color for CIM and `gree` for IM, and choosing to plot just LG 2 and 3.
+
+```{r, eval=FALSE}
+plot_fullsibQTL( fullsib = fullsib,
+                 fullsib.scan = list( cim, im ),
+                 r2ls.out = list( qtls.cim, qtls.im ),
+                 qtlmapping = c( "CIM", "IM" ),
+                 thr = c( 4.023724, 2.900906 ), 
+                 lgs = c( 2, 4 ),
+                 interact = TRUE, 
+                 lg.colors = c( "darkgreen", "green" ),
+                 height = 600,
+                 width = 800,
+                 file = "cim_im_greens.html",
+                 folder="/home/your_user_name/graphics" )
+```
+(cim_im_greens.html)[https://rramadeu.github.io/fullsibQTL/vignettes_highres/graphics/cim_im_greens.html]
+
+
+# Session Info
+
+```{r}
+sessionInfo()
+```

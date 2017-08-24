@@ -1,0 +1,10 @@
+citHeader("To cite fullsibQTL in publications use:")
+
+citEntry(entry = "Manual",
+  title        = "fullsibQTL: an R package to Perform QTL Mapping in Outcrossing Species",
+  author       = "Rodrigo R. Amadeu, Rodrigo Gazaffi, Joao R. B. F. Rosa, Antonio A. F. Garcia",
+  year         = "2017",
+  address      = "Piracicaba, Brazil",
+  url          = "http://www.github.com/augusto-garcia/fullsibQTL",
+  textVersion  = "Amadeu, R. R., Gazaffi, R., Rosa, J. R. B. F., Garcia, A. A. F. (2017). fullsibQTL: an R package to Perform QTL Mapping in Outcrossing Species. Available at http://www.github.com/augusto-garcia/fullsibQTL."
+  )
