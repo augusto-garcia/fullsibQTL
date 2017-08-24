@@ -14,7 +14,7 @@ This github page has its version under development. New functions will be added 
 
 `fullsibQTL` comprises a set of functions that allows users to QTL mapping. Some functions are used internally by the package, and should not be used directly.
 
-`fullsibQTL` also has graphical features to help in the analysis.
+`fullsibQTL` also has interactive graphical features to help in the analysis:
 
 ![http://i.imgur.com/Macz6ph.gif](http://i.imgur.com/Macz6ph.gif)
 
