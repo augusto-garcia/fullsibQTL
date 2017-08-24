@@ -16,7 +16,7 @@ This github page has its version under development. New functions will be added 
 
 `fullsibQTL` also has graphical features to help in the analysis.
 
-<blockquote class="imgur-embed-pub" lang="en" data-id="a/eE7YM"><a href="//imgur.com/eE7YM"></a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
+![http://i.imgur.com/Macz6ph.gif](http://i.imgur.com/Macz6ph.gif)
 
 # How to install
 
