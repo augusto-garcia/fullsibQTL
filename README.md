@@ -14,6 +14,10 @@ This github page has its version under development. New functions will be added 
 
 `fullsibQTL` comprises a set of functions that allows users to QTL mapping. Some functions are used internally by the package, and should not be used directly.
 
+`fullsibQTL` also has graphical features to help in the analysis.
+
+<blockquote class="imgur-embed-pub" lang="en" data-id="a/eE7YM"><a href="//imgur.com/eE7YM"></a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
+
 # How to install
 
 ## From CRAN (stable version)
@@ -44,8 +48,6 @@ Then, to install `fullsibQTL` from github (this very repo):
 ```R
 install_github( "augusto-garcia/fullsibQTL" )
 ```
-
-![cim_im_gif](http://imgur.com/a/eE7YM)
 
 # Tutorials
 
