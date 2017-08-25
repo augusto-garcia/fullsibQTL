@@ -7,7 +7,7 @@
 plot_fullsibQTL(fullsib = NULL, fullsib.scan = NULL, r2ls.out = NULL,
   qtlmapping = NULL, lgs = NULL, thr = NULL, grayscale = FALSE,
   interact = FALSE, file = "fullsibQTL.html", folder = getwd(),
-  browser = TRUE, height = NULL, width = NULL, lg.colors = NULL)
+  browser = TRUE, height = NULL, width = NULL, qtlmapping.colors = NULL)
 }
 \arguments{
 \item{fullsib}{An object from class \code{fullsib}.}
@@ -46,7 +46,7 @@ plot.}
 \item{width}{numeric argument to be passed for \pkg{plotly}::\code{\link{ggplotly}} internal. Default is
 (250 x number of LGs) pixels.}
 
-\item{lg.colors}{string vector with the color names for each LG, argument will be passed for 
+\item{qtlmapping.colors}{string vector with the color names for each LG, argument will be passed for 
 \pkg{ggplot2}::\code{\link{scale_color_manual}}.}
 }
 \value{
@@ -104,6 +104,11 @@ format.
   plot_fullsibQTL( fullsib = fullsib,
                    fullsib.scan = list( cim, im ),
                    r2ls.out = list( qtls.cim, qtls.im ) )
+                   
+  ## QTL plotjust r2ls.out object from cim (replace the qtls.im by NULL)
+  plot_fullsibQTL( fullsib = fullsib,
+                   fullsib.scan = list( cim, im ),
+                   r2ls.out = list( qtls.cim, NULL ) )
   
   ## Customizing
   plot_fullsibQTL( fullsib = fullsib,
@@ -124,6 +129,12 @@ format.
                    qtlmapping = c( "cim", "im" ),
                    interact = TRUE )
 
+  plot_fullsibQTL( fullsib = fullsib,
+                   fullsib.scan = list( cim, im ),
+                   r2ls.out = list( qtls.cim, qtls.im ),
+                   qtlmapping = c( "cim", "im" ),
+                   qtlmapping.colors = c( "dark green", "purple" ) )
+                   
 }
 \seealso{
 \code{\link[fullsibQTL]{create_fullsib}}

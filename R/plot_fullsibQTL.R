@@ -70,7 +70,7 @@
 #' (250 x number of LGs) pixels.
 #' @param height numeric argument to be passed for \pkg{plotly}::\code{\link{ggplotly}} internal. Default is
 #' 1000 pixels.
-#' @param lg.colors string vector with the color names for each LG, argument will be passed for 
+#' @param qtlmapping.colors string vector with the color names for each LG, argument will be passed for 
 #' \pkg{ggplot2}::\code{\link{scale_color_manual}}.
 #' 
 #' @return The resulting graphic is divided per linkage group, it has the map
@@ -119,6 +119,11 @@
 #'   plot_fullsibQTL( fullsib = fullsib,
 #'                    fullsib.scan = list( cim, im ),
 #'                    r2ls.out = list( qtls.cim, qtls.im ) )
+#'                    
+#'   ## QTL plotjust r2ls.out object from cim (replace the qtls.im by NULL)
+#'   plot_fullsibQTL( fullsib = fullsib,
+#'                    fullsib.scan = list( cim, im ),
+#'                    r2ls.out = list( qtls.cim, NULL ) )
 #'   
 #'   ## Customizing
 #'   plot_fullsibQTL( fullsib = fullsib,
@@ -138,13 +143,19 @@
 #'                    r2ls.out = list( qtls.cim, qtls.im ),
 #'                    qtlmapping = c( "cim", "im" ),
 #'                    interact = TRUE )
-#' 
+#'
+#'   plot_fullsibQTL( fullsib = fullsib,
+#'                    fullsib.scan = list( cim, im ),
+#'                    r2ls.out = list( qtls.cim, qtls.im ),
+#'                    qtlmapping = c( "cim", "im" ),
+#'                    qtlmapping.colors = c( "dark green", "purple" ) )
+#'                    
 
 plot_fullsibQTL <- function(fullsib = NULL, fullsib.scan = NULL,
                             r2ls.out = NULL, qtlmapping = NULL, lgs=NULL,
                             thr=NULL, grayscale=FALSE,
                             interact = FALSE, file = "fullsibQTL.html", folder=getwd(), browser=TRUE,
-                            height = NULL, width = NULL, lg.colors=NULL){
+                            height = NULL, width = NULL, qtlmapping.colors=NULL){
   
   ## Defining global variable to avoid conflicts during R CMD CHECK: ggplot2 issue
   pos.cM = LOD = dummy = loc = r2.qtl = NULL
@@ -158,9 +169,16 @@ plot_fullsibQTL <- function(fullsib = NULL, fullsib.scan = NULL,
   if(any(class(fullsib.scan) == "fullsib_scan"))
     fullsib.scan <- list(fullsib.scan)
   
-  if(!is.null(r2ls.out))
-    if(any(class(r2ls.out) == "r2ls_out"))
-      r2ls.out <- list(r2ls.out)
+  if(!is.null(r2ls.out)){
+    which.null <- which(unlist(lapply(r2ls.out,is.null)))
+    null.r2ls <- data.frame(lg=NA,loc=NA,r2=NA)
+    class(null.r2ls) <- c("data.frame","r2ls_out")
+    null.r2ls <- list(null.r2ls)
+    r2ls.out[which.null] <- rep(null.r2ls,length(which.null))
+  }
+  
+  if(any(class(r2ls.out) == "r2ls_out"))
+    r2ls.out <- list(r2ls.out)
   
   df <- tidy_fullsibQTL(fullsib, fullsib.scan, r2ls.out, qtlmapping)
   if(!is.null(lgs)){
@@ -214,10 +232,10 @@ plot_fullsibQTL <- function(fullsib = NULL, fullsib.scan = NULL,
       p <- p + scale_color_grey(" ") + theme_classic()
       #print("grayscale")
     }else{
-      if(is.null(lg.colors)){
+      if(is.null(qtlmapping.colors)){
       p <- p + scale_color_discrete(" ")
       }else{
-        p <- p + scale_color_manual(" ",values = lg.colors)
+        p <- p + scale_color_manual(" ",values = qtlmapping.colors)
       }
     }
     
