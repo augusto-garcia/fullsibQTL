@@ -47,8 +47,11 @@ effect for parent \eqn{Q} (\code{alpha_q}) and its LOD Score
 segregation pattern (\code{LOD_H4}, \code{LOD_H5} and \code{LOD_H6}).
 
 For getting the segregation estimated \code{get_segr} function should be
-used. The last row indicated the \code{model} used in the analysis. See
-\pkg{fullsibQTL} Vignette for details.
+used. The last row indicated the \code{model} used in the analysis. If 
+\code{model=0}, it used same model of Gazaffi et. al (2014), if \code{model} 
+different than 0, it will be a number between 1 to 13. These 13 cases are 
+explained in \pkg{fullsibQTL} vignette: \code{QTL mapping with 
+partially informative markers} for details.
 }
 \description{
 Considering a detected QTL on a given position, this function allows to

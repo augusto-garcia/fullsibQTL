@@ -93,8 +93,9 @@
 #' 
 #' For getting the segregation estimated \code{get_segr} function should be
 #' used. The last row indicated the \code{model} used in the analysis. If 
-#' \code{model=0}, it used same model as Gazaffi et. al (2014), if \code{model} 
-#' different than 0, see \pkg{fullsibQTL} #' vignette \code{QTL mapping with 
+#' \code{model=0}, it used same model of Gazaffi et. al (2014), if \code{model} 
+#' different than 0, it will be a number between 1 to 13. These 13 cases are 
+#' explained in \pkg{fullsibQTL} vignette: \code{QTL mapping with 
 #' partially informative markers} for details.
 #' 
 #' @author Rodrigo Gazaffi, \email{rgazaffi@@gmail.com}
