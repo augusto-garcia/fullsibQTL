@@ -19,33 +19,78 @@ knitr::opts_chunk$set(collapse = TRUE,
                       fig.align = "center")
 ```
 
-`fullsibQTL` is an `R` package to perform QTL mapping in outbred/outcrossing species. We consider as a mapping population a full-sib progeny (or *F1* population) derived by a bi-parental cross between two non homozygous parents, with a genetic map obtained with markers showing different segregation patterns. Here, we assumed the phenotypes are continuous having normal distribution and the genetic map was previously obtained with `onemap` package. If you are not familiar with `onemap`, we strongly encourage you to read `onemap` [vignettes](https://github.com/augusto-garcia/onemap/tree/master) (Margarido et al., 2007). To exemplify the usage of `fullsibQTL`, here we analyse the dataset present by Gazaffi et al. (2014).
+`fullsibQTL` is an `R` package to perform QTL mapping in
+outbred/outcrossing species using the model develop by Gazaffi et al
+2014 (https://link.springer.com/article/10.1007/s11295-013-0664-2). We
+consider as a mapping population a full-sib progeny (or *F1*
+population) derived by a bi-parental cross between two non-homozygous
+parents, with a genetic map obtained from markers possibly showing
+different segregation patterns. We assumed that the phenotypic traits
+are continuous and have a normal distribution. Also, the genetic map
+must be previously made using the R package `onemap`
+(https://github.com/augusto-garcia/onemap).
 
-The purpose of this tutorial is to help users dealing with this package and understanding the outputs. It is not our intention to teach the genetic basis of QTL mapping approach, for a complete understand about the method see Gazaffi et al. (2014). Remembering, users of `fullsibQTL` are supposed to have some experience with R, since the analysis is done using the command line. Previous knowledge of `onemap` is also desirably, once the genetic map is obtained with this software. `fullsibQTL` is available as source code for Windows and Linux. It is released under the GNU General Public License, is open-source and the code can be changed freely. It comes with no warranty. It is implemented as a package to be used under the freely distributed `R` software, which is a language and environment for statistical computing
+If you are not familiar with `onemap` and its approach to build a map,
+we strongly encourage you to read `onemap`
+[vignettes](https://github.com/augusto-garcia/onemap/tree/master)
+(Margarido et al., 2007). 
 
-If you are not familiar with `R`, we recommend the reading of
-vignette [Introduction to R](http://htmlpreview.github.io/?https://github.com/augusto-garcia/onemap/blob/master/inst/doc/Introduction_R.html). If you are not familiar with `onemap`, we recommend the reading of vignette [How to build a linkage map for outcrossing populations](http://htmlpreview.github.io/?https://github.com/augusto-garcia/onemap/blob/master/inst/doc/Outcrossing_Populations.html).
+In this tutorial, to illustrate the usage of `fullsibQTL` we analyze
+the dataset present by Gazaffi et al. (2014) when proposing the
+method. The purpose is to help users dealing with this package and
+understanding the outputs. It is not our intention to teach the basis
+doing a QTL analysis, so for a better understand about the method see
+Gazaffi et al. (2014).
 
-Additionally, to this tutorial, there are three additional tutorials:
+Users of `fullsibQTL` are supposed to have some experience with R,
+since the analysis is done using the command line. Previous knowledge
+of `onemap` is also desirably, once the genetic map is obtained with
+this software. But by no means one needs to be on expert on any of
+them to use the package.
 
-- [QTL mapping with partially informative markers](https://rramadeu.github.io/fullsibQTL/inst/doc/QTL_mapping_with_partially_informative_markers.html)
+`fullsibQTL` is available under the GNU General Public License, it is
+open-source and the code can be changed freely. It comes with no
+warranty. It is implemented as a package to be used under the freely
+distributed `R` software, which is a language and environment for
+statistical computing
+
+If you are not familiar with `R`, we recommend reading the vignette
+[Introduction to
+R](http://htmlpreview.github.io/?https://github.com/augusto-garcia/onemap/blob/master/inst/doc/Introduction_R.html).
+If you are not familiar with `onemap`, we recommend the reading of
+vignette [How to build a linkage map for outcrossing
+populations](http://htmlpreview.github.io/?https://github.com/augusto-garcia/onemap/blob/master/inst/doc/Outcrossing_Populations.html).
+
+Moreover, there are three additional tutorials:
+
+- [QTL mapping with partially informative
+  markers](https://rramadeu.github.io/fullsibQTL/inst/doc/QTL_mapping_with_partially_informative_markers.html)
+  
+- [Graphical options with `plot_fullsibQTL`](https://rramadeu.github.io/fullsibQTL/inst/doc/Graphical_options_with_plot_fullsibQTL.html)
+
+- [Graphical options with `plot`](https://rramadeu.github.io/fullsibQTL/inst/doc/Graphical_options_with_plot.html)
+
+These can be easily accessed within R:
+
 ```{r, eval=FALSE}
 vignette( "QTL_mapping_with_partially_informative_markers", package = "fullsibQTL" )
 ```
 
-- [Graphical options with `plot_fullsibQTL`](https://rramadeu.github.io/fullsibQTL/inst/doc/Graphical_options_with_plot_fullsibQTL.html)
 ```{r, eval=FALSE}
 vignette( "Graphical_options_with_plot_fullsibQTL", package = "fullsibQTL" )
 ```
-- [Graphical options with `plot`](https://rramadeu.github.io/fullsibQTL/inst/doc/Graphical_options_with_plot.html)
+
 ```{r, eval=FALSE}
 vignette( "Graphical_options_with_plot", package = "fullsibQTL" )
 ```
 
 # Citation
-To cite the methodology for QTL mapping in full-sib progeny:
+To cite the model for QTL mapping in a full-sib progeny:
 
-Gazaffi, R., Margarido, G. R., Pastina, M. M., Mollinari, M., Garcia, A. A. F. (2014). A model for quantitative trait loci mapping, linkage phase, and segregation pattern estimation for a full-sib progeny. *Tree Genetics & Genomes*, 10(4), 791-801.
+Gazaffi, R., Margarido, G. R., Pastina, M. M., Mollinari, M., Garcia,
+A. A. F. (2014). A model for quantitative trait loci mapping, linkage
+phase, and segregation pattern estimation for a full-sib progeny.
+*Tree Genetics & Genomes*, 10(4), 791-801. (https://link.springer.com/article/10.1007/s11295-013-0664-2)
 
 To cite this R package:
 
@@ -64,12 +109,13 @@ Within R:
 install.packages( "devtools" )
 library( "devtools" )
 
-## Installing from github the fullsibQTL
+## Installing  fullsibQTL from github 
 install_github( "augusto-garcia/fullsibQTL" )
 ```
 
 # Functions
-The following table presents the `fullsibQTL` functions which can be directly called by users:
+The following table presents the `fullsibQTL` functions which can be
+directly accessed by users:
 
 <font size="2">
 
@@ -96,7 +142,19 @@ The following table presents the `fullsibQTL` functions which can be directly ca
 </font>
 
 # Required data
-The input file of `fullsibQTL` is the same as the one required by `onemap` package, you can find more information at `onemap` [vignette](http://htmlpreview.github.io/?https://github.com/augusto-garcia/onemap/blob/master/inst/doc/Outcrossing_Populations.html). Above there is an example of such file. The header line indicates the data type, the following line with `10 5 0 0 2` indicates that the data has, respectively, 10 individuals, 5 markers, no (0) chromosome information, 0 (no) physical position information, and 2 traits as phenotypic data. It is very similar to a `MAPMAKER/EXP` file, but has additional information about the crosstype. It uses the symbol `-` for missing data.
+The input file of `fullsibQTL` is the same as the one required by
+`onemap` package. There is details about it at `onemap`
+[vignette](http://augustogarcia.me/onemap/vignettes_highres/Outcrossing_Populations.html)
+
+
+Below there is an example of such a file. The header line indicates
+the data type, the following line with `10 5 0 0 2` indicates that the
+data has, respectively, 10 individuals, 5 markers, no chromosome
+information for these markers (indicated by 0), no physical position
+information for the markers, and 2 phenotypic traits. This file is
+somehow similar to a `MAPMAKER/EXP` file (used a long time ago), but
+has additional information about the crosstype. It uses the symbol `-`
+for missing data.
 
 ```
 data type outcross
