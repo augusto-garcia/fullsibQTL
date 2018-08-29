@@ -272,63 +272,104 @@ two phenotypes, with conditional probabilities calculated every 1 cM
 (using Kosambi function).
 
 # Interval mapping
-In order to proceed with interval mapping, there are two implemented functions `im_scan` and `im_char`. `im_scan` scans all the genome computing associations between genotype and phenotype trying to detect QTLs. `im_char` shows the genetic effects and their significance tests. It also shows additional tests to infer the QTL segregation pattern.
+
+To perform interval mapping, one should use two functions, `im_scan`
+and `im_char`. `im_scan` scans all the genome testing for statistical
+associations between genotype and phenotype, *i.e.*, trying to detect
+QTL. `im_char` shows the genetic effects and their significance tests,
+as well as some additional tests to infer QTL segregation pattern.
 
 ## IM Genome scan
-The genome scan can be performed with the function `im_scan`, such as:
+
+To perform a genome scan:
+
 ```{r, eval=TRUE, cache=TRUE, results='hide'}
 im <- im_scan( fullsib = fsib, lg = "all", pheno.col = 1, LOD = TRUE )
 ```
-The argument `fullsib` refers to the object created using `create_fullsib`, `lg` indicates which linkage groups must be scanned for the QTL mapping. Another way to represent it is `lg=1:4`. The function default is `lg=all`, *i.e.*, scan every LG. The argument `pheno.col` indicates which phenotype must be used, default is to use the first trait, it must be an integer. The argument `LOD=TRUE` indicates that the mapping result must be shown with the LOD score, if `FALSE`, the scale will be shown as $-log_{10}(p_{value})$.
 
-The mapping result can be view calling (here is truncated):
+Argument `fullsib` refers to the object created using function
+`create_fullsib`; `lg` indicates which linkage groups must be scanned
+(another way of representing it is `lg=1:4`). The function default is
+`lg=all`, to scan every LG. The argument `pheno.col` indicates which
+phenotype will be considered (it defaults to 1, the first trait),
+using an integer. The argument `LOD=TRUE` indicates that the mapping
+result must be shown using LOD scores, if `FALSE`, the scale will be
+shown as $-log_{10}(p_{value})$.
+
+The mapping result can be viewed by typing the object name:
 ```{r, eval=TRUE, cache=FALSE, R.options=list(max.print=50)}
 im
 ```
 
-Another way to see the results is using `print` and specifying which LG you would like to print:
+Another way to see the results is using `print` and specifying the LG:
 ```{r, eval=TRUE, cache=FALSE, R.options=list(max.print=50)}
 print( im, lg = 1 )
 ```
-The resulting object of `im_scan` is a matrix with 4 columns and *k* lines, where *k* is the number of genome positions in which the conditional probabilities have been computed based on the `step` argument of the earlier `create_fullsib` function. In this object, the row names are the identification of each position (it can be the marker name itself or a pseudo-marker with a automatically given name in the format `loc` + number. The first column is the linkage group of the marker. The third column is the position position (in centiMorgan). The fourth column is the LOD score value (or the $-log_{10}(p_{value})$). The fifth column reefers to the model utilized for the computations (see Section 9).
 
-`summary(im)` prints just the utmost LOD score value (or the $-log_{10}(p_{value})$) for every LG. The user can also set a threshold (`thr` argument) where just the scores above this value will be printed. When more than one QTL is mapped in the same LG, the user have to do manual QTL search as looking for more than one peak can be a subjective process.
+The resulting object of `im_scan` is a matrix with five columns and
+*k* lines, where *k* is the number of genome positions in which the
+conditional probabilities have been computed based on the `step`
+argument of the earlier `create_fullsib` function. In this object, the
+row names are the identification of each position (it can be the
+marker name itself or a pseudo-marker, with an automatically created
+name in the format `loc` + number (corresponding to a step between
+markers). The second column is the linkage group, and the third is the
+position (in centiMorgan). The fourth column has the LOD Score value
+(or the $-log_{10}(p_{value})$). The fifth column reefers to the model
+utilized for the computations (that will be detailed later).
+
+For helping visualization of the results of QTL mapping, function
+`summary(im)` can be used to print just the highest LOD score value
+(or the $-log_{10}(p_{value})$) for every LG. The user can set a
+threshold (`thr` argument) to see only the scores above this. When
+there is more than one QTL in the same LG, the user has to manually
+look for it using some graphical visualization.
 
 ```{r, eval=TRUE, cache=FALSE}
 summary( im )
 ```
 
 ## QTL mapping plot options
-To obtain a graphical plot about the QTL mapping you have two options: `plot` and `plot_fullsibQTL`. `plot` is the lighter and should be used just for faster purposes. `plot_fullsibQTL` is the recommend one and should be used for analytical purposes. Additionaly, there is an interactive graphic option in the `plot_fullsibQTL` to help to investigete the QTL mapping with tools as zoom and mouse hover.
 
-To `plot`:
+For graphical visualizations, there are two functions: `plot` and
+`plot_fullsibQTL`. Function `plot` is simpler and it is a good option
+for quick observations. Function `plot_fullsibQTL` is recommended for
+more detailed analysis; it has also an option for interactive
+analysis, allowing tools such as mouse zoom and hover.
+
+To use function `plot`:
+
 ```{r, eval=TRUE, cache=FALSE}
 plot( im )
 ```
 
-The user can customize the QTL graphic plot. As an example, it is possible to plot in the same area until 5 mapping profiles. Moreover, the user can indicate the molecular markers' position, change the labels, between others features. You can find more information about graphics with the function help `?plot.fullsib_scan` and in its vignette.
+Users can customize the output. For example, it is possible to plot in
+the same panel up to five mapping profiles. Moreover, the user can
+indicate the molecular marker's position, change the labels, among
+others features. You can find more information about available options
+typing `?plot.fullsib_scan` or on its vignette, typing
+```{r, eval=FALSE, cache=FALSE}
+vignette("Graphical_options_with_plot" ,package="fullsibQTL")
+```
 
-Another user option is to use the `plot_fullsibQTL` function which is sofisticated and informative graphic (and also would result in a heavier graphic):
+Function  `plot_fullsibQTL`  is more sophisticated and interactive.
+Try it with 
 ```{r, eval=TRUE, cache=TRUE}
 plot_fullsibQTL( fullsib = fsib, fullsib.scan = im )
 ```
 
-There are the option to plot an interactive graphic:
+To plot interactive graphics:
 ```{r, eval=FALSE, cache=FALSE}
 plot_fullsibQTL( fullsib = fsib, fullsib.scan = im, interact = TRUE )
 ```
 
-It will generate this HTML [graphic](http://statgen.esalq.usp.br/fullsibQTL_graphics/im.html).
+It will generate this interactive html  [graphic](http://statgen.esalq.usp.br/fullsibQTL_graphics/im.html).
 
-You can find more information about `plot_fullsibQTL`:
+You can find more information about `plot_fullsibQTL` in the vignette:
 ```{r, eval=FALSE, cache=FALSE}
 vignette("Graphical_options_with_plot_fullsibQTL" ,package="fullsibQTL")
 ```
-You can find more information about `plot`:
-```{r, eval=FALSE, cache=FALSE}
-vignette("Graphical_options_with_plot" ,package="fullsibQTL")
-```
-In order to have a lighter tutorial, here, we will use just the graphics from `plot` function. However, we strongly recommend to use the `plot_fullsibQTL` graphics in your analysis.
+
 
 ## Covariate
 To improve the mapping flexibility, it is possible to set a covariate (as a fixed effect) within the model in order to control the variability of the aimed phenotype. To set a full-rank matrix which controls the phenotypic variance, first you need to define a incidence vector, and, then, set it as an argument of the `im_scan`. An example follows:
