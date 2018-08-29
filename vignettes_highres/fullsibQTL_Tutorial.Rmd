@@ -143,15 +143,15 @@ directly accessed by users:
 
 # Required data
 The input file of `fullsibQTL` is the same as the one required by
-`onemap` package. There is details about it at `onemap`
-[vignette](http://augustogarcia.me/onemap/vignettes_highres/Outcrossing_Populations.html)
+`onemap` package. There are details about it at `onemap`
+[vignette](http://augustogarcia.me/onemap/vignettes_highres/Outcrossing_Populations.html).
 
 
 Below there is an example of such a file. The header line indicates
 the data type, the following line with `10 5 0 0 2` indicates that the
 data has, respectively, 10 individuals, 5 markers, no chromosome
 information for these markers (indicated by 0), no physical position
-information for the markers, and 2 phenotypic traits. This file is
+information for the markers (0), and two phenotypic traits (0). This file is
 somehow similar to a `MAPMAKER/EXP` file (used a long time ago), but
 has additional information about the crosstype. It uses the symbol `-`
 for missing data.
@@ -170,33 +170,54 @@ I1 I2 I3 I4 I5 I6 I7 I8 I9 I10
 ```
 
 # Creating the working object
-Hopefully you already had used the `onemap` to build your linkage maps an also are familiar with this data type. Within the available file, you can import it. First you need to read it with `onemap::read_onemap` function and after you can combine it with your linkages groups with `create_fullsib` function. Your final object will have the `onemap` raw object, the linkage groups and some parameters information. In the following example we import the raw data and a `list` with 4 linkages groups, we set as mapping function `kosambi` (Kosambi, 1944) with `map.function` argument, and, at last, we set the `step` argument as 1. The `step` argument is used for the computation of the conditional multipoint probability which defines the distance in cM (centiMorgan) the conditional probability are obtained. If `step=0`, the probabilities will be computed only in the positions of each marker.
+Once the file with raw data was created, it is necessary to import it
+and provide more details required for QTL mapping.
+
+First you need to read the raw data with `onemap::read_onemap`
+function. After, you need to combine it with another object with
+information of linkages groups, created with function
+`create_fullsib`.
+
+This is illustrated in the following example, where we import the raw
+data and a list with four linkages groups, with distances measure with  
+kosambi mapping function (Kosambi, 1944) (argument `map.function`).
+Note that we also specified argument `step` with value 1. This option
+is used for the computation of the conditional multipoint probability
+of QTL genotypes, which is used for QTL mapping (see Gazaffi et al.
+2014 for details).  If `step=0` is used, the probabilities will be
+computed only in the position of each marker (allowing the analysis
+even with missing data).
 
 ```{r, eval=FALSE}
 library(fullsibQTL)
+
+# Raw data
 fs_data <- read_onemap( dir = "C:/workingdirectory", inputfile = "filename.raw" )
 
-## To read the example data from this same package:
-fs_data <- read_onemap( dir = system.file("extdata", package = "fullsibQTL"), 
-                        inputfile = "example_QTLfullsib.raw" )
 
-## Within the Linkage Groups done:
+## Information of linkage groups, step and mapping function
 fsib <- create_fullsib( fs_data,
                         map.list = list( LG1_final, LG2_final, LG3_final, LG4_final ),
                         step = 1, map.function = "kosambi" )
 ```
 
-After loading the data, the user can look at the `onemap` object's summary with:
+After loading the data, the user can look at the `onemap` object's
+summary:
+
 ```{r, eval=FALSE}
 fs_data
 ```
 
-And at the `fullsibQTL` object's summary with:
+For `fullsibQTL` object's:
+
 ```{r, eval=FALSE}
 fsib
 ```
 
-If you want to see this data file in its raw format, type the following line to see where in your machine it is located:
+If one wants to see an example of the data file format (raw data), type the
+following, that will show the location of a file that is distributed
+with the package:
+
 ```{r, eval=FALSE}
 system.file( "extdata", "example_QTLfullsib.raw", package = "fullsibQTL" )
 ```
@@ -206,12 +227,20 @@ rm(list=ls())
 library(fullsibQTL)
 ```
 
-In this tutorial we will use the data example available in this same package. In this data, there are 6 objects, a raw data in the `onemap` format (`example_QTLfullsib`), 4 ordered linkage groups (`LG1_final`, `LG2_final`, `LG3_final`, and `LG4_final`), and 2 objects with permutations which will be later explained (`im_perm` and `cim_perm`). They are the same ones described at Gazaffi et al. (2014). To load the data:
+In this tutorial we will use as an example an R object distributed
+with the package. It has: a) raw data in the `onemap` format
+(`example_QTLfullsib`); b) four ordered linkage groups (`LG1_final`,
+`LG2_final`, `LG3_final`, and `LG4_final`); two objects with
+permutations, that will be explained later (named `im_perm` and
+`cim_perm`). They are the same ones described at Gazaffi et al.
+(2014).
+
+To load the example data:
 ```{r, eval=TRUE,cache=FALSE}
 ## Loading the example data
 data( "example_QTLfullsib" ) 
 
-## Checking if the objects were loaded
+## Checking if it worked
 ls() 
 
 ## Printing some of the loaded objects
@@ -219,19 +248,28 @@ example_QTLfullsib
 LG1_final
 ```
 
-Now, we have to combine the raw data with the linkage groups (hereafter LG) in a single object with the function `create_fullsib`:
+Again, the map was built with `onemap` package. Now, we have to
+combine the raw data with the linkage groups (hereafter named LG) into
+a single object. This is done with function `create_fullsib`:
+
 ```{r, eval=TRUE, results='hide'}
 fsib <- create_fullsib( example_QTLfullsib,
                         map.list = list( LG1_final, LG2_final, LG3_final, LG4_final ),
                         step = 1, map.function = "kosambi" )
 ```
 
-Printing it
+Checking it:
 ```{r, eval=TRUE}
 fsib
 ```
 
-This object contains a genetic map composed by 4 LGs, with their length and segregation patterns above indicated. There is also shown the number of unlinked makers, *i.e.*, how many markers of the `example_QTLfullsib` object are not present in any LG. This may be helpful for species where the map does not cover the whole genome. Finally, there is the number of the available phenotypes for the QTL mapping, as well the chosen distance (`step`) to obtain the conditional probability and the mapping function.  It is also keep the map function, in this case `kosambi`. In this tutorial we will use just the first trait.
+This object contains a genetic map composed by four LGs, with their
+length and segregation patterns indicated in the output. There are
+also five unlinked makers. This might be helpful for further QTL
+analysis for species where the map does not cover the whole genome,
+using the single marker analysis. The object also has information for
+two phenotypes, with conditional probabilities calculated every 1 cM
+(using Kosambi function).
 
 # Interval mapping
 In order to proceed with interval mapping, there are two implemented functions `im_scan` and `im_char`. `im_scan` scans all the genome computing associations between genotype and phenotype trying to detect QTLs. `im_char` shows the genetic effects and their significance tests. It also shows additional tests to infer the QTL segregation pattern.
