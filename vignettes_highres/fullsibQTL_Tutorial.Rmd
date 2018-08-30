@@ -371,16 +371,42 @@ vignette("Graphical_options_with_plot_fullsibQTL" ,package="fullsibQTL")
 ```
 
 
-## Covariate
-To improve the mapping flexibility, it is possible to set a covariate (as a fixed effect) within the model in order to control the variability of the aimed phenotype. To set a full-rank matrix which controls the phenotypic variance, first you need to define a incidence vector, and, then, set it as an argument of the `im_scan`. An example follows:
+## Covariates
+
+To improve the mapping statistical power, it is possible to include
+covariates (as fixed effects) in the QTL model, in order to control
+the variability outside the mapping interval (OR, IN ORDER TO CONTROL
+ENVIRONMENTAL VARIABLES?). To set a full-rank matrix which controls
+the phenotypic variance, first you need to define an incidence vector,
+and, then, set it as an argument of the function `im_scan`. An example
+follows:
 
 ```{r, eval=TRUE, cache=FALSE, results='hide'}
 covar <- matrix( rep( c( 1 ,-1 ), each = 150 ), ncol = 1 )
 im_covar <- im_scan( fsib, pheno.col = 1, addcovar = covar )
 ```
 
+NÃO ENTENDI... UMA COVARIÁVEL? ELA CONTROLA O QUE, EXATAMENTE?
+MARCADORES FORA DO INTERVALO? OU VARIÁVEIS INERENTES AO EXPERIMENTO
+(COVARIÁVEIS AMBIENTAIS)? -1 E +1? NÃO ENTENDI O QUE É ESSE VETOR,
+TAMBÉM. ESTAMOS AINDA FALANDO DE IM, POR QUE INCLUIR COVARIÁVEIS NESSA
+PARTE?
+
+
 ## IM Permutation test
-The threshold for QTL detection can be set using permutation tests (Churchill and Doerge, 1994) adding the argument `n.perm` in the `im_scan` function. As the permutation test is a re-sample process, it is recommended to the user to set a seed before the permutations. With this seed, the permutation can be repeated achieving the same result. The argument `write.perm` allows the user to save a text file with all the permutations performed. In this tutorial, the permutation test object `im_perm` with the seed `1234` is already created and is part of the `example_QTLfullsib` ealier loaded, there is no necessity to run the following lines. However, an example of how to perform the permutation follows:
+
+The threshold for QTL detection can be set using permutation tests
+(Churchill and Doerge, 1994) adding the argument `n.perm` in the
+`im_scan` function. As the permutation test is a sampling process, it
+is recommended that users set a seed before the permutations, if they
+want to repeat the procedure. The argument `write.perm` allows the
+user to save a text file with information about the permutations. 
+
+In this tutorial, the permutation test object `im_perm` with the seed
+`1234` is already created and is part of the `example_QTLfullsib`
+object (previously loaded), so there is no need to run the following
+lines. Anyway, an example of how to perform the permutation is the
+following:
 ```{r, eval=FALSE, cache=FALSE, collapse=TRUE, results='hide'}
 ## Perfoming the permutation
 set.seed( 1234 )
@@ -388,13 +414,27 @@ im_perm <- im_scan( fsib, pheno.col = 1, n.perm = 1000,
                     write.perm = "im_permutations.txt" )
 ```
 
-If the user wants to keep the resulting permutation object to later analysis, it can be saved and load as an `Rdata` object:
+If one needs to safe keep the object with the results of permutations,
+for further analysis, the object can be saved as an `Rdata` object. To
+save and load it, use:
 ```{r, eval=FALSE, cache=FALSE, collapse=TRUE}
 save( im_perm, file = "im_permutations.Rdata" )
 load( "im_permutations.Rdata" )
 ```
 
-The permutation test demands some time. At the end of the process, `im_perm` receives a matrix with *p* lines, where *p* is the number of the realized permutations, and two columns with the highest and second highest peak values. The definition of the second peak is the same of the method two of Chen and Storey (2006), *i.e*, the highest LOD score (or $-log_{10}(p_{value})$) of the genome disregarding the LG where the highest peak was achieved. This threshold values can be visualized through `summary` at the object with the permutation tests. In this case, the user can set an $\alpha$ significance threshold. The result will be the quantile $(1-\alpha) \times 100$ of the samples. The function default is to show $\alpha$ values equal to $0.10$ and $0.05$.
+The permutation test demands some time. At the end of the process,
+`im_perm` receives a matrix with *p* lines, where *p* is the number of
+the realized permutations, and two columns with the highest and second
+highest peak values. The definition of the second peak is the same as
+the one defined by Chen and Storey (2006), *i.e*, the highest LOD
+score (or $-log_{10}(p_{value})$) of the genome disregarding the LG
+where the highest peak was achieved. The threshold values can be
+visualized with function `summary` applied to the object with the
+permutation tests. In this case, the user can set an $\alpha$
+significance threshold. The result will be the quantile $(1-\alpha)
+\times 100$ of the samples. The function default is to show $\alpha$
+values equal to $0.10$ and $0.05$.
+
 ```{r, eval=TRUE, cache=FALSE}
 ## Summary of the permutation test
 summary( im_perm )
@@ -418,8 +458,11 @@ abline( h = im.peak1, lty = 2, lwd = 1, col = "black" )
 abline( h = im.peak2, lty = 2, lwd = 2, col = "black" )
 ```
 
-
-If the user wants to see the maximum distribution, he or she can use the `plot` function with `perm` object. If the user set the `peak` argument for `2`, the distribution of the second highest peaks will be shown. The vertical line represents the cut-off threshold for $\alpha=0.05$.
+If one wants to see the distribution of maximum values (selected for
+each permutation), function `plot` can be applied to `perm` object. If
+`peak` argument is set as 2, the distribution of the second highest
+peaks will be showed. Vertical lines represent the cut-off threshold
+for $\alpha=0.05$.
 
 ```{r, eval=TRUE, cache=FALSE}
 plot( im_perm, peak = 1 )
@@ -432,13 +475,20 @@ abline( v = 2.497431, col = "red" )
 ```
 
 ## IM QTL characterization
-After the determination of the number and position of the QTLs, the user can characterize the QTLs. In other words, to identify the significant effects, the segregation pattern and linkage phases between QTLs and flanking markers. The already created object `im` shows the presence of at least 4 QTLs:
+
+After the determination of the number and position of the QTLs, the
+user can characterize the mapped QTLs. This relates to identify the
+significant effects, the segregation pattern and linkage phases
+between QTLs and flanking markers. The already created object `im`
+shows the presence of at least 4 QTLs:
 
 ```{r, eval=TRUE, cache=FALSE}
 summary( im )
 ```
 
-The characterization of these 4 regions is realized with the function `im_char`:
+The characterization of these 4 regions is achieved with function
+`im_char`:
+
 ```{r, eval=TRUE, cache=FALSE}
 qtl1 <- im_char( fsib, pheno.col = 1, lg = 1, pos = "loc4" )
 qtl2 <- im_char( fsib, pheno.col = 1, lg = 2, pos = "M27" )
@@ -446,22 +496,66 @@ qtl3 <- im_char( fsib, pheno.col = 1, lg = 3, pos = "loc64" )
 qtl4 <- im_char( fsib, pheno.col = 1, lg = 4, pos = "loc56" )
 ```
 
-It is worth noting that the positions "loc4", "M27", "loc64", and "loc56" are the ones presented in the `im` object kept when the `summary` function was applied. The object with the LG 1 QTL characterization  is:
+Notice that positions "loc4", "M27", "loc64", and "loc56" are the ones
+presented in the `im` object and visualized when function `summary`
+was applied. For example, the object with the characterization of the QTL on LG 1 is:
+
 ```{r, eval=TRUE, cache=FALSE}
 qtl1
 ```
-`qtl1` is a matrix with 1 column and 15 lines. The first line has the LG information. The second line has the position in centiMorgan which the region is localized. The third and fourth lines shows, respectively, $-log_{10}(p_{value})$) and LOD Score, values next to the ones obtained using `im_scan`. The fifth line (`mu`) is the intercept effect of the model. The lines `alpha.p`, `alpha.q`, and `delta.pq` represent the QTL genetic effects. The lines `LOD.alpha.p`, `LOD.alpha.q`, and `LOD.delta.pq` are the statistics of the marginal tests of these genetic effects. All of these three tests was performed with 1 degree of freedom (testing just if the effect differs than zero). In this case, a LOD score above or equal $0.83$ indicates a significant given effect (LOD $= 0.83$ is the same as a LRT $= 3.81$ which under $\chi^2$ distribution with 1 degree of freedom has significance level of $5%$). The lines `H4.pvalue`, `H5.pvalue`, and `H6.pvalue` show the p-values for the complementary test in order to detect the QTL segregation. For more information about it, please see Gazaffi et al. (2014). At last, the line `model` shows which model was studied, see details on the vignette *QTL mapping with partially informative markers*. In some cases, a given test cannot be evaluated, in these cases the cells will have `NA` values.
 
-We can print all the QTLs information with:
+Object `qtl1` (a matrix) has several information. The first line has
+the LG information, the second has the position in centiMorgan where
+the QTL is localized. The third and fourth lines shows, respectively,
+$-log_{10}(p_{value})$) and LOD Score. The fifth line (`mu`) is about
+the intercept. `alpha.p`, `alpha.q`, and `delta.pq` represent the QTL
+genetic effects; `LOD.alpha.p`, `LOD.alpha.q`, and `LOD.delta.pq` are
+the statistics associated with the marginal tests of significance of
+these genetic effects, with 1 degree of freedom (testing just if the
+effect differs from zero). In this case, a LOD score above or equal
+$0.83$ (equivalent to a likelihood ratio test of LRT $= 3.81$, which
+has an approximate $\chi^2$ distribution with 1 degree of freedom
+under the null hypothesis). Since this is done only on specific
+positions, it is not necessary to correct for multiple tests.
+`H4.pvalue`, `H5.pvalue`, and `H6.pvalue` show the p-values for
+additional tests necessary to infer QTL segregation. For more
+information, please see Gazaffi et al. (2014). 
+
+Finally, line `model` shows which model was considered; please see
+details on the vignette *QTL mapping with partially informative
+markers*. In some cases, a given test cannot be performed, showing
+`NA` as their values values. In short, outcrossing species can have a
+combination of markers with different segregation patterns, and in
+some genomic regions the amount of information can be different. For
+example, a genomic with markers segregating only in one of the parents
+will not allow inference about QTL in the other parent, so the model
+needs to be adapted accordingly. For details see Gazaffi et al.
+(2014).
+
+We can print information for all  QTL simultaneously:
+
 ```{r, eval=TRUE, cache=FALSE}
 cbind( qtl1, qtl2, qtl3, qtl4 )
 ```
-The identification of the linkage phases allows to detect where the allele which increase or reduce the effect are. Therefore, it is necessary an analysis of the `LOD.alpha.p` and `LOD.alpha.q` values. In order to facilitate interpretation, the function `draw_phase` was developed and can be used as follows:
+
+The analysis of the linkage phases allows to detect the localization
+of the QTL allele which increases or reduces the trait. To do so, look
+for `LOD.alpha.p` and `LOD.alpha.q`. In order to facilitate
+interpretation, the function `draw_phase` and can be used as follows:
 
 ```{r, eval=TRUE, cache=FALSE}
 draw_phase( fsib, qtl1, 0.05 )
 ```
-The argument $\alpha$ equals $0.05$ is used to show the significant additive genetic effects. If it is the case, the allele with superscript 1 enhances the phenotype, and the allele with superscript 2 reduces it. Alleles with superscript 0 has no significant effect under this significance level threshold. To infer the QTL segregation, the user must use the `get_segr` function. Its default considers $\alpha=0.05$ of significance level for the marginal effects ("LOD.alpha.p","LOD.alpha.q","LOD.delta.pq") and the complementary tests ("H4.pvalue","H5.pvalue", "H6.pvalue"). It follows an example:
+The value $0.05$ relates to $\alpha$ (significance level) and it is
+used to show only QTL statistically significant at this level. Alleles
+$P1$ and $Q1$ have positive effects, while $P2$ and $Q2$ have negative
+ones; $P0$ and $Q0$ have no significant effects.
+
+To infer the QTL segregation, the user should use function `get_segr`
+function. It uses the default of $\alpha=0.05$ for the significance
+level of marginal tests (`LOD.alpha.p`, `LOD.alpha.q`, `LOD.delta.pq`)
+and complementary ones (`H4.pvalue`, `H5.pvalue`, `H6.pvalue`). For
+example:
 
 ```{r, eval=TRUE, cache=FALSE}
 get_segr( qtl1 )
@@ -469,11 +563,22 @@ get_segr( qtl2 )
 get_segr( qtl3 )
 get_segr( qtl4 )
 ```
-# Cofactor selection
-Before composite interval mapping (CIP), it is necessary to define which markers will be cofactors. To do it, there are two functions: `cof_selection` and `cof_definition`.
+
+# Selection of Cofactors
+
+Before proceeding to composite interval mapping (CIM), it is necessary
+to define which markers will be used as cofactors. They will be used
+to control variation outside the mapping interval. To do so, there are
+two functions: `cof_selection` and `cof_definition`.
 
 ## Cofactor selection using multiple linear regression
-The function `cof_selection` allows to select cofactors using multiple linear regression through *stepwise* approach. The criteria information is utilized to determine if a given possible cofactor is kept or not kept. Basically, this function first prepares the data and then uses `step` from `stats` package. For more information about `?cof_selection`. An example follows:
+
+Function `cof_selection` allows to select cofactors using multiple
+linear regression with the *stepwise* procedure. The criteria
+information is utilized to determine if a given cofactor is kept or
+not in the model. Basically, this function first prepares the data and
+then uses `step` from `stats` package. For more information, use
+`?cof_selection`.
 
 ```{r, eval=TRUE, cache=TRUE, results='hide'}
 cofs_fs <- cof_selection( fsib, pheno.col = 1, k = log( 300 ), n.cofactor = 10 )
@@ -482,9 +587,26 @@ cofs_fs <- cof_selection( fsib, pheno.col = 1, k = log( 300 ), n.cofactor = 10 )
 plot( cofs_fs )
 ```
 
-The object `fsib` is the same one created using `create_fullsib`, `pheno.col` indicates which phenotypic is to be used in the analysis, `k` is the chosen penalty for the information criteria computation. If `k=2`, it will be used the Akaike Information Criteria. If `k=log(n)` where `n` is the mapping population size, it corresponds to the Bayesian Information Criteria. If the user wants another penalty values, we strongly recommend to look at the [QTL Cartographer v1.17 manual](http://statgen.ncsu.edu/qtlcart/manual.pdf), page 76 and the help of the R function `step`. For some situations, the process would recommend to keep several cofactors which can lead to overparametrization of the model. To control it, the argument `n.cofactor` allows to the user to restrict the number of selected cofactors of the model, *i.e*, the proceeding to keep cofactors is frozen when the number of kept cofactors is equal to `n.cofactor` (the default is `n.cofactor = 10`).
+Object `fsib` is the same one created using function `create_fullsib`;
+`pheno.col` indicates which phenotypic trait will be used in the
+analysis; `k` is the penalty for the information criteria computation.
+If `k=2`, it used Akaike Information Criteria; if `k=log(n)` (where
+`n` is the mapping population size), it uses the Bayesian Information
+Criteria. If the user wants to use another penalty values, we
+recommend to look at the [QTL Cartographer v1.17
+manual](http://statgen.ncsu.edu/qtlcart/manual.pdf), page 76, and also
+the help of the R function `step`. In some situations, the process
+would recommend to keep several cofactors which can lead to
+overparametrization of the model. To control it, the argument
+`n.cofactor` allows to the user to restrict the number of selected
+cofactors up to a maximum, *i.e*, the proceeding to select cofactors
+stops when the number of cofactors reaches what is defined in
+`n.cofactor` (the default is `n.cofactor = 10`).
 
-The following example shows how to proceed the cofactor selection in a situation where the fixed covariates are set to control the character variability. To do it, we used the argument `addcovar`. In a similar way of `im_scan` function:
+The following example shows how to proceed to select cofactors in a
+situation where the fixed covariates are set to control the character
+variability (NÃO ENTENDO). To do it, we used the argument `addcovar`.
+For example:
 
 ```{r, eval=TRUE, cache=FALSE,}
 covar <- matrix( rep( c( 1, -1 ), each = 150 ), ncol = 1 )
@@ -492,11 +614,17 @@ cofs_fs2 <- cof_selection( fsib, pheno.col = 1, addcovar = covar,
                            k = 2, thres.effect = 0.05 )
 ```
 
-After the cofactor selection, `thres.effect=0.05` verifies if there is no significant effects (with p-values higher than $0.05$). If true, the non-significant effects are removed keeping just the significant ones as cofactors. This is helpful to reduce the model's degree of freedom. It is worth noting that each cofactor can has until 3 genetics effects and not all three may be significant. The default of this argument is 1, *i.e*, there is no removal of non-significant markers. We strongly recommend that if you utilized this argument, you have to used by a given criteria not by the software's default.
-
-If you want more information about this function, we recommend to look at the function help (`?cof_selection`).
+After the cofactor selection, `thres.effect=0.05` is used to verify if
+there are remaining cofactors with no significant effects, and if this
+is the case, they are removed. It is worth noting that each cofactor
+can have up to three genetical effects (additive in both parents and
+dominance), but not all them might be statistically significant. The
+default of this argument is 1, *i.e*, there is no removal of
+non-significant effects. This could lead to overparametrization, so
+use it carefully. For more information, use (`?cof_selection`).
 
 ## Cofactor ad-hoc definition
+
 The user can also define the cofactors *ad-hoc* building a matrix and incorporating it in the `cof_definition` function:
 ```{r}
 cofs <- matrix(c("1","M2",
