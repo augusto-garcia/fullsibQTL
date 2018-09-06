@@ -625,7 +625,10 @@ use it carefully. For more information, use (`?cof_selection`).
 
 ## Cofactor ad-hoc definition
 
-The user can also define the cofactors *ad-hoc* building a matrix and incorporating it in the `cof_definition` function:
+Users can also select the cofactors using and *ad-hoc* procedure. This
+is the case for example when someone knows that certain markers are
+supposed to be linked with QTL. To do so, it is necessary to build a
+matrix and then incorporate it in the `cof_definition` function:
 ```{r}
 cofs <- matrix(c("1","M2",
                  "2","M27",
@@ -635,29 +638,72 @@ cofs_fsdef <- cof_definition( fsib, pheno.col = 1,
                               thres.effect = 0.05, cof.pos = cofs)
 ```
 
-# Composite Interval mapping
-In order to proceed with composite interval mapping, there are two implemented functions `cim_scan` and `cim_char`. They have analogous opitions to the `im_scan` and `im_char`. The first one scan all the genome computing associations between genotype and phenotype trying to detect QTLs. The second one shows the genetic effects and their significance tests. It also shows additional tests to infer the QTL segregation pattern. The mapping procedure is performed similar as present in im_scan. However the inclusion of cofactors can locate QTL with more precision with higher statistical power in comparison of interval mapping approach. For more information about `?cim_scan` and `?cim_char`.
+# Composite Interval Mapping (CIM)
+
+In order to proceed with composite interval mapping, there are two
+functions: `cim_scan` and `cim_char`. They have analogous options of
+functions `im_scan` and `im_char`. The first one scan all the genome
+computing associations between genotype and phenotype trying to detect
+QTL. The second shows the genetic effects and their statistical
+significance. It also shows additional tests to infer the QTL
+segregation pattern. The mapping procedure is performed in a similar
+as already presented for `im_scan`. The inclusion of cofactors allows
+a better mapping of QTL, since this model has more statistical power
+than interval mapping. For more information, use `?cim_scan` and
+`?cim_char`.
 
 ## CIM Genome scan
-The genome scan can be performed with the function `cim_scan` indicating the cofactors object (class: `fullsib_cofactors`) ealier created with `cof_selection` or `cof_definition`.
+
+The genome scan can be performed with function `cim_scan`, indicating
+the cofactors object (class: `fullsib_cofactors`) previously created
+with `cof_selection` or `cof_definition`.
 ```{r, eval=TRUE, cache=FALSE, results='hide'}
 cim <- cim_scan( fullsib = cofs_fs, lg = "all", ws = 10, pheno.col = 1, LOD = TRUE )
 ```
+Option `ws` (window size) is to indicate the size of a window outside
+the mapping interval to block the inclusion of  cofactors. This is
+important to not markers linked with the QTL being mapped to be
+considered as other QTL.
 
 ## Permutation test
-The threshold for QTL detection can be set using permutation tests (Churchill and Doerge, 1994) adding the argument `n.perm` in the `cim_scan` function. As the permutation test is a re-sample process, it is recommended to the user to set a seed before the permutations. With this seed, the permutation can be repeated achieving the same result. The argument `write.perm` allows the user to save a text file with all the permutations performed. In this tutorial, the permutation test object `cim_perm` with the seed `4321` is already created and is part of the `example_QTLfullsib` ealier loaded, there is no necessity to run the following lines. However, an example of how to perform the permutation follows:
+
+The threshold for QTL detection can be set using permutation tests
+(Churchill and Doerge, 1994) adding the argument `n.perm` in the
+`cim_scan` function. As the permutation test is a re-sampling process,
+it is recommended that users set a seed before the permutations, in
+order to be able to replicate the results. Argument `write.perm`
+allows to save a text file with information about all the
+permutations. In this tutorial, the permutation test object `cim_perm`
+with the seed `4321` is already created and is part of the
+`example_QTLfullsib` object previously loaded, so it is not necessary
+to run the following lines. But just as an example:
 ```{r, eval=FALSE, cache=FALSE}
 set.seed( 4321 )
 cim_perm <- cim_scan( fullsib = cofs_fs, lg = "all", pheno.col = 1, 
                       LOD = TRUE, n.perm = 1000,
                       write.perm = "cim_permutations.txt" )
 ```
-If the user wants to keep the resulting permutation object to later analysis, it can be saved and load as an `Rdata` object:
+
+To keep the results of permutations for later analysis, one just needs
+to save (and eventually load) an R object:
 ```{r, eval=FALSE, cache=FALSE, collapse=TRUE}
 save( cim_perm, file = "cim_permutations.Rdata" )
 load( "cim_permutations.Rdata" )
 ```
-The permutation test demands some time. At the end of the process, `cim_perm` receives a matrix with *p* lines, where *p* is the number of the realized permutations, and 4 columns representing the first, second, third, and fourth highest peak value respectively. The definition of the second peak is the same of the method two of Chen and Storey (2006), *i.e*, the highest LOD score (or $-log_{10}(p_{value})$) of the genome disregarding the LG where the highest peak was achieved. The third and fourth peak definitions are analogous to the second peak. This threshold values can be visualized through `summary` at the object with the permutation tests. In this case, the user can set an $\alpha$ significance threshold. The result will be the quantile $(1-\alpha) \times 100$ of the samples. The function default is to show $\alpha$ values equal to $0.10$ and $0.05$.
+
+The permutation test demands some time. At the end of the process,
+`cim_perm` receives a matrix with *p* lines, where *p* is the number
+of the realized permutations, and 4 columns representing the first,
+second, third, and fourth highest peak value, respectively, for the
+statistic LOD (or $-log_{10}(p_{value})$). The definition of the
+second peak is the same of the method two of Chen and Storey (2006),
+*i.e*, the highest LOD score (or $-log_{10}(p_{value})$) of the genome
+disregarding the LG where the highest peak was achieved. The third and
+fourth peak definitions are analogous. This threshold values can be
+visualized through `summary` for the object with the permutation
+tests. In this case, the user can set an $\alpha$ for the significance
+threshold. The result will be the quantile $(1-\alpha) \times 100$ of
+permutation samples for the statistic (defaults $0.10$ an $0.05$).
 ```{r, eval=TRUE, cache=FALSE}
 ## Summary of the permutation test
 summary( cim_perm )
@@ -682,7 +728,10 @@ abline( h = cim.peak1, lty = 2, lwd = 1, col = "black" )
 abline( h = cim.peak2, lty = 2, lwd = 2, col = "black" )
 ```
 
-If the user wants to see the maximum distribution, he or she can use the `plot` function with `perm` object. If the user set the `peak` argument for `2`, the distribution of the second highest peaks will be shown. The vertical line represents the cut-off threshold for $\alpha=0.05$.
+If one wants to see the distribution of the maximum of the LODs,
+function `plot` can be used with `perm` object. If the `peak` argument
+is `2`, the distribution of the second highest peaks will be showed.
+The vertical line represents the cut-off threshold for $\alpha=0.05$.
 
 ```{r, eval=TRUE, cache=FALSE}
 plot( cim_perm, peak = 1 )
@@ -692,15 +741,23 @@ plot( cim_perm, peak = 2 )
 abline( v = cim.peak2, col = "red" )
 ```
 
-## CIM QTL characterization
-After the determination of the number and position of the QTLs, the user can characterize the QTLs. In other words, to identify the significant effects, the segregation pattern and linkage phases between QTLs and flanking markers. 
+## Characterization of mapped QTL with CIM
+
+After the determination of the number and position of the QTLs, it is
+possible to characterize the QTL, *i.e*., identify their significant
+effects, segregation patterns and linkage phases with flanking
+markers.
 
 The already created object `cim` shows the presence of at least 4 QTLs:
 ```{r, eval=TRUE, cache=FALSE}
 summary( cim )
 ```
 
-The following graphic shows more than those 4 QTL evidence, the user can map the others QTLs. With this graphic and the `cim_scan` result, it can be mapped the exact location of each QTL with resolution given by the ealier `step` argument. To do it, compare the LOD score in the `cim` object with the graphic interval. Although there are some packages and functions to find local maxima, we do not recommend to blindly use them. Those methods can return more QTLs than the reality, commonly there is report of inflection and false local maxima points.
+However, the following graphic shows that there is evidence for more
+QTL. This is because the automatic selection of peaks is not perfect,
+demanding some user interaction. We do not recommend using automatic
+procedures. 
+
 ```{r, eval=TRUE, cache=FALSE}
 ## Plotting the CIM results
 plot( cim, lty = 1, lwd = 2, incl.mkr = NULL, cex.incl = 0.7, 
@@ -710,11 +767,8 @@ abline( h = cim.peak1, lty = 2, lwd = 1, col = "black" )
 abline( h = cim.peak2, lty = 2, lwd = 2, col = "black" )
 ```
 
-Another way to find those maxima points is with the mouse hover help setting the interact argument as `TRUE`:
-```{r, eval=FALSE, cache=FALSE}
-plot_fullsibQTL( fullsib = fsib, fullsib.scan = cim, interact = TRUE )
-# plot not shown
-```
+The location of other peaks (meaning evidence for more QTL) can be
+verified examining object `cim`. For example, for some LGs:
 
 ```{r, eval=TRUE, cache=FALSE}
 ## Visual Analysis of every location of LG1
@@ -722,7 +776,6 @@ plot_fullsibQTL( fullsib = fsib, fullsib.scan = cim, interact = TRUE )
 print( cim,lg = 1 )
 ```
 
-You can visualize the others LGs with likely apporach:
 ```{r, eval=FALSE, cache=FALSE}
 ## Visual Analysis LG2
 ## QTLs peaks at loc45, loc77, and loc 108
@@ -737,12 +790,22 @@ print( cim,lg = 3 )
 print( cim,lg = 4 )
 ```
 
-Through the visual analysis we found the following 8 QTLs peaks corresponding to locations next to the 8 cofactors.
+Another way is by pointing  the mouse for an
+interactive session of function `plot_fullsibQTL`:
+
+```{r, eval=FALSE, cache=FALSE}
+plot_fullsibQTL( fullsib = fsib, fullsib.scan = cim, interact = TRUE )
+# plot not shown
+```
+
+Through the visual analysis we found the following eight QTLs peaks
+corresponding to positions next to the cofactors.
+
 ```{r}
 print( cim, lg = 1, pos = c( "loc13", "M12", "loc45" ) )
 ```
 
-You can visualize the others QTLs with likely apporach:
+In a similar way:
 
 ```{r, eval=FALSE, cache=FALSE}
 print( cim, lg=2, pos = c( "loc45", "loc77", "loc108" ) )
@@ -750,7 +813,9 @@ print( cim, lg=3, pos = c( "M33", "loc65" ) )
 print( cim, lg=4, pos = "M52" )
 ```
 
-In order to estimate the total of proportion explained by the QTL and its characterization we can use the `cim_char` function:
+In order to estimate the total of proportion explained by the QTL
+(including the new ones manually selected) and its characterization,
+one can use function `cim_char` in the following way:
 
 ```{r}
 cim_QTL1_lg1 <- cim_char( fullsib = cofs_fs, lg = 1, pheno.col = 1, pos = "loc13" )
@@ -765,6 +830,11 @@ cim_QTL1_lg4 <- cim_char( fullsib = cofs_fs, lg = 4, pheno.col = 1 , pos = "M52"
 ## Printing the object
 cim_QTL1_lg1
 ```
+
+
+AQUI! AQUI!
+
+
 
 `cim_QTL1_lg1` is a matrix with 1 column and 15 lines. The flaking markers of this QTL are in the header. Then, the first line has the LG information. The second line has the position in centiMorgan which the region is localized. The third and fourth lines shows, respectively, $-log_{10}(p_{value})$) and LOD Score, values next to the ones obtained using `im_scan`. The fifth line (`mu`) is the intercept effect of the model. The lines `alpha.p`, `alpha.q`, and `delta.pq` represent the QTL genetic effects. The lines `LOD.alpha.p`, `LOD.alpha.q`, and `LOD.delta.pq` are the statistics of the marginal tests of these genetic effects. All of these three tests was performed with 1 degree of freedom (testing just if the effect differs than zero). In this case, a LOD score above or equal $0.83$ indicates a significant given effect (LOD $= 0.83$ is the same as a LRT $= 3.81$ which under $\chi^2$ distribution with 1 degree of freedom has significance level of $5%$). The lines `H4.pvalue`, `H5.pvalue`, and `H6.pvalue` show the p-values for the complementary test in order to detect the QTL segregation. For more information about it, please see Gazaffi et al. (2014). At last, the line `model` shows which model was studied, see details on the vignette *QTL mapping with partially informative markers* . In some cases, a given test cannot be evaluated, in these cases the cells will have `NA` values.
 
