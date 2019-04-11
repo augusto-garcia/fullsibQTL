@@ -1,7 +1,7 @@
 Package: fullsibQTL
 Title: Software for QTL Mapping using a Full-Sib Progeny
-Version: 0.0.9005
-Date: 2019-04-10
+Version: 0.0.9006
+Date: 2019-04-11
 Authors@R: c(person("Rodrigo", "Gazaffi",   role = "aut", email = "rgazaffi@gmail.com"),
              person("Rodrigo", "Amadeu",    role = c("aut","cre"), email = "rodrigo.amadeu@usp.br"),
   	         person("Marcelo", "Mollinari", role = "ctb", email = "mmollina@usp.br"), 
