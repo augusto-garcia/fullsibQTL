@@ -151,119 +151,84 @@
 #'                    qtlmapping.colors = c( "dark green", "purple" ) )
 #'                    
 
-plot_fullsibQTL <- function(fullsib = NULL, fullsib.scan = NULL,
-                            r2ls.out = NULL, qtlmapping = NULL, lgs=NULL,
-                            thr=NULL, grayscale=FALSE,
-                            interact = FALSE, file = "fullsibQTL.html", folder=getwd(), browser=TRUE,
-                            height = NULL, width = NULL, qtlmapping.colors=NULL){
-  
-  ## Defining global variable to avoid conflicts during R CMD CHECK: ggplot2 issue
-  pos.cM = LOD = dummy = loc = r2.qtl = NULL
-  
-  if(is.null(fullsib))
-    stop(deparse("fullsib object must be present"))
-  
-  if(is.null(fullsib.scan))
-    stop(deparse("at list one fullsib.scan object must be present"))
-  
-  if(any(class(fullsib.scan) == "fullsib_scan"))
-    fullsib.scan <- list(fullsib.scan)
-  
-  if(!is.null(r2ls.out)){
-    which.null <- which(unlist(lapply(r2ls.out,is.null)))
-    null.r2ls <- data.frame(lg=NA,loc=NA,r2=NA)
-    class(null.r2ls) <- c("data.frame","r2ls_out")
-    null.r2ls <- list(null.r2ls)
-    r2ls.out[which.null] <- rep(null.r2ls,length(which.null))
-  }
-  
-  if(any(class(r2ls.out) == "r2ls_out"))
-    r2ls.out <- list(r2ls.out)
-  
-  df <- tidy_fullsibQTL(fullsib, fullsib.scan, r2ls.out, qtlmapping)
-  if(!is.null(lgs)){
-    df <- df[df$lg %in% lgs, ]
-  }else{
-    lgs <- unique(df$lg)
-  }
-  df <- unique(df)
-  
-  if(!is.null(thr))
-    if(class(thr) != "numeric" | !is.vector(thr))
-      stop(deparse("thr object must be a numeric vector"))
-    
-  ## Setting y variable for QTL position
-  df$dummy <- scales::rescale(as.numeric(df$qtlmapping),to=c(-0.05,-0.95))
-
-  ## Plotting
-  suppressWarnings( ## aes error 'Ignoring unknown aesthetics', used for plotly tooltip graphic
-    p <- ggplot() +
-      
-      ## Add LOD curves 
-      geom_line(data=df[df$plot=="lod",],
-                aes(x=pos.cM,y=LOD,color=qtlmapping)) +
-      
-      ## Add QTL position
-      geom_point(data=df[(df$r2.qtl > 0 & df$plot=="lod"),], 
-                 aes(x=pos.cM,y=dummy,color=qtlmapping,
-                     label1=loc,label2=r2.qtl,label3=LOD),
-                 shape=17,size=2)+ ## Point char
-      
-      ## Add Map
-      geom_line(data=df[df$plot=="map",],
-                aes(x=pos.cM,y=-1)) +
-      
-      geom_point(data=df[df$plot=="map",],
-                 aes(x=pos.cM,y=-1,label1=loc),
-                 shape=3,size=1) +
-      
-      ## Facetting
-      facet_grid(.~ lg, scales = "free_x")+
-      
-      ## Labs
-      labs(x = "cM",
-           y = "LOD Score",
-           title = "Linkage Group") +
-      theme(strip.text.y = element_blank(),
-            plot.title = element_text(hjust = 0.5)))
-    
-    ## Setting theme
-    if(grayscale){
-      p <- p + scale_color_grey(" ") + theme_classic()
-      #print("grayscale")
-    }else{
-      if(is.null(qtlmapping.colors)){
-      p <- p + scale_color_discrete(" ")
-      }else{
-        p <- p + scale_color_manual(" ",values = qtlmapping.colors)
-      }
+plot_fullsibQTL <- function (fullsib = NULL, fullsib.scan = NULL, r2ls.out = NULL, 
+    qtlmapping = NULL, lgs = NULL, thr = NULL, grayscale = FALSE, 
+    interact = FALSE, file = "fullsibQTL.html", folder = getwd(), 
+    browser = TRUE, height = NULL, width = NULL, qtlmapping.colors = NULL) 
+{
+    pos.cM = LOD = dummy = loc = r2.qtl = NULL
+    if (is.null(fullsib)) 
+        stop(deparse("fullsib object must be present"))
+    if (is.null(fullsib.scan)) 
+        stop(deparse("at list one fullsib.scan object must be present"))
+    if (any(class(fullsib.scan) == "fullsib_scan")) 
+        fullsib.scan <- list(fullsib.scan)
+    if (!is.null(r2ls.out)) {
+        which.null <- which(unlist(lapply(r2ls.out, is.null)))
+        null.r2ls <- data.frame(lg = NA, loc = NA, r2 = NA)
+        class(null.r2ls) <- c("data.frame", "r2ls_out")
+        null.r2ls <- list(null.r2ls)
+        r2ls.out[which.null] <- rep(null.r2ls, length(which.null))
     }
-    
-    ## Adding intercepts
-    if(!is.null(thr))
-      for(i in 1:length(thr))
-        p <- p + geom_hline(yintercept=thr[i],linetype=i+1,color="dark gray")
-  
-  if(interact){
-    if(is.null(height))
-      height = 500
-  
-    if(is.null(width))
-      width = length(lgs)*250
-    
-    p <- plotly::ggplotly(p, autosize=T,
-                          tooltip = c("LOD", "pos.cM", "loc", "r2.qtl", "qtlmapping"), 
-                          width = width, height = height)
-    
-    htmlwidgets::saveWidget(p, file=file.path(folder, file))
-    if(browser){
-      openHTML <- function(x,y) browseURL(paste0('file://', file.path(y, x)))
-      openHTML(file,folder)
+    if (any(class(r2ls.out) == "r2ls_out")) 
+        r2ls.out <- list(r2ls.out)
+    df <- tidy_fullsibQTL(fullsib, fullsib.scan, r2ls.out, qtlmapping)
+    if (!is.null(lgs)) {
+        df <- df[df$lg %in% lgs, ]
     }
-  }else{
-    return(p)
-  }
+    else {
+        lgs <- unique(df$lg)
+    }
+    df <- unique(df)
+    if (!is.null(thr)) 
+        if (class(thr) != "numeric" | !is.vector(thr)) 
+            stop(deparse("thr object must be a numeric vector"))
+    df$dummy <- scales::rescale(as.numeric(df$qtlmapping), to = c(-0.05, 
+        -0.95))
+    suppressWarnings(p <- ggplot() + geom_line(data = df[df$plot == 
+        "lod", ], aes(x = pos.cM, y = LOD, color = qtlmapping)) + 
+        geom_point(data = df[(df$r2.qtl > 0 & df$plot == "lod"), 
+            ], aes(x = pos.cM, y = dummy, color = qtlmapping, 
+            label1 = loc, label2 = r2.qtl, label3 = LOD), shape = 17, 
+            size = 2) + geom_line(data = df[df$plot == "map", 
+        ], aes(x = pos.cM, y = -1)) + geom_point(data = df[df$plot == 
+        "map", ], aes(x = pos.cM, y = -1, label1 = loc), shape = 3, 
+        size = 1) + facet_grid(. ~ lg, scales = "free_x") + labs(x = "cM", 
+        y = "LOD Score", title = "Linkage Group") + theme(strip.text.y = element_text(size=0.1), 
+        plot.title = element_text(hjust = 0.5)))
+    if (grayscale) {
+        p <- p + scale_color_grey(" ") + theme_classic()
+    }
+    else {
+        if (is.null(qtlmapping.colors)) {
+            p <- p + scale_color_discrete(" ")
+        }
+        else {
+            p <- p + scale_color_manual(" ", values = qtlmapping.colors)
+        }
+    }
+    if (!is.null(thr)) 
+        for (i in 1:length(thr)) p <- p + geom_hline(yintercept = thr[i], 
+            linetype = i + 1, color = "dark gray")
+    if (interact) {
+        if (is.null(height)) 
+            height = 500
+        if (is.null(width)) 
+            width = length(lgs) * 250
+        p <- plotly::ggplotly(p, autosize = T, width = width, 
+            height = height)
+        htmlwidgets::saveWidget(p, file = file.path(folder, file))
+        if (browser) {
+            openHTML <- function(x, y) browseURL(paste0("file://", 
+                file.path(y, x)))
+            openHTML(file, folder)
+        }
+    }
+    else {
+        return(p)
+    }
 }
+
 
 ## -------------------------
 ## tidy_fullsibQTL function
