@@ -151,7 +151,8 @@
 #'                    qtlmapping.colors = c( "dark green", "purple" ) )
 #'                    
 
-plot_fullsibQTL <- function (fullsib = NULL, fullsib.scan = NULL, r2ls.out = NULL, 
+
+plot_fullsibQTL2 = function (fullsib = NULL, fullsib.scan = NULL, r2ls.out = NULL, 
     qtlmapping = NULL, lgs = NULL, thr = NULL, grayscale = FALSE, 
     interact = FALSE, file = "fullsibQTL.html", folder = getwd(), 
     browser = TRUE, height = NULL, width = NULL, qtlmapping.colors = NULL) 
