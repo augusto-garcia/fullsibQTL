@@ -832,20 +832,38 @@ cim_QTL1_lg1
 ```
 
 
-AQUI! AQUI!
+`cim_QTL1_lg1` is a matrix with 1 column and 15 lines. The flanking
+markers of this specific QTL are in the header (M2-M3 in this case).
+Then, the first line has the LG information. The second line has the
+position in centiMorgan where the region is localized. The third and
+fourth lines shows, respectively, $-log_{10}(p_{value})$) and LOD
+Score. The fifth line (`mu`) contains the intercept effect of the
+model. The lines `alpha.p`, `alpha.q`, and `delta.pq` represent the
+QTL genetic effects. The lines `LOD.H1`, `LOD.H2`, and `LOD.H3` are
+the statistics for the marginal tests of the respective genetic
+effects. These three tests have each 1 degree of freedom (testing if
+the effect are different from zero). In this case, a LOD score above
+$0.83$ indicates a significant effect (since LOD $= 0.83$ is
+equivalent as a LRT $= 3.81$, which under H0 follows a $\chi^2$
+distribution with 1 degree of freedom; $3.81$ is for a significance
+level of $5%$). The lines `H4.pvalue`, `H5.pvalue`, and `H6.pvalue`
+show the p-values for the complementary test in order to detect the
+QTL segregation. For more information on interpretations, please see
+Gazaffi et al. (2014). Finally, the line `model` shows which model was
+evaluated; see details on the vignette *QTL mapping with partially
+informative markers* . In some cases, a given test cannot be
+evaluated, and so the cells will have `NA` values.
 
+We can also print all the QTLs in a single table:
 
-
-`cim_QTL1_lg1` is a matrix with 1 column and 15 lines. The flaking markers of this QTL are in the header. Then, the first line has the LG information. The second line has the position in centiMorgan which the region is localized. The third and fourth lines shows, respectively, $-log_{10}(p_{value})$) and LOD Score, values next to the ones obtained using `im_scan`. The fifth line (`mu`) is the intercept effect of the model. The lines `alpha.p`, `alpha.q`, and `delta.pq` represent the QTL genetic effects. The lines `LOD.alpha.p`, `LOD.alpha.q`, and `LOD.delta.pq` are the statistics of the marginal tests of these genetic effects. All of these three tests was performed with 1 degree of freedom (testing just if the effect differs than zero). In this case, a LOD score above or equal $0.83$ indicates a significant given effect (LOD $= 0.83$ is the same as a LRT $= 3.81$ which under $\chi^2$ distribution with 1 degree of freedom has significance level of $5%$). The lines `H4.pvalue`, `H5.pvalue`, and `H6.pvalue` show the p-values for the complementary test in order to detect the QTL segregation. For more information about it, please see Gazaffi et al. (2014). At last, the line `model` shows which model was studied, see details on the vignette *QTL mapping with partially informative markers* . In some cases, a given test cannot be evaluated, in these cases the cells will have `NA` values.
-
-We can also print all the QTLs in a single table with:
 ```{r}
 ## Printing in a single table
 cbind( cim_QTL1_lg1, cim_QTL2_lg1, cim_QTL1_lg2, cim_QTL2_lg2, 
        cim_QTL3_lg2, cim_QTL1_lg3, cim_QTL2_lg3, cim_QTL1_lg4)
 ```
 
-In order to estimate the QTL phases, we can use the `get_segr` function:
+To evaluate QTL phases, we can use the `get_segr` function:
+
 ```{r}
 get_segr( cim_QTL1_lg1, probs1 = 0.05, probs2 = 0.05 )
 get_segr( cim_QTL2_lg1, probs1 = 0.05, probs2 = 0.05 )
@@ -857,7 +875,9 @@ get_segr( cim_QTL2_lg3, probs1 = 0.05, probs2 = 0.05 )
 get_segr( cim_QTL1_lg4, probs1 = 0.05, probs2 = 0.05 )
 ```
 
-We can draw the genetic map with QTLs and its infered phases with:
+And finally, to  draw a rough visualization of  the genetic map with
+QTLs and infered phases:
+
 ```{r}
 draw_phase( cofs_fs, cim_QTL1_lg1 )
 draw_phase( cofs_fs, cim_QTL2_lg1 )
@@ -869,17 +889,28 @@ draw_phase( cofs_fs, cim_QTL2_lg3 )
 draw_phase( cofs_fs, cim_QTL1_lg4 )
 ```
 
-## Estimating the QTL effects with Least Squares
-The `r2_l2` function calculates the proportion of all QTL together (and also separetely) explain from total phenotipic variation using least square estimation. For more information about `?r2_l2`. Here we proceed with the CIM analysis estimating its QTL effects:
+## Estimating QTL effects using least squares
+
+Function `r2_l2` calculates the proportion of phenotypic variation
+explained by the QTL in the model (altogether, denoted by `R2.trait`,
+and individually, indicated as `R2.lgX.Y`, where `lgX.Y` means the LG
+number $X$ in the $Y$-th position). To do this, a least squares
+approximation is used (instead of the mixture model with the EM
+algorithm). This is good enough for interpretations, but much faster.
+For more information, use `?r2_l2`. 
+
+In this example, for the model with all QTL mapped with CIM and
+without the cofactors (since they are only a strategy to control
+background variation during the mapping procedure):
 
 ```{r}
 ## Estimating QTL effects without covariate
 qtls.cim <- r2_ls( fsib, pheno.col = 1, lg = c( 1, 1, 2, 2, 2, 3, 3, 4 ),
                    pos = c( "loc13", "M12", "loc45", "loc77", "loc108", "M33", "loc65", "M52" ) )
 ```
-It returns a vector with $q+1$ position ($q$ is the number of QTL) with $R^2$ estimation. In the first position one finds the value for a model fitted with all QTLs simultaneously (identified as `R2.trait`), the others positions provides the $R^2$ for each QTL separately (identified as `R2.lgX.Y`, where `lgX.Y` means the LG number $X$ in the $Y$-th position)
 
-There is also the possibility to estimate the QTL effects considering covariates as follows:
+If for some reason one wants also to consider the cofactors:
+
 ```{r}
 ## Estimating QTL effects with covariates
 covar <- matrix( rep( c( 1, -1 ), each = 150 ), ncol = 1 )
@@ -888,7 +919,9 @@ r2_ls( fsib, pheno.col = 2, addcovar = covar, lg = c( 1, 1, 2, 2, 2, 3, 3, 4 ),
 ```
 
 ## Graphical visualization of QTLs
-With the infered QTLs, it is possible to plot them within the CIM profilling specifying the `r2ls.out` object:
+
+It is possible to plot a useful visualization of the CIM indicating
+the `r2ls.out` object:
 
 ```{r}
 plot_fullsibQTL( fullsib = fsib,
@@ -898,8 +931,10 @@ plot_fullsibQTL( fullsib = fsib,
                  thr = c( 4.023724, 2.900906 ) )
 ```
 
-## Results report
-The following articles present can be used as an initial step of how to report your QTL mapping with `fullsibQTL`:
+## Reporting of Results
+
+The following articles can be used as examples of how to report the
+QTL mapping results obtained with package `fullsibQTL`:
 
 Balsalobre TWA, da Silva Pereira G, Margarido GRA, Gazaffi R, Barreto FZ, Anoni CO,
 Cardoso-Silva CB, Costa EA, Mancini MC, Hoffmann HP, de Souza AP, Garcia AAF,
