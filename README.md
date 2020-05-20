@@ -10,7 +10,7 @@
 
 The method is based on a maximum likelihood approach, using mixture models and the EM algorithm. The probabilities of QTL genotypes are inferred using a multipoint approach based on Hidden Markov Models. We implemented functions to perform interval mapping (IM) and composite interval mapping (CIM) for F1 populations. In a first step, one needs to scan the genome for QTLs and, after locating them, characterize these loci, estimating their effects, segregation pattern and the linkage phase between markers and QTL.
 
-The package on its stable version is available on CRAN (http://cran.r-project.org/web/packages/fullsibQTL/index.html). This version is recommended for most users. The version on github has new experimental features and new developments, and should be useful for some audiences. Once they are tested, we will synchronize the repositories.
+The package, on its stable version, is available on CRAN (http://cran.r-project.org/web/packages/fullsibQTL/index.html). This version is recommended for most users. The version on github has new experimental features and new developments, and should be useful for some audiences. Once they are tested, we will synchronize the repositories.
 
 `fullsibQTL` comprises a set of functions that allows users to perform QTL mapping. Some functions are used internally by the package, and should not be used directly.
 
