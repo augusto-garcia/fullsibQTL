@@ -49,11 +49,11 @@ You can read `fullsibQTL` tutorial going to the vignettes of the installed packa
 
 Comments and suggestions are welcome!
 
-[fullsibQTL Tutorial](https://rramadeu.github.io/fullsibQTL/inst/doc/fullsibQTL_Tutorial.html)
+[fullsibQTL Tutorial](https://rramadeu.github.io/fullsibQTL/inst/docs/fullsibQTL_Tutorial.html)
 
 # Additional material
-[Graphical options with plot_fullsibQTL](https://rramadeu.github.io/fullsibQTL/inst/doc/Graphical_options_with_plot_fullsibQTL.html)
+[Graphical options with plot_fullsibQTL](https://rramadeu.github.io/fullsibQTL/inst/docs/Graphical_options_with_plot_fullsibQTL.html)
 
-[Graphical options with plot](https://rramadeu.github.io/fullsibQTL/inst/doc/Graphical_options_with_plot.html)
+[Graphical options with plot](https://rramadeu.github.io/fullsibQTL/inst/docs/Graphical_options_with_plot.html)
 
-[QTL mapping with partially informative markers](https://rramadeu.github.io/fullsibQTL/inst/doc/QTL_mapping_with_partially_informative_markers.html)
+[QTL mapping with partially informative markers](https://rramadeu.github.io/fullsibQTL/inst/docs/QTL_mapping_with_partially_informative_markers.html)
