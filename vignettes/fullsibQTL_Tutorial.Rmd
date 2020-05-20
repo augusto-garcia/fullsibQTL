@@ -70,20 +70,6 @@ Moreover, there are three additional tutorials:
 
 - [Graphical options with `plot`](https://rramadeu.github.io/fullsibQTL/inst/doc/Graphical_options_with_plot.html)
 
-These can be easily accessed within R:
-
-```{r, eval=FALSE}
-vignette( "QTL_mapping_with_partially_informative_markers", package = "fullsibQTL" )
-```
-
-```{r, eval=FALSE}
-vignette( "Graphical_options_with_plot_fullsibQTL", package = "fullsibQTL" )
-```
-
-```{r, eval=FALSE}
-vignette( "Graphical_options_with_plot", package = "fullsibQTL" )
-```
-
 # Citation
 To cite the model for QTL mapping in a full-sib progeny:
 
@@ -96,13 +82,7 @@ To cite this R package:
 
 **Article in submission**
 
-## Installation from CRAN (stable version)
-Within R:
-```{r, eval=FALSE}
-install.packages( "fullsibQTL" )
-```
-
-## Installation from github (version under development)
+## Installation
 Within R:
 ```{r, eval=FALSE}
 ## Installing and loading devtools
