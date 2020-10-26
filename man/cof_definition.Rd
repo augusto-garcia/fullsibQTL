@@ -4,8 +4,13 @@
 \alias{cof_definition}
 \title{Ad-hoc definition of cofactors for CIM analysis}
 \usage{
-cof_definition(fullsib, pheno.col = 1, addcovar = NULL, cof.pos,
-  thres.effect = 1)
+cof_definition(
+  fullsib,
+  pheno.col = 1,
+  addcovar = NULL,
+  cof.pos,
+  thres.effect = 1
+)
 }
 \arguments{
 \item{fullsib}{An object from class \emph{fullsib}.}

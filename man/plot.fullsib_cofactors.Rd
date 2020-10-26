@@ -5,8 +5,7 @@
 \alias{plot.cof_selection}
 \title{Plot \code{fullsib_cofactors} object}
 \usage{
-\method{plot}{fullsib_cofactors}(x, horizontal = FALSE, grid = FALSE,
-  cex.mrk = 1, cex.grp = 0.75, ...)
+\method{plot}{fullsib_cofactors}(x, horizontal = FALSE, grid = FALSE, cex.mrk = 1, cex.grp = 0.75, ...)
 }
 \arguments{
 \item{x}{An object from class \emph{fullsib_cofactors}.}

@@ -50,11 +50,11 @@ calc_probs <- function(fullsib, step, error.prob, map.function, condIndex)
     obj.name <- fullsib$map[[1]]$data.name
     #print(obj.name)
     #print(get(obj.name))
-    names(dist.mark) <- colnames(get(obj.name)$geno)[seq.mark]
+    names(dist.mark) <- colnames(obj.name$geno)[seq.mark]
 
     fullsib$probs[[i]] <- calc_genoprobs(dist=dist.mark,
-                     geno=get(obj.name)$geno[,seq.mark],
-                     type=get(obj.name)$segr.type.num[seq.mark],
+                     geno=obj.name$geno[,seq.mark],
+                     type=obj.name$segr.type.num[seq.mark],
                      phase=fullsib$map[[i]]$seq.phases,
                      step = step, error.prob=error.prob,
                      map.function=map.function)     
@@ -487,14 +487,14 @@ unlink2cof <- function(mk.unmap, obj.name, pheno.index){
   cof.unmap <- vector("list", length(mk.unmap))
   for (j in 1:length(mk.unmap)){
     #for each markers: see the segregation
-    segr <- get(obj.name)$segr.type.num[ mk.unmap[j] ]
+    segr <- obj.name$segr.type.num[ mk.unmap[j] ]
     if(segr == 1){
       ##if markers A (1:1:1:1)
-      cof.unmap[[j]] <- matrix(0, nrow(get(obj.name)$geno),3)    
-      geno1 <- which(get(obj.name)$geno[,mk.unmap[j]] ==1)
-      geno2 <- which(get(obj.name)$geno[,mk.unmap[j]] ==2)
-      geno3 <- which(get(obj.name)$geno[,mk.unmap[j]] ==3)
-      geno4 <- which(get(obj.name)$geno[,mk.unmap[j]] ==4)    
+      cof.unmap[[j]] <- matrix(0, nrow(obj.name$geno),3)    
+      geno1 <- which(obj.name$geno[,mk.unmap[j]] ==1)
+      geno2 <- which(obj.name$geno[,mk.unmap[j]] ==2)
+      geno3 <- which(obj.name$geno[,mk.unmap[j]] ==3)
+      geno4 <- which(obj.name$geno[,mk.unmap[j]] ==4)    
       if(length(geno1) > 0)
         cof.unmap[[j]][geno1, ] <- t(apply(cof.unmap[[j]][geno1, ], 1, function(x) x <- c( 1, 1, 1)))
       if(length(geno2) > 0)
@@ -506,10 +506,10 @@ unlink2cof <- function(mk.unmap, obj.name, pheno.index){
     }
     if(segr==2){
       ##if markers B1 (1:2:1)
-      cof.unmap[[j]] <- matrix(0, nrow(get(obj.name)$geno),2)       
-      geno1 <- which(get(obj.name)$geno[,mk.unmap[j]] ==1)
-      geno2 <- which(get(obj.name)$geno[,mk.unmap[j]] ==2)
-      geno3 <- which(get(obj.name)$geno[,mk.unmap[j]] ==3)
+      cof.unmap[[j]] <- matrix(0, nrow(obj.name$geno),2)       
+      geno1 <- which(obj.name$geno[,mk.unmap[j]] ==1)
+      geno2 <- which(obj.name$geno[,mk.unmap[j]] ==2)
+      geno3 <- which(obj.name$geno[,mk.unmap[j]] ==3)
       if(length(geno1) > 0)
         cof.unmap[[j]][geno1, ] <- t(apply(cof.unmap[[j]][geno1, ], 1, function(x) x <- c( 1, 0)))            
       if(length(geno2) > 0)
@@ -519,10 +519,10 @@ unlink2cof <- function(mk.unmap, obj.name, pheno.index){
     }
     if(segr == 3){
       ##if markers B2 (1:2:1)
-      cof.unmap[[j]] <- matrix(0, nrow(get(obj.name)$geno),2)     
-      geno1 <- which(get(obj.name)$geno[,mk.unmap[j]] ==1)
-      geno2 <- which(get(obj.name)$geno[,mk.unmap[j]] ==2)
-      geno3 <- which(get(obj.name)$geno[,mk.unmap[j]] ==3)
+      cof.unmap[[j]] <- matrix(0, nrow(obj.name$geno),2)     
+      geno1 <- which(obj.name$geno[,mk.unmap[j]] ==1)
+      geno2 <- which(obj.name$geno[,mk.unmap[j]] ==2)
+      geno3 <- which(obj.name$geno[,mk.unmap[j]] ==3)
       if(length(geno1) > 0)
         cof.unmap[[j]][geno1, ] <- t(apply(cof.unmap[[j]][geno1, ], 1, function(x) x <- c( 0, 1)))
       if(length(geno2) > 0)
@@ -532,10 +532,10 @@ unlink2cof <- function(mk.unmap, obj.name, pheno.index){
     }
     if(segr == 4){
       ##if markers B3 (1:2:1)
-      cof.unmap[[j]] <- matrix(0, nrow(get(obj.name)$geno),2)   
-      geno1 <- which(get(obj.name)$geno[,mk.unmap[j]] ==1)
-      geno2 <- which(get(obj.name)$geno[,mk.unmap[j]] ==2)
-      geno3 <- which(get(obj.name)$geno[,mk.unmap[j]] ==3)
+      cof.unmap[[j]] <- matrix(0, nrow(obj.name$geno),2)   
+      geno1 <- which(obj.name$geno[,mk.unmap[j]] ==1)
+      geno2 <- which(obj.name$geno[,mk.unmap[j]] ==2)
+      geno3 <- which(obj.name$geno[,mk.unmap[j]] ==3)
       if(length(geno1) > 0)
         cof.unmap[[j]][geno1, ] <-t( apply(cof.unmap[[j]][geno1, ], 1, function(x) x <- c( 1, 1)))
       if(length(geno2) > 0)
@@ -545,7 +545,7 @@ unlink2cof <- function(mk.unmap, obj.name, pheno.index){
     }
     if(segr > 4){
       ##if segr C (5), D1 (6) or D2 (7)
-      cof.unmap[[j]] <- as.matrix(get(obj.name)$geno[,mk.unmap[j] ])
+      cof.unmap[[j]] <- as.matrix(obj.name$geno[,mk.unmap[j] ])
       cof.unmap[[j]][which( cof.unmap[[j]] == 2)] <- -1
     }
     cof.unmap[[j]] <- as.matrix(cof.unmap[[j]][pheno.index, ])
@@ -678,7 +678,7 @@ draw_map2 <- function(map.list, horizontal = FALSE, names = FALSE, grid = FALSE,
            i, " in map.list")
     #map <- cumsum(c(0, get(.map.fun)(map.list[[i]]$seq.rf)))
     map <- cumsum(c(0, kosambi(map.list[[i]]$seq.rf)))
-    marnames <- colnames(get(map.list[[i]]$data.name, pos = 1)$geno)[map.list[[i]]$seq.num]
+    marnames <- colnames(map.list[[i]]$data.name$geno)[map.list[[i]]$seq.num]
     out <- rbind(out, data.frame(dist = map, pos = j, marker = marnames))
     j <- j + 1
   }

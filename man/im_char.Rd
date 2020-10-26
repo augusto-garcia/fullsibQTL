@@ -4,8 +4,16 @@
 \alias{im_char}
 \title{QTL characterization using Interval Mapping}
 \usage{
-im_char(fullsib, pheno.col = 1, addcovar = NULL, lg, pos, maxit = 1000,
-  tol = 1e-10, verbose = FALSE)
+im_char(
+  fullsib,
+  pheno.col = 1,
+  addcovar = NULL,
+  lg,
+  pos,
+  maxit = 1000,
+  tol = 1e-10,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{fullsib}{An object from class \emph{fullsib}.}

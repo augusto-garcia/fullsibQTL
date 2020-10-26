@@ -4,8 +4,17 @@
 \alias{cim_char}
 \title{QTL characterization using Composite Interval Mapping}
 \usage{
-cim_char(fullsib, pheno.col = 1, ws = 10, lg, pos, maxit = 1000,
-  tol = 1e-10, icim = FALSE, verbose = FALSE)
+cim_char(
+  fullsib,
+  pheno.col = 1,
+  ws = 10,
+  lg,
+  pos,
+  maxit = 1000,
+  tol = 1e-10,
+  icim = FALSE,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{fullsib}{An object from class \emph{fullsib_cofactors}.}

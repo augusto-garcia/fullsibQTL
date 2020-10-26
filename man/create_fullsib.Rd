@@ -5,8 +5,15 @@
 \alias{print.fullsib}
 \title{Creates the main object to perform QTL mapping on \pkg{fullsibQTL}}
 \usage{
-create_fullsib(input.obj, map.list, step = 0, error.prob = 1e-04,
-  map.function = c("kosambi", "haldane", "morgan"), condIndex = 3.5)
+create_fullsib(
+  input.obj,
+  map.list,
+  step = 0,
+  error.prob = 1e-04,
+  map.function = c("kosambi", "haldane", "morgan"),
+  condIndex = 3.5,
+  pheno = NULL
+)
 }
 \arguments{
 \item{input.obj}{an object of class \emph{outcross}, obtained with
@@ -30,6 +37,9 @@ probabilities. One can choose between \emph{kosambi}, \emph{haldane} or
 
 \item{condIndex}{threshold used to evaluate the level of informativeness for
 QTL genotypes probabilities. See details.}
+
+\item{pheno}{Matrix containing the phenotypes to be used for QTL mapping. 
+Rows represents individuals and columns, the traits.}
 }
 \value{
 An object of class \emph{fullsib} is returned, which has the

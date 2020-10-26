@@ -149,6 +149,17 @@ I1 I2 I3 I4 I5 I6 I7 I8 I9 I10
 *pheno2 5 -5.8 - 14.8 -2.4 -1.9 -1.1 8.1 -11.1 4.8
 ```
 
+If your onemap raw data do not have phenotypic information, you can also use here a matrix with individuals in rows and traits in columns. See example:
+
+```{r}
+pheno <- read.table(system.file("extdata/pheno_example.txt", package = "fullsibQTL"), 
+                    header = T)
+
+head(pheno)
+```
+
+The individuals in the rows must be the same as the ones used to build the linkage map, specified in the third row of onemap raw file. If you do not have phenotypic information for all of them, complete their rows with `NA`.
+
 # Creating the working object
 Once the file with raw data was created, it is necessary to import it
 and provide more details required for QTL mapping.
@@ -179,6 +190,13 @@ fs_data <- read_onemap( dir = "C:/workingdirectory", inputfile = "filename.raw" 
 fsib <- create_fullsib( fs_data,
                         map.list = list( LG1_final, LG2_final, LG3_final, LG4_final ),
                         step = 1, map.function = "kosambi" )
+
+# Or
+## Provide the phenotypic information separately
+fsib <- create_fullsib( fs_data,
+                        map.list = list( LG1_final, LG2_final, LG3_final, LG4_final ),
+                        step = 1, map.function = "kosambi", pheno=pheno)
+
 ```
 
 After loading the data, the user can look at the `onemap` object's
@@ -222,10 +240,12 @@ data( "example_QTLfullsib" )
 
 ## Checking if it worked
 ls() 
+```
 
+```{r, eval=FALSE}
 ## Printing some of the loaded objects
 example_QTLfullsib
-LG1_final
+LG1_final # If you found an error here, don't worry. It is because of onemap version incompatibility, we automatically fix it in the next steps
 ```
 
 Again, the map was built with `onemap` package. Now, we have to

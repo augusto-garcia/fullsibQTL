@@ -4,10 +4,22 @@
 \alias{plot_fullsibQTL}
 \title{Multiple Graphics of QTLs Mapping}
 \usage{
-plot_fullsibQTL(fullsib = NULL, fullsib.scan = NULL, r2ls.out = NULL,
-  qtlmapping = NULL, lgs = NULL, thr = NULL, grayscale = FALSE,
-  interact = FALSE, file = "fullsibQTL.html", folder = getwd(),
-  browser = TRUE, height = NULL, width = NULL, qtlmapping.colors = NULL)
+plot_fullsibQTL(
+  fullsib = NULL,
+  fullsib.scan = NULL,
+  r2ls.out = NULL,
+  qtlmapping = NULL,
+  lgs = NULL,
+  thr = NULL,
+  grayscale = FALSE,
+  interact = FALSE,
+  file = "fullsibQTL.html",
+  folder = getwd(),
+  browser = TRUE,
+  height = NULL,
+  width = NULL,
+  qtlmapping.colors = NULL
+)
 }
 \arguments{
 \item{fullsib}{An object from class \code{fullsib}.}

@@ -33,4 +33,4 @@ Maintainer: Rodrigo Amadeu <rramadeu@gmail.com>
 NeedsCompilation: yes
 VignetteBuilder: knitr
 LazyData: true
-RoxygenNote: 6.0.1
+RoxygenNote: 7.1.1

@@ -183,7 +183,7 @@ cof_definition <- function(fullsib, pheno.col=1, addcovar=NULL,
     pos <-  cof.pos[i,2]
     if(is.na(lg)){
       ##unlinked marker
-      pos.num <- match(pos, colnames(get(fullsib$map[[1]]$data.name)$geno))
+      pos.num <- match(pos, colnames(fullsib$map[[1]]$data.name$geno))
       tmp <- unlink2cof(pos.num, fullsib$map[[1]]$data.name, pheno.index)[[1]]
       colnames(tmp) <- rep(pos, ncol(tmp))
       

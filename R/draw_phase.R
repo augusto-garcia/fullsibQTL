@@ -120,7 +120,7 @@ draw_phase <- function(fullsib, fschar, probs=0.05){
   mk.rgt <- which(cumsum(qtl.cM < distances)==1)
 
   ## print.seq
-  marnames <- colnames(get(fullsib$map[[LG]]$data.name)$geno)[fullsib$map[[LG]]$seq.num]
+  marnames <- colnames(fullsib$map[[LG]]$data.name$geno)[fullsib$map[[LG]]$seq.num]
   
   link.phases <- matrix(NA,length(fullsib$map[[LG]]$seq.num),2)
   link.phases[1,] <- rep(1,2)
@@ -136,7 +136,7 @@ draw_phase <- function(fullsib, fschar, probs=0.05){
   parents <- matrix("",length(fullsib$map[[LG]]$seq.num),4)
   
   for (i in 1:length(fullsib$map[[LG]]$seq.num))
-    parents[i,] <- return_geno(get(fullsib$map[[LG]]$data.name)$segr.type[fullsib$map[[LG]]$seq.num[i]],link.phases[i])
+    parents[i,] <- return_geno(fullsib$map[[LG]]$data.name$segr.type[fullsib$map[[LG]]$seq.num[i]],link.phases[i])
 
   ##adapting for QTL printing
   longest.name <- max(nchar(c("QTL", marnames)))                          

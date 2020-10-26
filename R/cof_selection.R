@@ -364,7 +364,7 @@ cof_selection <- function(fullsib, pheno.col=1, addcovar=NULL, k=2,
     get.cofs <- as.numeric(get.cofs)
     cof.index <- which(!duplicated(get.cofs))
 
-    selected.cofs <- colnames(get(fullsib$map[[1]]$data.name)$geno)[get.cofs]
+    selected.cofs <- colnames(fullsib$map[[1]]$data.name$geno)[get.cofs]
     extract.cofs <- selected.cofs[which(!duplicated(selected.cofs))]
 
 
