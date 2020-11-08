@@ -20,9 +20,9 @@
 # copyright (c) 2011, Rodrigo Gazaffi                                 #
 # *written by Marcelo Mollinari and Rodrigo Gazaffi                   #
 # **written by Gabriel R A Margarido and Rodrigo Gazaffi              #
-#                                                                     #
+# Updated by Rodrigo Amadeu and Cristiane Taniguti                    #
 # First version: 09/30/2011                                           #
-# Last  version: 09/30/2011                                           #
+# Last  version: 11/08/2020                                           #
 # License: GPL-3                                                      #
 #                                                                     #
 #######################################################################

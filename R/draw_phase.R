@@ -11,10 +11,10 @@
 # present in onemap package                                           #
 #                                                                     #
 # copyright (c) 2011, Rodrigo Gazaffi                                 #
-# Updated by Rodrigo Amadeu                                           #
+# Updated by Rodrigo Amadeu and Cristiane Taniguti                    #
 #                                                                     #
 # First version: 09/30/2011 (american date format)                    #
-# Last  version: 08/15/2011 (american date format)                    #
+# Last  version: 11/08/2020 (american date format)                    #
 # License: GNU General Public License version 2 (June, 1991) or later #
 #                                                                     #
 #######################################################################

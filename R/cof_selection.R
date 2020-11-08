@@ -12,7 +12,7 @@
 # copyright (c) 2011, Rodrigo Gazaffi                                 #
 #                                                                     #
 # First version: 09/30/2011                                           #
-# Last  version: 08/23/2017                                           #
+# Last  version: 11/08/2020                                           #
 # License: GPL-3                                                      #
 #                                                                     #
 #######################################################################

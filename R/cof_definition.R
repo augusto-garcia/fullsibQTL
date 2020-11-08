@@ -8,11 +8,11 @@
 # cof_definition                                                      #
 #                                                                     #
 # Written by Rodrigo Gazaffi                                          #
-# Updated by Rodrigo Amadeu                                           #
+# Updated by Rodrigo Amadeu and Cristiane Taniguti                    #
 # copyright (c) 2011, Rodrigo Gazaffi                                 #
 #                                                                     #
 # First version: 09/30/2011                                           #
-# Last  version: 08/15/2011                                           #
+# Last  version: 11/08/2020                                           #
 # License: GPL-3                                                      #
 #                                                                     #
 #######################################################################
