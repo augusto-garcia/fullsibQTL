@@ -64,8 +64,8 @@ populations](http://htmlpreview.github.io/?https://github.com/augusto-garcia/one
 Moreover, there are three additional tutorials:
 
 - [QTL mapping with partially informative
-  markers](https://rramadeu.github.io/fullsibQTL/inst/doc/QTL_mapping_with_partially_informative_markers.html)
-  
+markers](https://rramadeu.github.io/fullsibQTL/inst/doc/QTL_mapping_with_partially_informative_markers.html)
+
 - [Graphical options with `plot_fullsibQTL`](https://rramadeu.github.io/fullsibQTL/inst/doc/Graphical_options_with_plot_fullsibQTL.html)
 
 - [Graphical options with `plot`](https://rramadeu.github.io/fullsibQTL/inst/doc/Graphical_options_with_plot.html)
@@ -123,9 +123,10 @@ directly accessed by users:
 
 # Required data
 The input file of `fullsibQTL` is the same as the one required by
-`onemap` package. There are details about it at `onemap`
-[vignette](http://augustogarcia.me/onemap/vignettes_highres/Outcrossing_Populations.html).
-
+`onemap` package. If you have VCF or MAPMAKER format files,  `onemap` 
+provides functions to read (`onemap_read_vcfR` and `read_mapmaker`) and 
+export (`write_onemap_raw`) them as the `onemap` raw file. There are 
+details about it at `onemap` [vignette](http://augustogarcia.me/onemap/vignettes_highres/Outcrossing_Populations.html). 
 
 Below there is an example of such a file. The header line indicates
 the data type, the following line with `10 5 0 0 2` indicates that the
@@ -149,7 +150,7 @@ I1 I2 I3 I4 I5 I6 I7 I8 I9 I10
 *pheno2 5 -5.8 - 14.8 -2.4 -1.9 -1.1 8.1 -11.1 4.8
 ```
 
-If your onemap raw data do not have phenotypic information, you can also use here a matrix with individuals in rows and traits in columns. See example:
+If your onemap raw data do not have the phenotypic information, you can also provide it separately in a matrix with individuals in rows and traits in columns. See example:
 
 ```{r}
 pheno <- read.table(system.file("extdata/pheno_example.txt", package = "fullsibQTL"), 
@@ -158,7 +159,15 @@ pheno <- read.table(system.file("extdata/pheno_example.txt", package = "fullsibQ
 head(pheno)
 ```
 
-The individuals in the rows must be the same as the ones used to build the linkage map, specified in the third row of onemap raw file. If you do not have phenotypic information for all of them, complete their rows with `NA`.
+If one wants to see an example of the phenotypic data file format, type the
+following, that will show the location of a file that is distributed
+with the package:
+
+```{r, eval=FALSE}
+system.file( "extdata", "pheno_example.txt", package = "fullsibQTL" )
+```
+
+The individuals in the rows must be the same as the ones used to build the linkage map, they are specified in the third row of onemap raw file. If you do not have phenotypic information for all of them, complete their rows with `NA`.
 
 # Creating the working object
 Once the file with raw data was created, it is necessary to import it
@@ -183,18 +192,17 @@ even with missing data).
 library(fullsibQTL)
 
 # Raw data
-fs_data <- read_onemap( dir = "C:/workingdirectory", inputfile = "filename.raw" )
-
+fs_data <- read_onemap( dir = "C:/workingdirectory", inputfile = "filename.raw")
 
 ## Information of linkage groups, step and mapping function
 fsib <- create_fullsib( fs_data,
-                        map.list = list( LG1_final, LG2_final, LG3_final, LG4_final ),
-                        step = 1, map.function = "kosambi" )
+                        map.list = list( LG1_final, LG2_final, LG3_final, LG4_final),
+                        step = 1, map.function = "kosambi")
 
 # Or
 ## Provide the phenotypic information separately
 fsib <- create_fullsib( fs_data,
-                        map.list = list( LG1_final, LG2_final, LG3_final, LG4_final ),
+                        map.list = list( LG1_final, LG2_final, LG3_final, LG4_final),
                         step = 1, map.function = "kosambi", pheno=pheno)
 
 ```
@@ -236,7 +244,7 @@ permutations, that will be explained later (named `im_perm` and
 To load the example data:
 ```{r, eval=TRUE,cache=FALSE}
 ## Loading the example data
-data( "example_QTLfullsib" ) 
+data("example_QTLfullsib") 
 
 ## Checking if it worked
 ls() 
@@ -326,7 +334,7 @@ there is more than one QTL in the same LG, the user has to manually
 look for it using some graphical visualization.
 
 ```{r, eval=TRUE, cache=FALSE}
-summary( im )
+summary(im)
 ```
 
 ## QTL mapping plot options
@@ -340,7 +348,7 @@ analysis, allowing tools such as mouse zoom and hover.
 To use function `plot`:
 
 ```{r, eval=TRUE, cache=FALSE}
-plot( im )
+plot(im)
 ```
 
 Users can customize the output. For example, it is possible to plot in
@@ -348,14 +356,16 @@ the same panel up to five mapping profiles. Moreover, the user can
 indicate the molecular marker's position, change the labels, among
 others features. You can find more information about available options
 typing `?plot.fullsib_scan` or on its vignette, typing
+
 ```{r, eval=FALSE, cache=FALSE}
 vignette("Graphical_options_with_plot" ,package="fullsibQTL")
 ```
 
 Function  `plot_fullsibQTL`  is more sophisticated and interactive.
 Try it with 
+
 ```{r, eval=TRUE, cache=TRUE}
-plot_fullsibQTL( fullsib = fsib, fullsib.scan = im )
+plot_fullsibQTL(fullsib = fsib, fullsib.scan = im)
 ```
 
 To plot interactive graphics:
@@ -375,8 +385,9 @@ vignette("Graphical_options_with_plot_fullsibQTL" ,package="fullsibQTL")
 
 To improve the mapping statistical power, it is possible to include
 covariates (as fixed effects) in the QTL model, in order to control
-the variability outside the mapping interval (OR, IN ORDER TO CONTROL
-ENVIRONMENTAL VARIABLES?). To set a full-rank matrix which controls
+the phenotypic variability caused by known sources other than genetic 
+(*e.g.* some known plants did not receive the correctly irrigation).
+To set a full-rank matrix which controls
 the phenotypic variance, first you need to define an incidence vector,
 and, then, set it as an argument of the function `im_scan`. An example
 follows:
@@ -386,12 +397,16 @@ covar <- matrix( rep( c( 1 ,-1 ), each = 150 ), ncol = 1 )
 im_covar <- im_scan( fsib, pheno.col = 1, addcovar = covar )
 ```
 
+<!-- 
 NÃO ENTENDI... UMA COVARIÁVEL? ELA CONTROLA O QUE, EXATAMENTE?
 MARCADORES FORA DO INTERVALO? OU VARIÁVEIS INERENTES AO EXPERIMENTO
 (COVARIÁVEIS AMBIENTAIS)? -1 E +1? NÃO ENTENDI O QUE É ESSE VETOR,
 TAMBÉM. ESTAMOS AINDA FALANDO DE IM, POR QUE INCLUIR COVARIÁVEIS NESSA
 PARTE?
 
+Cris: Pelo contexto, eu entendi que seria controle de covariáveis ambientais. 
+Coloquei um exemplo do que entendi. Mas essa parte requer revisão.
+--> 
 
 ## IM Permutation test
 
@@ -407,9 +422,10 @@ In this tutorial, the permutation test object `im_perm` with the seed
 object (previously loaded), so there is no need to run the following
 lines. Anyway, an example of how to perform the permutation is the
 following:
+
 ```{r, eval=FALSE, cache=FALSE, collapse=TRUE, results='hide'}
 ## Perfoming the permutation
-set.seed( 1234 )
+set.seed(1234)
 im_perm <- im_scan( fsib, pheno.col = 1, n.perm = 1000,
                     write.perm = "im_permutations.txt" )
 ```
@@ -417,6 +433,7 @@ im_perm <- im_scan( fsib, pheno.col = 1, n.perm = 1000,
 If one needs to safe keep the object with the results of permutations,
 for further analysis, the object can be saved as an `Rdata` object. To
 save and load it, use:
+
 ```{r, eval=FALSE, cache=FALSE, collapse=TRUE}
 save( im_perm, file = "im_permutations.Rdata" )
 load( "im_permutations.Rdata" )
@@ -441,14 +458,14 @@ summary( im_perm )
 summary( im_perm, alpha = 0.05 )
 
 ## Getting the peaks for alpha 0.05.
-im.peak1 <- summary( im_perm, alpha = 0.05 )[ 1, 1 ]
+im.peak1 <- summary(im_perm, alpha = 0.05)[1, 1]
 im.peak1
-im.peak2 <- summary( im_perm,alpha = 0.05 )[ 1, 2 ]
+im.peak2 <- summary(im_perm,alpha = 0.05)[1, 2]
 im.peak2
 
 ## Plotting the second peak in the graphic
-plot( im )
-abline( h = im.peak2, col = "red" )
+plot(im)
+abline(h = im.peak2, col = "red")
 
 ## Plotting both thresholds
 plot( im, lty = 1, lwd = 2, incl.mkr = NULL, cex.incl = 0.7, 
@@ -465,13 +482,13 @@ peaks will be showed. Vertical lines represent the cut-off threshold
 for $\alpha=0.05$.
 
 ```{r, eval=TRUE, cache=FALSE}
-plot( im_perm, peak = 1 )
-abline( v = im.peak1 )
-abline( v = im.peak1, col = "red" )
+plot(im_perm, peak = 1)
+abline(v = im.peak1)
+abline(v = im.peak1, col = "red")
 
-plot( im_perm, peak = 2 )
-abline( v = 3.419819, col = "blue" )
-abline( v = 2.497431, col = "red" )
+plot(im_perm, peak = 2)
+abline(v = 3.419819, col = "blue")
+abline(v = 2.497431, col = "red")
 ```
 
 ## IM QTL characterization
@@ -483,7 +500,7 @@ between QTLs and flanking markers. The already created object `im`
 shows the presence of at least 4 QTLs:
 
 ```{r, eval=TRUE, cache=FALSE}
-summary( im )
+summary(im)
 ```
 
 The characterization of these 4 regions is achieved with function
@@ -504,12 +521,15 @@ was applied. For example, the object with the characterization of the QTL on LG 
 qtl1
 ```
 
-Object `qtl1` (a matrix) has several information. The first line has
-the LG information, the second has the position in centiMorgan where
-the QTL is localized. The third and fourth lines shows, respectively,
-$-log_{10}(p_{value})$) and LOD Score. The fifth line (`mu`) is about
-the intercept. `alpha.p`, `alpha.q`, and `delta.pq` represent the QTL
-genetic effects; `LOD.alpha.p`, `LOD.alpha.q`, and `LOD.delta.pq` are
+Object `qtl1` (a matrix) has several information:
+* Line 1: LG information;
+* Line 2: position in centiMorgan where the QTL is localized;
+* Line 3: $-log_{10}(p_{value})$); 
+* Line 4: LOD Score;
+* Line 5: intercept (`mu`);
+* Lines 6, 8 and 10: `alpha.p`, `alpha.q`, and `delta.pq` represent the QTL
+genetic effects;
+* Lines 7, 9 and 11: `LOD.alpha.p`, `LOD.alpha.q`, and `LOD.delta.pq` are
 the statistics associated with the marginal tests of significance of
 these genetic effects, with 1 degree of freedom (testing just if the
 effect differs from zero). In this case, a LOD score above or equal
@@ -517,22 +537,24 @@ $0.83$ (equivalent to a likelihood ratio test of LRT $= 3.81$, which
 has an approximate $\chi^2$ distribution with 1 degree of freedom
 under the null hypothesis). Since this is done only on specific
 positions, it is not necessary to correct for multiple tests.
-`H4.pvalue`, `H5.pvalue`, and `H6.pvalue` show the p-values for
+* Lines 12, 13 and 14: `H4.pvalue`, `H5.pvalue`, and `H6.pvalue` show the p-values for
 additional tests necessary to infer QTL segregation. For more
 information, please see Gazaffi et al. (2014). 
-
-Finally, line `model` shows which model was considered; please see
+* Line 15 (last line): `model` shows which model was considered; please see
 details on the vignette *QTL mapping with partially informative
-markers*. In some cases, a given test cannot be performed, showing
-`NA` as their values values. In short, outcrossing species can have a
+markers*. 
+
+In some cases, a given test cannot be performed, showing
+`NA` as their values. In short, outcrossing species can have a
 combination of markers with different segregation patterns, and in
 some genomic regions the amount of information can be different. For
-example, a genomic with markers segregating only in one of the parents
-will not allow inference about QTL in the other parent, so the model
-needs to be adapted accordingly. For details see Gazaffi et al.
-(2014).
+example, a genomic with markers segregating only in one of the parents 
+(marker types D1 or D2)
+will not allow inference about QTL in the other parent, 
+so the model needs to be adapted accordingly. 
+For details see Gazaffi et al. (2014).
 
-We can print information for all  QTL simultaneously:
+We can print information for all QTL simultaneously:
 
 ```{r, eval=TRUE, cache=FALSE}
 cbind( qtl1, qtl2, qtl3, qtl4 )
@@ -544,8 +566,9 @@ for `LOD.alpha.p` and `LOD.alpha.q`. In order to facilitate
 interpretation, the function `draw_phase` and can be used as follows:
 
 ```{r, eval=TRUE, cache=FALSE}
-draw_phase( fsib, qtl1, 0.05 )
+draw_phase(fsib, qtl1, 0.05)
 ```
+
 The value $0.05$ relates to $\alpha$ (significance level) and it is
 used to show only QTL statistically significant at this level. Alleles
 $P1$ and $Q1$ have positive effects, while $P2$ and $Q2$ have negative
@@ -583,6 +606,7 @@ then uses `step` from `stats` package. For more information, use
 ```{r, eval=TRUE, cache=TRUE, results='hide'}
 cofs_fs <- cof_selection( fsib, pheno.col = 1, k = log( 300 ), n.cofactor = 10 )
 ```
+
 ```{r, eval=TRUE, cache=TRUE}
 plot( cofs_fs )
 ```
@@ -604,8 +628,8 @@ stops when the number of cofactors reaches what is defined in
 `n.cofactor` (the default is `n.cofactor = 10`).
 
 The following example shows how to proceed to select cofactors in a
-situation where the fixed covariates are set to control the character
-variability (NÃO ENTENDO). To do it, we used the argument `addcovar`.
+situation where the fixed covariates (see [Covariates](#covariates) section) are set to control the character
+variability. To do it, we used the argument `addcovar`.
 For example:
 
 ```{r, eval=TRUE, cache=FALSE,}
@@ -629,6 +653,7 @@ Users can also select the cofactors using and *ad-hoc* procedure. This
 is the case for example when someone knows that certain markers are
 supposed to be linked with QTL. To do so, it is necessary to build a
 matrix and then incorporate it in the `cof_definition` function:
+
 ```{r}
 cofs <- matrix(c("1","M2",
                  "2","M27",
@@ -646,7 +671,7 @@ functions `im_scan` and `im_char`. The first one scan all the genome
 computing associations between genotype and phenotype trying to detect
 QTL. The second shows the genetic effects and their statistical
 significance. It also shows additional tests to infer the QTL
-segregation pattern. The mapping procedure is performed in a similar
+segregation pattern. The mapping procedure is performed in a similar way
 as already presented for `im_scan`. The inclusion of cofactors allows
 a better mapping of QTL, since this model has more statistical power
 than interval mapping. For more information, use `?cim_scan` and
@@ -657,9 +682,11 @@ than interval mapping. For more information, use `?cim_scan` and
 The genome scan can be performed with function `cim_scan`, indicating
 the cofactors object (class: `fullsib_cofactors`) previously created
 with `cof_selection` or `cof_definition`.
+
 ```{r, eval=TRUE, cache=FALSE, results='hide'}
 cim <- cim_scan( fullsib = cofs_fs, lg = "all", ws = 10, pheno.col = 1, LOD = TRUE )
 ```
+
 Option `ws` (window size) is to indicate the size of a window outside
 the mapping interval to block the inclusion of  cofactors. This is
 important to not markers linked with the QTL being mapped to be
@@ -677,6 +704,7 @@ permutations. In this tutorial, the permutation test object `cim_perm`
 with the seed `4321` is already created and is part of the
 `example_QTLfullsib` object previously loaded, so it is not necessary
 to run the following lines. But just as an example:
+
 ```{r, eval=FALSE, cache=FALSE}
 set.seed( 4321 )
 cim_perm <- cim_scan( fullsib = cofs_fs, lg = "all", pheno.col = 1, 
@@ -686,6 +714,7 @@ cim_perm <- cim_scan( fullsib = cofs_fs, lg = "all", pheno.col = 1,
 
 To keep the results of permutations for later analysis, one just needs
 to save (and eventually load) an R object:
+
 ```{r, eval=FALSE, cache=FALSE, collapse=TRUE}
 save( cim_perm, file = "cim_permutations.Rdata" )
 load( "cim_permutations.Rdata" )
@@ -704,11 +733,12 @@ visualized through `summary` for the object with the permutation
 tests. In this case, the user can set an $\alpha$ for the significance
 threshold. The result will be the quantile $(1-\alpha) \times 100$ of
 permutation samples for the statistic (defaults $0.10$ an $0.05$).
+
 ```{r, eval=TRUE, cache=FALSE}
 ## Summary of the permutation test
-summary( cim_perm )
+summary(cim_perm)
 ## just with alpha=0.05 
-summary( cim_perm, alpha = 0.05 )
+summary(cim_perm, alpha = 0.05)
 
 ## Getting the peaks for alpha 0.05. 
 cim.peak1 <- summary(cim_perm, alpha=0.05)[1,1]
@@ -717,15 +747,15 @@ cim.peak2 <- summary(cim_perm, alpha=0.05)[1,2]
 cim.peak2
 
 ## Ploting the thrshold with the second peak
-plot( cim )
-abline( h = cim.peak2, col = "red" )
+plot(cim)
+abline(h = cim.peak2, col = "red")
 
 ## Plotting both thresholds
-plot( cim, lty = 1, lwd = 2, incl.mkr = NULL, cex.incl = 0.7, 
+plot(cim, lty = 1, lwd = 2, incl.mkr = NULL, cex.incl = 0.7, 
       cex.axis = 0.8, col = "red", ylab = "LOD Score", xlab = "Linkage Group", 
-      main = "CIM - Trait 1" )
-abline( h = cim.peak1, lty = 2, lwd = 1, col = "black" )
-abline( h = cim.peak2, lty = 2, lwd = 2, col = "black" )
+      main = "CIM - Trait 1")
+abline(h = cim.peak1, lty = 2, lwd = 1, col = "black")
+abline(h = cim.peak2, lty = 2, lwd = 2, col = "black")
 ```
 
 If one wants to see the distribution of the maximum of the LODs,
@@ -734,10 +764,10 @@ is `2`, the distribution of the second highest peaks will be showed.
 The vertical line represents the cut-off threshold for $\alpha=0.05$.
 
 ```{r, eval=TRUE, cache=FALSE}
-plot( cim_perm, peak = 1 )
-abline( v = cim.peak1, col = "red" )
+plot(cim_perm, peak = 1)
+abline(v = cim.peak1, col = "red")
 
-plot( cim_perm, peak = 2 )
+plot(cim_perm, peak = 2)
 abline( v = cim.peak2, col = "red" )
 ```
 
@@ -750,7 +780,7 @@ markers.
 
 The already created object `cim` shows the presence of at least 4 QTLs:
 ```{r, eval=TRUE, cache=FALSE}
-summary( cim )
+summary(cim)
 ```
 
 However, the following graphic shows that there is evidence for more
@@ -773,21 +803,21 @@ verified examining object `cim`. For example, for some LGs:
 ```{r, eval=TRUE, cache=FALSE}
 ## Visual Analysis of every location of LG1
 ## QTLs peak at loc13 and M12
-print( cim,lg = 1 )
+print(cim,lg = 1)
 ```
 
 ```{r, eval=FALSE, cache=FALSE}
 ## Visual Analysis LG2
 ## QTLs peaks at loc45, loc77, and loc 108
-print( cim, lg = 2 )
+print(cim, lg = 2)
 
 ## Visual Analysis LG3
 ## QTLs peaks at M33 and loc65
-print( cim,lg = 3 )
+print(cim,lg = 3)
 
 ## Visual Analysis LG4
 ## QTL peak at M52
-print( cim,lg = 4 )
+print(cim,lg = 4)
 ```
 
 Another way is by pointing  the mouse for an
@@ -935,6 +965,9 @@ plot_fullsibQTL( fullsib = fsib,
 
 The following articles can be used as examples of how to report the
 QTL mapping results obtained with package `fullsibQTL`:
+
+Conson ARO, Taniguti CH, Amadeu RR, Andreotti IAA., de Souza LM, dos Santos LHB, Rosa JRBF, Mantello CC, da Silva CC, José Scaloppi Junior E, Ribeiro RV, Le Guen V, Garcia AAF, Gonçalves P de S, & de Souza AP (2018). High-Resolution Genetic Map and QTL Analysis of Growth-Related Traits of Hevea brasiliensis Cultivated Under Suboptimal Temperature and Humidity Conditions. **_Frontiers in Plant Science_**, 9(August), 1–16. ISSN 1664-462X. [https://doi.org/10.3389/fpls.2018.01255](https://doi.org/10.3389/fpls.2018.01255)
+
 
 Balsalobre TWA, da Silva Pereira G, Margarido GRA, Gazaffi R, Barreto FZ, Anoni CO,
 Cardoso-Silva CB, Costa EA, Mancini MC, Hoffmann HP, de Souza AP, Garcia AAF,
