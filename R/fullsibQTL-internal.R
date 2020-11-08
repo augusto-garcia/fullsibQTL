@@ -143,6 +143,8 @@ create_map <-function(dist,phase,type,step)    {
 }
 
 #' Calculate probs
+#' 
+#' @useDynLib fullsibQTL
 #' @useDynLib fullsibQTL, .registration = TRUE
 calc_genoprobs <- function(dist, geno, type, phase, step,
                            error.prob, map.function)
