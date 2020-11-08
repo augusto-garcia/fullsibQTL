@@ -23,3 +23,6 @@ apt_packages:
     - libftgl2 
     - libfreetype6-dev  
     - libxml2-dev
+    
+env:
+  - R_KEEP_PKG_SOURCE=yes
