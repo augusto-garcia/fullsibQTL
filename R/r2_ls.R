@@ -109,7 +109,9 @@
 #'          pos = c( "M3", "M12", "M20", "M24", "M27", "M37", "M52" ),
 #'          ls.estimation = TRUE ) 
 #'
-
+#' @importFrom stats anova lm
+#'
+#' @export
 r2_ls <- function( fullsib, lg, pos, pheno.col = 1, addcovar = NULL, ls.estimation = FALSE ){
 
   ##checking arguments

@@ -147,6 +147,7 @@ format.
                    qtlmapping = c( "cim", "im" ),
                    qtlmapping.colors = c( "dark green", "purple" ) )
                    
+
 }
 \seealso{
 \code{\link[fullsibQTL]{create_fullsib}}

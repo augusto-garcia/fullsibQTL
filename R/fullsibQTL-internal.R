@@ -31,10 +31,13 @@
 #                                                                     #
 # Function: calc_probs                                                #
 #                                                                     #
-# Function to obtain multipoint QTL probability for all chromossome   #
-# it is used in create.fullsib                                        #
+#                                       #
 #######################################################################
 
+#' Function to obtain multipoint QTL probability for all chromossome   
+#' it is used in create.fullsib 
+#' 
+#' @importFrom utils head setTxtProgressBar tail txtProgressBar
 calc_probs <- function(fullsib, step, error.prob, map.function, condIndex)
 {
   ##show the time during calculation of probs...
@@ -139,6 +142,8 @@ create_map <-function(dist,phase,type,step)    {
     }
 }
 
+#' Calculate probs
+#' @useDynLib fullsibQTL, .registration = TRUE
 calc_genoprobs <- function(dist, geno, type, phase, step,
                            error.prob, map.function)
 {
@@ -563,7 +568,8 @@ unlink2cof <- function(mk.unmap, obj.name, pheno.index){
 # This function draw the QTL configuration in the linkage group       #
 #######################################################################
 
-####################
+#' This function draw the QTL configuration in the linkage group
+#' @importFrom stats qchisq 
 get_phase <- function(model, alpha.p, lod.ap, alpha.q, lod.aq, probs){
   result <- rep(NA,4)
   model <- as.character(model)
@@ -656,8 +662,11 @@ get_phase <- function(model, alpha.p, lod.ap, alpha.q, lod.aq, probs){
   result
 }
 
-
-draw_map2 <- function(map.list, horizontal = FALSE, names = FALSE, grid = FALSE,
+#' Draw map
+#' 
+#' 
+#' @importFrom graphics abline axis lines plot points text
+draw_map_qtl <- function(map.list, horizontal = FALSE, names = FALSE, grid = FALSE,
                        cex.mrk = 1, cex.grp = 0.75, trait) {
   
   if (!any(class(map.list) == "list" | class(map.list) == "sequence")) 

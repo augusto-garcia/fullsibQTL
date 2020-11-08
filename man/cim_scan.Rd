@@ -159,7 +159,7 @@ Individuals with missing phenotypes are dropped.
   summary( cim.perm ) # threshold values
   summary( cim.perm, alpha = 0.10 )
   }
-
+  
 }
 \references{
 Chen, L., Storey, J.D. (2006) Relaxed Significance Criteria for

@@ -138,7 +138,7 @@
 #'   ### because it is non significative (never was selected on cof_selection)
 #'   }
 #' 
-
+#' @export
 cof_definition <- function(fullsib, pheno.col=1, addcovar=NULL,
                            cof.pos, thres.effect=1){
 

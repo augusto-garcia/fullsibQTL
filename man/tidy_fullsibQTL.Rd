@@ -46,7 +46,7 @@ This function was developed to be used as part of the
   ## Merging and transforming to tidy data
   tidy_fullsibQTL(fullsib, fullsib.scan=list(im,cim),
                   r2ls.out= list(qtls.im,qtls.cim), qtlmapping=c("im","cim"))
-
+                  
 }
 \seealso{
 \code{\link[fullsibQTL]{create_fullsib}}

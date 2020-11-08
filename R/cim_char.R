@@ -135,7 +135,7 @@
 #' 
 #'   qtl <- cim_char( cofs.fs, pheno.col = 1, ws = 22, lg = 3, pos = "M38" )
 #' 
-
+#' @export
 cim_char <- function(fullsib, pheno.col=1, ws = 10, lg, pos,
                      maxit=1000,tol=1e-10, icim=FALSE, verbose=FALSE)
 {

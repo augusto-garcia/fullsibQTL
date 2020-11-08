@@ -54,7 +54,6 @@ a quantile function to calculate the thresholds, using default of function
   summary( im_perm, alpha = 0.05, verbose = FALSE )
   }
 
-
 }
 \references{
 Chen, L., Storey, J.D. (2006) Relaxed Significance Criteria for

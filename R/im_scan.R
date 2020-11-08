@@ -203,7 +203,9 @@
 #'   plot( im.perm, peak = 1 )
 #' }
 #' 
-
+#' @importFrom utils setTxtProgressBar txtProgressBar write.table
+#' 
+#' @export
 im_scan <- function ( fullsib, lg, pheno.col = 1, addcovar = NULL, LOD = TRUE,
                       maxit = 1000, tol = 1e-04, n.perm, write.perm,
                       verbose, verbose.scan)

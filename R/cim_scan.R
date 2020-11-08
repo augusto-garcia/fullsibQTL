@@ -187,8 +187,10 @@
 #'   summary( cim.perm ) # threshold values
 #'   summary( cim.perm, alpha = 0.10 )
 #'   }
-#' 
-
+#'   
+#' @importFrom utils setTxtProgressBar txtProgressBar write.table
+#' @importFrom stats coef dist lm pchisq
+#' @export
 cim_scan <- function(fullsib, lg, pheno.col=1, ws = 10, LOD=TRUE,
                      maxit=1000, tol=1e-04, n.perm=0, write.perm,
                      icim=FALSE, verbose, verbose.scan)

@@ -146,6 +146,8 @@
 #'                           list( LG1_final, LG2_final, LG3_final, LG4_final ),
 #'                           step = 1, map.function = "kosambi" , condIndex = 3.5 )
 #' 
+#' @import onemap
+#' @export
 create_fullsib <- function(input.obj, map.list, step=0, error.prob=1e-4,
                            map.function=c("kosambi", "haldane","morgan"), 
                            condIndex=3.5, pheno=NULL) {
@@ -219,7 +221,9 @@ create_fullsib <- function(input.obj, map.list, step=0, error.prob=1e-4,
 #                                                                     #
 # Resume the main information on the object from fullsib class        #
 #######################################################################
-
+#' Print method for object class 'fullsib'
+#' @export
+#' @method print fullsib
 print.fullsib <- function(x, ...) {
   LGtotal <- length(which(sapply(x$map, class) == "sequence"))
   #LG.length <- sapply(x$map, function(z) max(c(0, cumsum(get(.map.fun)(z$seq.rf)))))

@@ -126,6 +126,7 @@ to plot QTL profile.
   plot( im2, lg = 2, incl.mkr = "name", add = TRUE )
 
 
+
 }
 \seealso{
 \code{\link[fullsibQTL]{im_scan}}

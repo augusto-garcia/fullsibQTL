@@ -82,7 +82,7 @@
 #'   qtl.lg4 <- cim_char( cofs.fs, pheno.col = 1, ws = 22, lg = 4, pos = "M52" )
 #'   draw_phase( cofs.fs, qtl.lg4, probs = 0.05 )
 #' 
- 
+#' @export 
 draw_phase <- function(fullsib, fschar, probs=0.05){
   
   ##checking argument
