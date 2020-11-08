@@ -15,7 +15,8 @@ Depends: R (>= 3.4.0),
 Imports: ggplot2 (>= 2.2.1),
           scales  (>= 0.4.1),
           plotly  (>= 4.7.1),
-          htmlwidgets (>= 0.9)
+          htmlwidgets (>= 0.9),
+          methods
 Suggests: knitr,
           rmarkdown
 Description: QTL mapping in outbred (outcrossing) species, considering a full-sib cross 

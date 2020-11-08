@@ -2,7 +2,6 @@
 % Please edit documentation in R/create_fullsib.R
 \name{create_fullsib}
 \alias{create_fullsib}
-\alias{print.fullsib}
 \title{Creates the main object to perform QTL mapping on \pkg{fullsibQTL}}
 \usage{
 create_fullsib(

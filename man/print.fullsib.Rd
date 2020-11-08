@@ -6,6 +6,11 @@
 \usage{
 \method{print}{fullsib}(x, ...)
 }
+\arguments{
+\item{x}{object of class fullsib}
+
+\item{...}{currently ignored}
+}
 \description{
 Print method for object class 'fullsib'
 }

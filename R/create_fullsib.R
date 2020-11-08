@@ -69,7 +69,7 @@
 #' as well the markers location. If a selected marker is not in the map,
 #' \code{NA} will be indicated on its corresponding linkage groups.
 #' 
-#' @aliases create_fullsib print.fullsib
+#' @aliases create_fullsib
 #' 
 #' @param input.obj an object of class \emph{outcross}, obtained with
 #' \code{read.outcross} function from \pkg{onemap} package (>2.0-3), where it
@@ -146,7 +146,11 @@
 #'                           list( LG1_final, LG2_final, LG3_final, LG4_final ),
 #'                           step = 1, map.function = "kosambi" , condIndex = 3.5 )
 #' 
+#' @useDynLib fullsibQTL
+#' @useDynLib fullsibQTL, .registration = TRUE
 #' @import onemap
+#' @importFrom methods is
+#' @importFrom utils packageVersion
 #' @export
 create_fullsib <- function(input.obj, map.list, step=0, error.prob=1e-4,
                            map.function=c("kosambi", "haldane","morgan"), 
@@ -222,6 +226,9 @@ create_fullsib <- function(input.obj, map.list, step=0, error.prob=1e-4,
 # Resume the main information on the object from fullsib class        #
 #######################################################################
 #' Print method for object class 'fullsib'
+#' 
+#' @param x object of class fullsib
+#' @param ... currently ignored
 #' @export
 #' @method print fullsib
 print.fullsib <- function(x, ...) {

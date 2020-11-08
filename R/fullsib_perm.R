@@ -172,6 +172,7 @@ summary.fullsib_perm <- function(object,
 #'   }
 #' 
 #' @importFrom graphics hist par rug
+#' @importFrom stats quantile
 #' @export
 #' @method plot fullsib_perm
 plot.fullsib_perm <- function(x, peak=1, ...)

@@ -206,7 +206,7 @@
 #'   cofs.fs8 <- cof_selection( fullsib, pheno.col = 2, addcovar = covar, k = 2 )
 #'   }
 #' 
-#' @importFrom stats anova as.formula coef df.residual lm model.matrix
+#' @importFrom stats anova as.formula coef df.residual lm model.matrix qchisq
 #' @export
 
 cof_selection <- function(fullsib, pheno.col=1, addcovar=NULL, k=2,

@@ -293,6 +293,7 @@ plot_fullsibQTL = function (fullsib = NULL, fullsib.scan = NULL, r2ls.out = NULL
 #'                   r2ls.out= list(qtls.im,qtls.cim), qtlmapping=c("im","cim"))
 #'                   
 #' @rawNamespace import(ggplot2, except = last_plot)
+#' @importFrom utils head tail
 #' @import plotly
 #' @import htmlwidgets
 #' @export
