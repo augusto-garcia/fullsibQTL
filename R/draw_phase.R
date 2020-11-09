@@ -97,7 +97,7 @@ draw_phase <- function(fullsib, fschar, probs=0.05){
 
   ##checking argument
   if(probs > 1 || probs < 0){
-    break("probs argument need to be a probability between 0 and 1")
+    stop("probs argument need to be a probability between 0 and 1")
     probs <- 0
   }
 

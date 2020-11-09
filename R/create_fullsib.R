@@ -204,7 +204,7 @@ create_fullsib <- function(input.obj, map.list, step=0, error.prob=1e-4,
                   pheno = if(is.null(pheno)) input.obj$pheno else pheno)
   
   ##obtaining multipoint probabilities used for im and/or cim analysis
-  fullsib <- fullsibQTL:::calc_probs(fullsib, step=step, error.prob=error.prob, map.function=map.function, condIndex)
+  fullsib <- calc_probs(fullsib, step=step, error.prob=error.prob, map.function=map.function, condIndex)
   fullsib$mapped.mkrs <- colnames(input.obj$geno)[mapped.mkrs]
   class(fullsib) <- "fullsib"
   
