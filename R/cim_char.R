@@ -117,7 +117,6 @@
 #' @keywords utilities
 #' @examples
 #' 
-#'   \dontrun{
 #'   data(example_QTLfullsib)
 #' 
 #'   fullsib <- create_fullsib( example_QTLfullsib,
@@ -130,12 +129,13 @@
 #'   cofs.fs <- cof_selection( fullsib, pheno.col = 1, k = log( 300 ),
 #'                             selection = 1 ) 
 #' 
-#'   
+#'  \dontrun{
 #'   cim1 <- cim_scan( cofs.fs, pheno.col = 1, ws = 22, LOD = TRUE, icim = FALSE )
 #'   summary( cim1 )
-#'   
+#'  }
 #'   qtl <- cim_char( cofs.fs, pheno.col = 1, ws = 22, lg = 3, pos = "M38" )
-#'   }
+#'  
+#'  
 #' @export
 cim_char <- function(fullsib, pheno.col=1, ws = 10, lg, pos,
                      maxit=1000,tol=1e-10, icim=FALSE, verbose=FALSE)

@@ -95,6 +95,7 @@ phenotype. The residual of this analysis is used as a \sQuote{new}
 phenotype. The QTL analysis is done similar an interval mapping.
 }
 \examples{
+
   data(example_QTLfullsib)
 
   fullsib <- create_fullsib( example_QTLfullsib,
@@ -107,13 +108,13 @@ phenotype. The QTL analysis is done similar an interval mapping.
   cofs.fs <- cof_selection( fullsib, pheno.col = 1, k = log( 300 ),
                             selection = 1 ) 
 
-  \dontrun{
+ \dontrun{
   cim1 <- cim_scan( cofs.fs, pheno.col = 1, ws = 22, LOD = TRUE, icim = FALSE )
   summary( cim1 )
-  }
-
+ }
   qtl <- cim_char( cofs.fs, pheno.col = 1, ws = 22, lg = 3, pos = "M38" )
-
+ 
+ 
 }
 \references{
 Gazaffi, R.; Margarido, G. R.; Pastina, M. M.; Mollinari, M.; Garcia, A. A.

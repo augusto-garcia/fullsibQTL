@@ -155,30 +155,25 @@
 create_fullsib <- function(input.obj, map.list, step=0, error.prob=1e-4,
                            map.function=c("kosambi", "haldane","morgan"), 
                            condIndex=3.5, pheno=NULL) {
-
+  
   ## checking input.obj
   if (!any(class(input.obj) == "outcross"))
     stop(deparse(substitute(input.obj)), " is not an object of class 'outcross'")
   if(is.null(input.obj$pheno) & is.null(pheno))
     stop("There is no phenotypes avaliable in ", deparse(substitute(input.obj)), ". Use argument pheno to include phenotypes.")
-
+  
   ## checking map.list
   if (!any(class(map.list) == "list" | class(map.list) == "sequence")) 
     stop(deparse(substitute(map.list)),
          " is not an object of class 'list' or 'sequence'")
   if (class(map.list) == "sequence") 
     map.list <- list(map.list)
-
-  ## checking objects
   
-  version <- packageVersion("onemap")
-    if(version >= "2.2.0"){
-    
-    onemap.objs <- sapply(map.list, "[[", 5)
-    for(i in 1:length(onemap.objs)){
-      if(is(onemap.objs[i], "character")){
-        map.list[[i]]$data.name <- get(map.list[[i]]$data.name)
-      }
+  ## checking objects
+  onemap.objs <- sapply(map.list, "[[", 5)
+  for(i in 1:length(onemap.objs)){
+    if(is(onemap.objs[i], "character")){
+      map.list[[i]]$data.name <- get(map.list[[i]]$data.name)
     }
   }
   
@@ -199,17 +194,17 @@ create_fullsib <- function(input.obj, map.list, step=0, error.prob=1e-4,
   
   ##checking map.function
   map.function <- match.arg(map.function)
-
+  
   ##obtaining unliked markers if any
   mapped.mkrs <- unlist(lapply(map.list, function(x) x$seq.num))
   not.mapped <- which(is.na(match(1:ncol(input.obj$geno), mapped.mkrs)))
-
+  
   fullsib <- list(map = map.list,
                   unlinked.mkr = not.mapped, 
                   pheno = if(is.null(pheno)) input.obj$pheno else pheno)
-
+  
   ##obtaining multipoint probabilities used for im and/or cim analysis
-  fullsib <- calc_probs(fullsib, step=step, error.prob=error.prob, map.function=map.function, condIndex)
+  fullsib <- fullsibQTL:::calc_probs(fullsib, step=step, error.prob=error.prob, map.function=map.function, condIndex)
   fullsib$mapped.mkrs <- colnames(input.obj$geno)[mapped.mkrs]
   class(fullsib) <- "fullsib"
   
@@ -241,7 +236,7 @@ print.fullsib <- function(x, ...) {
   ##cat("  The linkage map has", LGtotal, "groups, with", formatC(sum(LG.length, na.rm = TRUE)), "cM and", sum(LG.mkrs, na.rm = TRUE), "markers\n")
   cat("  The linkage map has", LGtotal, "groups, with", round(sum(LG.length, na.rm = TRUE),2), "cM and", sum(LG.mkrs, na.rm = TRUE), "markers\n")
   cat("  No. individuals genotyped: ",  x$map[[1]]$data.name$n.ind, "\n")
-
+  
   for (i in 1:length(x$map)){
     type.mkrs <- names(table(x$map[[i]]$data.name$segr.type.num[x$map[[i]]$seq.num]))
     type.mkrs <- sapply(as.character(type.mkrs),
@@ -257,13 +252,13 @@ print.fullsib <- function(x, ...) {
   if (ncol(x$pheno) == 1) 
     cat("\n\n  One phenotype is avaliable for QTL mapping\n")
   else cat("\n\n ", ncol(x$pheno), "phenotypes are avaliable for QTL mapping\n")
-
+  
   if(x$probs[[1]]$step == 0)
     cat("  Multipoint probability for QTL genotype was obtained at markers postions\n")
   else
     cat("  Multipoint probability for QTL genotype was obtained for each",
-         x$probs[[1]]$step, "cM\n\n")
-
+        x$probs[[1]]$step, "cM\n\n")
+  
   if (any(class(x) == "fullsib_cofactors")){
     cat("\n  Cofactor selection was done for pheno.col =", x$cofactors$trait.cof, "\n")
     cat("  Markers selected for CIM analysis:", length(x$cofactors$names.cof$lg), "\n")
