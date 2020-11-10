@@ -2,7 +2,7 @@
 % Please edit documentation in R/draw_phase.R
 \name{print.fullsib_phases}
 \alias{print.fullsib_phases}
-\title{Print phases}
+\title{Print markers and QTL phases}
 \usage{
 \method{print}{fullsib_phases}(x, ...)
 }
@@ -12,5 +12,5 @@
 \item{...}{currently ignored}
 }
 \description{
-Print phases
+Print markers and QTL phases
 }

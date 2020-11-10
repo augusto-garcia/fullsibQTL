@@ -2,7 +2,7 @@
 % Please edit documentation in R/draw_phase.R
 \name{plot_fullsib_phases}
 \alias{plot_fullsib_phases}
-\title{Plot phases}
+\title{Plot markers and QTL phases}
 \usage{
 plot_fullsib_phases(x, CI = NULL, ...)
 }
@@ -14,5 +14,5 @@ plot_fullsib_phases(x, CI = NULL, ...)
 \item{...}{currently ignored}
 }
 \description{
-Plot phases
+Plot markers and QTL phases
 }
