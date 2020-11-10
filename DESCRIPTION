@@ -1,6 +1,6 @@
 Package: fullsibQTL
 Title: Software for QTL Mapping using a Full-Sib Progeny
-Version: 0.0.9009
+Version: 0.0.9010
 Date: 2020-05-20
 Authors@R: c(person("Rodrigo", "Gazaffi",   role = "aut", email = "rgazaffi@gmail.com"),
              person("Rodrigo", "Amadeu",    role = c("aut","cre"), email = "rodrigo.amadeu@usp.br"),
@@ -13,12 +13,14 @@ Authors@R: c(person("Rodrigo", "Gazaffi",   role = "aut", email = "rgazaffi@gmai
 Depends: R (>= 3.4.0),
           onemap (>= 2.1.0000)
 Imports: ggplot2 (>= 2.2.1),
-          scales  (>= 0.4.1),
+          scales  (>= 0.4.1), 
           plotly  (>= 4.7.1),
           htmlwidgets (>= 0.9),
-          methods
+          methods,
+          reshape2
 Suggests: knitr,
-          rmarkdown
+          rmarkdown,
+          ggpubr
 Description: QTL mapping in outbred (outcrossing) species, considering a full-sib cross 
   (or F1 population) as a mapping population. It is assumed a previous genetic map obtained
   with 'onemap' package. The method is based on maximum likelihood approach using mixture 
