@@ -58,7 +58,7 @@ In cases where the problems of colinearity are not present, contrasts
 1, 2, and 3 can be used. Segregation and linkage phase are inferred
 using the proceeding presented by Gazaffi et al. (2014). Although,
 when it is identified a dependence relationship between QTL genotypes
-probabilities, it is suggested the removal ou adaptation of the
+probabilities, it is suggested the removal or adaptation of the
 contrasts to define the genetic effects (contrasts 4 to 13). Table 1
 estabilishes all the contrasts that the algorithm can verify.
 Contrasts 1 and 2 are similar to a backcross model. Contrasts 3 and 9
@@ -178,9 +178,9 @@ backcross population). Some additional considerations:
   consistent with the real QTL segregation.
 
 - Even though some regions permit QTL detection with a genetic effect
-  similar to a backcross - which can be compared to the fullsib
+  similar to a backcross, which can be compared to the fullsib
   progeny of a pseudo-testcross approach (Grattapaglia and Sederoff,
-  1994) - the present model has the advantage of allowing the usage of
+  1994). The present model has the advantage of allowing the usage of
   cofactors from regions with different segregation pattern,
   increasing the statistical power.
 

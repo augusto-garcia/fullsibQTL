@@ -4,13 +4,15 @@
 \alias{draw_phase}
 \title{Represents the linkage phase between markers and QTL}
 \usage{
-draw_phase(fullsib, fschar, probs = 0.05)
+draw_phase(fullsib, fullsib.char, fullsib.scan = NULL, probs = 0.05)
 }
 \arguments{
 \item{fullsib}{An object from class \emph{fullsib} or
 \emph{fullsib_cofactors}.}
 
-\item{fschar}{An object from class \emph{fullsib_char}.}
+\item{fullsib.char}{An object from class \emph{fullsib_char}.}
+
+\item{fullsib.scan}{An object from class \emph{fullsib_scan}.}
 
 \item{probs}{probability used to identify significative parental effect.}
 }

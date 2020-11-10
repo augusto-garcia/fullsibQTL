@@ -20,15 +20,13 @@ knitr::opts_chunk$set(collapse = TRUE,
 ```
 
 `fullsibQTL` is an `R` package to perform QTL mapping in
-outbred/outcrossing species using the model develop by Gazaffi et al
-2014 (https://link.springer.com/article/10.1007/s11295-013-0664-2). We
+outbred/outcrossing species using the model develop by [Gazaffi et al. 2014](https://link.springer.com/article/10.1007/s11295-013-0664-2). We
 consider as a mapping population a full-sib progeny (or *F1*
 population) derived by a bi-parental cross between two non-homozygous
 parents, with a genetic map obtained from markers possibly showing
 different segregation patterns. We assumed that the phenotypic traits
 are continuous and have a normal distribution. Also, the genetic map
-must be previously made using the R package `onemap`
-(https://github.com/augusto-garcia/onemap).
+must be previously made using the R package [`onemap`](https://github.com/augusto-garcia/onemap).
 
 If you are not familiar with `onemap` and its approach to build a map,
 we strongly encourage you to read `onemap`
@@ -905,18 +903,49 @@ get_segr( cim_QTL2_lg3, probs1 = 0.05, probs2 = 0.05 )
 get_segr( cim_QTL1_lg4, probs1 = 0.05, probs2 = 0.05 )
 ```
 
-And finally, to  draw a rough visualization of  the genetic map with
+And finally, to  draw a visualization of  the genetic map with
 QTLs and infered phases:
 
 ```{r}
-draw_phase( cofs_fs, cim_QTL1_lg1 )
-draw_phase( cofs_fs, cim_QTL2_lg1 )
-draw_phase( cofs_fs, cim_QTL1_lg2 )
-draw_phase( cofs_fs, cim_QTL2_lg2 )
-draw_phase( cofs_fs, cim_QTL3_lg2 )
-draw_phase( cofs_fs, cim_QTL1_lg3 )
-draw_phase( cofs_fs, cim_QTL2_lg3 )
-draw_phase( cofs_fs, cim_QTL1_lg4 )
+cim_QTL1_lg1_draw <- draw_phase(fullsib = cofs_fs, fullsib.char = cim_QTL1_lg1)
+
+# Two ways of visualize
+cim_QTL1_lg1_draw
+
+plot_fullsib_phases(cim_QTL1_lg1_draw)
+
+# If include fullsib.scan object you can also visualize the confidence interval considering 1 or 2 LOD
+cim_QTL1_lg1_draw <- draw_phase(fullsib = cofs_fs, fullsib.char = cim_QTL1_lg1, fullsib.scan = cim)
+
+plot_fullsib_phases(cim_QTL1_lg1_draw, CI = "LOD1")
+
+# Too access the interval limits in cM
+cim_QTL1_lg1_draw[2:3]
+
+# You can also plot multiple QTLs of same group
+cim_QTL2_lg1_draw <- draw_phase( cofs_fs, cim_QTL2_lg1 )
+cim_QTL1_lg2_draw <- draw_phase( cofs_fs, cim_QTL1_lg2 )
+cim_QTL2_lg2_draw <- draw_phase( cofs_fs, cim_QTL2_lg2 )
+cim_QTL3_lg2_draw <- draw_phase( cofs_fs, cim_QTL3_lg2 )
+cim_QTL1_lg3_draw <- draw_phase( cofs_fs, cim_QTL1_lg3 )
+cim_QTL2_lg3_draw <- draw_phase( cofs_fs, cim_QTL2_lg3 )
+cim_QTL1_lg4_draw <- draw_phase( cofs_fs, cim_QTL1_lg4 )
+
+p1 <- plot_fullsib_phases(list(cim_QTL1_lg1_draw, 
+                               cim_QTL2_lg1_draw))
+
+p2 <- plot_fullsib_phases(list(cim_QTL1_lg2_draw, 
+                               cim_QTL2_lg2_draw, 
+                               cim_QTL3_lg2_draw))
+
+p3 <- plot_fullsib_phases(list(cim_QTL1_lg3_draw, 
+                               cim_QTL2_lg3_draw))
+
+p4 <- plot_fullsib_phases(cim_QTL1_lg4_draw)
+
+library(ggpubr)
+ggarrange(p1,p2,p3,p4, common.legend = T)
+
 ```
 
 ## Estimating QTL effects using least squares
