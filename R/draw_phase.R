@@ -167,6 +167,7 @@ draw_phase <- function(fullsib, fullsib.char, probs=0.05, fullsib.scan = NULL){
     LOD2 <- fullsib.char[4,1] - 2
     pos.qtl <- which(fullsib.scan[,1] == fullsib.char[1,1] & fullsib.scan[,2] == fullsib.char[2,1])
     lg <- fullsib.scan[fullsib.scan[,1] == fullsib.char[1,1],3]
+    pos.qtl <- which(names(lg)==names(pos.qtl))
     
     LOD1.right <- LOD2.right <- vector()
     i <- pos.qtl 
@@ -301,6 +302,8 @@ plot_fullsib_phases <- function(x, CI = NULL, ...){
     }
   }
   
+  
+  
   df_melt <- data.frame(pos = rep(df_melt[,1], each=5), 
                         haplo = rep(df_melt[,2], each=5),
                         allele = c("a", "b", "c", "d", "o"), 
@@ -310,18 +313,40 @@ plot_fullsib_phases <- function(x, CI = NULL, ...){
   shapes <- c("\u25B2","\u25BC","\u25C6", "\u25B3", "\u25BD", "\u25C7")
   names(shapes) <- c("P1", "P2", "P0", "Q1", "Q2", "Q0")
   
-  p <- ggplot(df_melt, aes(x = pos))  +
-    geom_line(aes(y = haplo, col= allele, alpha = alpha), size = 5) +
-    scale_alpha_continuous(range = c(0,1)) +
-    geom_point(data = qtl.pos, aes(x = positions, 
-                                   y = haplo, shape = factor(value)), 
-               size = 7, na.rm = T) + 
+  
+  df2 =df_melt
+  levels(df2$haplo) = c(1,2,1,2)
+  
+  P1 = expand.grid(pos=c(min(df2$pos)-0.0001,max(df2$pos)+0.0001),
+                   haplo=unique(df2$haplo),
+                   alpha=0,
+                   allele=unique(df2$allele),
+                   parent=unique(df2$parent)[1])
+  
+  P2 = expand.grid(pos=c(min(df2$pos)-0.0001,max(df2$pos)+0.0001),
+                   haplo=unique(df2$haplo),
+                   alpha=0,
+                   allele=unique(df2$allele),
+                   parent=unique(df2$parent)[2])
+  df3 = rbind(df2,P1,P2)
+  
+  df3 = df3[order(df3$haplo,df3$pos),]
+  df3$haploNum = as.numeric(as.character(df3$haplo))
+  
+  levels(qtl.pos$haplo) = c(1,2,1,2)
+  df4 = qtl.pos
+  df4$haploNum = as.numeric(df4$haplo)+0.3
+  #levels(df4$haplo) = levels(df3$haplo)
+  p <- ggplot(df3)  +
+    geom_path(aes(x=pos,y = haploNum, col= allele, alpha = alpha), size=5)+
+    scale_alpha_continuous(range = c(0,1))+
+    geom_point(data = df4, aes(x = positions, 
+                               y = haploNum, shape = factor(value)), 
+               size = 5, na.rm = T)+
     scale_color_viridis_d() +
-    scale_shape_manual(values= shapes, drop=F) +
+    scale_shape_manual(values=shapes, drop=F) +
+    scale_y_continuous(limits=c(0.7,2.6))+
     labs(col = "Alleles", x = "position (cM)", y = element_blank(), shape="QTL effects") +
-         # caption = "\n\nP1 and Q1 have positive effect (increase phenotypic value)\n 
-         # P2 and Q2 have negative effect (reduce phenotypic value) \n
-         # P0 and Q0 have neutral effect (non signif.)\n") + 
     theme(panel.background = element_blank(), 
           legend.position="bottom", 
           axis.text.y=element_blank(),
@@ -347,11 +372,14 @@ plot_fullsib_phases <- function(x, CI = NULL, ...){
     qtls <- data.frame(positions, qtls)
     qtls[,2:5] <- apply(qtls[,2:5], 2, as.character)
     qtls_melt <- melt(qtls, measure.vars = colnames(qtls)[-1])
-
-    p <- p + geom_line(data = qtls_melt, aes(x = as.numeric(positions), 
-                                             y = variable), na.rm = T, size = 1.5)
+    qtls_melt$variable <- as.numeric(qtls_melt$variable)
+    qtls_melt$parent = ifelse(qtls_melt$variable < 3,"P1","P2")
+    qtls_melt$variable[qtls_melt$variable==3] = 1
+    qtls_melt$variable[qtls_melt$variable==4] = 2
+    p <- p + geom_path(data = qtls_melt, aes(x = as.numeric(positions), 
+                                             y = variable+0.3), na.rm = T, size = 1.5)
   }
-  p
+  p + facet_grid(parent ~ ., switch = "y", scales = "free_y") 
 }
 
 
