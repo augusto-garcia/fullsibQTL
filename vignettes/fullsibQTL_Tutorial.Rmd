@@ -931,7 +931,7 @@ cim_QTL1_lg3_draw <- draw_phase( cofs_fs, cim_QTL1_lg3 )
 cim_QTL2_lg3_draw <- draw_phase( cofs_fs, cim_QTL2_lg3 )
 cim_QTL1_lg4_draw <- draw_phase( cofs_fs, cim_QTL1_lg4 )
 
-p1 <- plot_fullsib_phases(list(cim_QTL1_lg1_draw, 
+p1 <- plot_fullsib_phases(x = list(cim_QTL1_lg1_draw, 
                                cim_QTL2_lg1_draw))
 
 p2 <- plot_fullsib_phases(list(cim_QTL1_lg2_draw, 

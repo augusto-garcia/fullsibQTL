@@ -274,7 +274,8 @@ plot_fullsib_phases <- function(x, CI = NULL, ...){
   df.tot <- x[[1]]
   if(!exists("qtl.list")) qtl.list <- df.tot[which(df.tot[,1] == "QTL"),-7]
   qtl.list[,3:6] <- apply(qtl.list[,3:6], 2, as.character)
-  qtl.pos <- melt(qtl.list, measure.vars = colnames(qtl.list)[-c(1,2)])
+  qtl.pos <- melt(qtl.list, measure.vars = colnames(qtl.list)[-c(1,2)], variable.name = "haplo")
+  qtl.pos <- cbind(qtl.pos, parent = sapply(strsplit(as.character(qtl.pos[,3]), "_"), "[[",1))
   
   df <- df.tot[-which(df.tot[,1] == "QTL"),-7]
   df[,2] <- c(0,df[,2][-1]-diff(df[,2])/2)
@@ -301,27 +302,31 @@ plot_fullsib_phases <- function(x, CI = NULL, ...){
   }
   
   df_melt <- data.frame(pos = rep(df_melt[,1], each=5), 
-                        parent = rep(df_melt[,2], each=5),
-                        allele = c("a", "b", "c", "d", "o"), alpha)
+                        haplo = rep(df_melt[,2], each=5),
+                        allele = c("a", "b", "c", "d", "o"), 
+                        alpha,
+                        parent = rep(sapply(strsplit(as.character(df_melt[,2]), "_"), "[[",1), each=5))
+  
+  shapes <- c("\u25B2","\u25BC","\u25C6", "\u25B3", "\u25BD", "\u25C7")
+  names(shapes) <- c("P1", "P2", "P0", "Q1", "Q2", "Q0")
   
   p <- ggplot(df_melt, aes(x = pos))  +
-    geom_line(aes(y = parent, col= allele, alpha = alpha), size = 3) +
+    geom_line(aes(y = haplo, col= allele, alpha = alpha), size = 5) +
     scale_alpha_continuous(range = c(0,1)) +
     geom_point(data = qtl.pos, aes(x = positions, 
-                                   y = variable, fill = factor(value)), 
-               size = 6, stroke = 0, na.rm = T, shape = 23) + 
-    scale_color_manual(breaks = c("a", "b", "c", "d", "o",
-                                  "P1", "P2", "P0", "Q1", "Q2", "Q0"), 
-                       values=c("#7e5dac","#ffd970","#269be3","#a1db43","black",
-                                "#1d7874","#f4c095", "#666666","#679289","#ee2e31", "#adadad")) +
-    scale_fill_manual(breaks = c("P1", "P2", "P0", "Q1", "Q2", "Q0"),
-                      values = c("#1d7874","#f3686a", "#666666","#679289","#ee2e31", "#adadad")) +
-    labs(col = "Alleles", x = "position (cM)", y = element_blank(), fill="QTL effects") +
+                                   y = haplo, shape = factor(value)), 
+               size = 7, na.rm = T) + 
+    scale_color_viridis_d() +
+    scale_shape_manual(values= shapes, drop=F) +
+    labs(col = "Alleles", x = "position (cM)", y = element_blank(), shape="QTL effects") +
          # caption = "\n\nP1 and Q1 have positive effect (increase phenotypic value)\n 
          # P2 and Q2 have negative effect (reduce phenotypic value) \n
          # P0 and Q0 have neutral effect (non signif.)\n") + 
-    theme(panel.background = element_blank(), legend.position="bottom") +
-    guides(alpha=FALSE)
+    theme(panel.background = element_blank(), 
+          legend.position="bottom", 
+          axis.text.y=element_blank(),
+          axis.ticks.y=element_blank()) +
+    guides(alpha=FALSE) 
   
   if(!is.null(CI)){
     if(CI == "LOD1") {
@@ -341,10 +346,9 @@ plot_fullsib_phases <- function(x, CI = NULL, ...){
     qtls <- data.frame(positions, qtls)
     qtls[,2:5] <- apply(qtls[,2:5], 2, as.character)
     qtls_melt <- melt(qtls, measure.vars = colnames(qtls)[-1])
-    
+
     p <- p + geom_line(data = qtls_melt, aes(x = as.numeric(positions), 
-                                             y = variable, color = factor(value)),
-                       na.rm = T, size = 1.5)
+                                             y = variable), na.rm = T, size = 1.5)
   }
   p
 }
