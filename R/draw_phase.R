@@ -326,7 +326,8 @@ plot_fullsib_phases <- function(x, CI = NULL, ...){
           legend.position="bottom", 
           axis.text.y=element_blank(),
           axis.ticks.y=element_blank()) +
-    guides(alpha=FALSE) 
+    guides(alpha=FALSE) + 
+    facet_grid(parent ~ ., switch = "y", scales = "free_y") 
   
   if(!is.null(CI)){
     if(CI == "LOD1") {
