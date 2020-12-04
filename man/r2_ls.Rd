@@ -4,8 +4,7 @@
 \alias{r2_ls}
 \title{Calculates the \eqn{R^2} for a group of given QTL.}
 \usage{
-r2_ls(fullsib, lg, pos, pheno.col = 1, addcovar = NULL,
-  ls.estimation = FALSE)
+r2_ls(fullsib, lg, pos, pheno.col = 1, addcovar = NULL, ls.estimation = FALSE)
 }
 \arguments{
 \item{fullsib}{An object from class \emph{fullsib}.}

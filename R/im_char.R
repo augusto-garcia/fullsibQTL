@@ -127,7 +127,8 @@
 #'   qtl5 <- im_char( fullsib, pheno.col = 1, addcovar = covar, lg = 2, pos = "M27" )
 #'   }
 #' 
-
+#' @importFrom stats lm model.matrix pchisq
+#' @export
 im_char <- function( fullsib, pheno.col = 1, addcovar = NULL, lg, pos,
                      maxit = 1000, tol = 1e-10, verbose = FALSE ){
   

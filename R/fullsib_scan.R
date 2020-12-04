@@ -80,8 +80,8 @@
 #'   summary( im1 )
 #'   summary( im1, thr = 6.5 )
 #' 
-#' 
-
+#' @export
+#' @method summary fullsib_scan
 summary.fullsib_scan <- function(object, thr=0, ...)
 {
   if(!any(class(object) == "fullsib_scan"))
@@ -244,7 +244,11 @@ summary.fullsib_scan <- function(object, thr=0, ...)
 #'   plot( im2, lg = 2, incl.mkr = "name", add = TRUE )
 #' 
 #' 
-
+#' 
+#' @importFrom graphics axis lines par plot points rug text
+#' 
+#' @export
+#' @method plot fullsib_scan
 plot.fullsib_scan <- function(x, x2, x3, x4, x5, lg, label.lg, cex.axis=1,
                               incl.mkr = c("none", "points", "name"), cex.incl,
                               xlim, ylim, lty = 1, lwd = 2, add = FALSE, gap = 50,
@@ -647,7 +651,8 @@ plot.fullsib_scan <- function(x, x2, x3, x4, x5, lg, label.lg, cex.axis=1,
 #'   print( im1, lg = 2, pos = "M27" )
 #'   print( im1, lg = c( 1, 4 ) )
 #' 
-
+#' @export
+#' @method print fullsib_scan
 print.fullsib_scan <- function(x, lg, pos, ...){
 
   if(missing(lg))

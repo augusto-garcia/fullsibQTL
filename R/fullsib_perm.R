@@ -85,8 +85,8 @@
 #'   summary( im_perm, alpha = 0.05, verbose = FALSE )
 #'   }
 #' 
-#' 
-
+#' @export
+#' @method summary fullsib_perm
 summary.fullsib_perm <- function(object,
                                  alpha=c(0.05, 0.10), verbose=TRUE, ...)
 {
@@ -171,7 +171,10 @@ summary.fullsib_perm <- function(object,
 #'   plot( im.perm, peak = 2 ) ## chen and storey (2006)
 #'   }
 #' 
-
+#' @importFrom graphics hist par rug
+#' @importFrom stats quantile
+#' @export
+#' @method plot fullsib_perm
 plot.fullsib_perm <- function(x, peak=1, ...)
 {
 

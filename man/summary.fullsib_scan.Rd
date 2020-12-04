@@ -43,7 +43,6 @@ some situations.
   summary( im1 )
   summary( im1, thr = 6.5 )
 
-
 }
 \seealso{
 \code{\link[fullsibQTL]{im_scan}}

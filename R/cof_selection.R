@@ -12,7 +12,7 @@
 # copyright (c) 2011, Rodrigo Gazaffi                                 #
 #                                                                     #
 # First version: 09/30/2011                                           #
-# Last  version: 08/23/2017                                           #
+# Last  version: 11/08/2020                                           #
 # License: GPL-3                                                      #
 #                                                                     #
 #######################################################################
@@ -206,6 +206,8 @@
 #'   cofs.fs8 <- cof_selection( fullsib, pheno.col = 2, addcovar = covar, k = 2 )
 #'   }
 #' 
+#' @importFrom stats anova as.formula coef df.residual lm model.matrix qchisq
+#' @export
 
 cof_selection <- function(fullsib, pheno.col=1, addcovar=NULL, k=2,
                           n.cofactor=10, stoppage.df=NULL, trace=0,
@@ -364,7 +366,7 @@ cof_selection <- function(fullsib, pheno.col=1, addcovar=NULL, k=2,
     get.cofs <- as.numeric(get.cofs)
     cof.index <- which(!duplicated(get.cofs))
 
-    selected.cofs <- colnames(get(fullsib$map[[1]]$data.name)$geno)[get.cofs]
+    selected.cofs <- colnames(fullsib$map[[1]]$data.name$geno)[get.cofs]
     extract.cofs <- selected.cofs[which(!duplicated(selected.cofs))]
 
 

@@ -98,7 +98,8 @@
 #'   qtl.lg4 <- cim_char( cofs.fs, pheno.col = 1, ws = 22, lg = 4, pos = "M52" )
 #'   get_segr( qtl.lg4 )
 #' 
-
+#' @importFrom stats qchisq 
+#' @export
 get_segr <- function( fschar, probs1 = .05, probs2 = .05 ){
 
   if (!any(class(fschar) == "fullsib_char"))

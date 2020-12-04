@@ -4,8 +4,7 @@
 \alias{summary.fullsib_perm}
 \title{Returns the threshold obtained with permutation test}
 \usage{
-\method{summary}{fullsib_perm}(object, alpha = c(0.05, 0.1), verbose = TRUE,
-  ...)
+\method{summary}{fullsib_perm}(object, alpha = c(0.05, 0.1), verbose = TRUE, ...)
 }
 \arguments{
 \item{object}{An object of class \emph{fullsib_perm}, output of
@@ -54,7 +53,6 @@ a quantile function to calculate the thresholds, using default of function
   
   summary( im_perm, alpha = 0.05, verbose = FALSE )
   }
-
 
 }
 \references{

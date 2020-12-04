@@ -4,10 +4,27 @@
 \alias{plot.fullsib_scan}
 \title{Plot the QTL mapping scan}
 \usage{
-\method{plot}{fullsib_scan}(x, x2, x3, x4, x5, lg, label.lg, cex.axis = 1,
-  incl.mkr = c("none", "points", "name"), cex.incl, xlim, ylim, lty = 1,
-  lwd = 2, add = FALSE, gap = 50, col = c("black", "blue", "red",
-  "orange", "limegreen"), alternate.lgid = FALSE, ...)
+\method{plot}{fullsib_scan}(
+  x,
+  x2,
+  x3,
+  x4,
+  x5,
+  lg,
+  label.lg,
+  cex.axis = 1,
+  incl.mkr = c("none", "points", "name"),
+  cex.incl,
+  xlim,
+  ylim,
+  lty = 1,
+  lwd = 2,
+  add = FALSE,
+  gap = 50,
+  col = c("black", "blue", "red", "orange", "limegreen"),
+  alternate.lgid = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x}{An object of class \emph{fullsib_scan}, output of \code{im_scan}
@@ -107,6 +124,7 @@ to plot QTL profile.
   #add argument is another way of overlapping QTL results
   plot( im1, lg = 2, incl.mkr = "name" )
   plot( im2, lg = 2, incl.mkr = "name", add = TRUE )
+
 
 
 }

@@ -8,11 +8,11 @@
 # cof_definition                                                      #
 #                                                                     #
 # Written by Rodrigo Gazaffi                                          #
-# Updated by Rodrigo Amadeu                                           #
+# Updated by Rodrigo Amadeu and Cristiane Taniguti                    #
 # copyright (c) 2011, Rodrigo Gazaffi                                 #
 #                                                                     #
 # First version: 09/30/2011                                           #
-# Last  version: 08/15/2011                                           #
+# Last  version: 11/08/2020                                           #
 # License: GPL-3                                                      #
 #                                                                     #
 #######################################################################
@@ -138,7 +138,7 @@
 #'   ### because it is non significative (never was selected on cof_selection)
 #'   }
 #' 
-
+#' @export
 cof_definition <- function(fullsib, pheno.col=1, addcovar=NULL,
                            cof.pos, thres.effect=1){
 
@@ -183,7 +183,7 @@ cof_definition <- function(fullsib, pheno.col=1, addcovar=NULL,
     pos <-  cof.pos[i,2]
     if(is.na(lg)){
       ##unlinked marker
-      pos.num <- match(pos, colnames(get(fullsib$map[[1]]$data.name)$geno))
+      pos.num <- match(pos, colnames(fullsib$map[[1]]$data.name$geno))
       tmp <- unlink2cof(pos.num, fullsib$map[[1]]$data.name, pheno.index)[[1]]
       colnames(tmp) <- rep(pos, ncol(tmp))
       

@@ -69,14 +69,15 @@
 #'   plot( cofs.fs )
 #'   plot( cofs.fs, horizontal = TRUE, grid = TRUE, cex.mrk = 2.5, cex.grp = 1 )
 #'   
-
+#' @export
+#' @method plot fullsib_cofactors
 plot.fullsib_cofactors  <- function(x, horizontal = FALSE, grid = FALSE,
                                    cex.mrk = 1, cex.grp = 0.75, ...)
 {
 
   
   ##draw genetic map, as in onemap
-  draw_map2(x$map, horizontal, grid, cex.mrk, cex.grp, trait=x$cofactors$trait.cof)
+  draw_map_qtl(x$map, horizontal, grid, cex.mrk, cex.grp, trait=x$cofactors$trait.cof)
   
   ##find the positions in the genome
   mkr.pos <- rep(NA, length(x$cofactors$names.cof$mkr))

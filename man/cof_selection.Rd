@@ -4,9 +4,17 @@
 \alias{cof_selection}
 \title{Cofactors Selection procedure for CIM analysis}
 \usage{
-cof_selection(fullsib, pheno.col = 1, addcovar = NULL, k = 2,
-  n.cofactor = 10, stoppage.df = NULL, trace = 0, thres.effect = 1,
-  selection = 1)
+cof_selection(
+  fullsib,
+  pheno.col = 1,
+  addcovar = NULL,
+  k = 2,
+  n.cofactor = 10,
+  stoppage.df = NULL,
+  trace = 0,
+  thres.effect = 1,
+  selection = 1
+)
 }
 \arguments{
 \item{fullsib}{an object from class \emph{fullsib}.}

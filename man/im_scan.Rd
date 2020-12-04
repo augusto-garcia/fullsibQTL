@@ -4,8 +4,19 @@
 \alias{im_scan}
 \title{QTL searching using Interval Mapping approach}
 \usage{
-im_scan(fullsib, lg, pheno.col = 1, addcovar = NULL, LOD = TRUE,
-  maxit = 1000, tol = 1e-04, n.perm, write.perm, verbose, verbose.scan)
+im_scan(
+  fullsib,
+  lg,
+  pheno.col = 1,
+  addcovar = NULL,
+  LOD = TRUE,
+  maxit = 1000,
+  tol = 1e-04,
+  n.perm,
+  write.perm,
+  verbose,
+  verbose.scan
+)
 }
 \arguments{
 \item{fullsib}{An object from class \emph{fullsib}.}

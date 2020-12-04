@@ -150,8 +150,14 @@
 #'                    qtlmapping = c( "cim", "im" ),
 #'                    qtlmapping.colors = c( "dark green", "purple" ) )
 #'                    
-
-
+#' 
+#' @rawNamespace import(ggplot2, except = last_plot)
+#' @import plotly
+#' @import htmlwidgets 
+#' @importFrom graphics abline
+#' @importFrom utils browseURL
+#' 
+#' @export
 plot_fullsibQTL = function (fullsib = NULL, fullsib.scan = NULL, r2ls.out = NULL, 
     qtlmapping = NULL, lgs = NULL, thr = NULL, grayscale = FALSE, 
     interact = FALSE, file = "fullsibQTL.html", folder = getwd(), 
@@ -285,8 +291,12 @@ plot_fullsibQTL = function (fullsib = NULL, fullsib.scan = NULL, r2ls.out = NULL
 #'   ## Merging and transforming to tidy data
 #'   tidy_fullsibQTL(fullsib, fullsib.scan=list(im,cim),
 #'                   r2ls.out= list(qtls.im,qtls.cim), qtlmapping=c("im","cim"))
-#' 
-
+#'                   
+#' @rawNamespace import(ggplot2, except = last_plot)
+#' @importFrom utils head tail
+#' @import plotly
+#' @import htmlwidgets
+#' @export
 tidy_fullsibQTL <- function(fullsib, fullsib.scan, r2ls.out=NULL, qtlmapping=NULL){
   
   ## Checking fullsib.scan data input

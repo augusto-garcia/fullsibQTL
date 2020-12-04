@@ -4,9 +4,20 @@
 \alias{cim_scan}
 \title{QTL searching using Composite Interval Mapping}
 \usage{
-cim_scan(fullsib, lg, pheno.col = 1, ws = 10, LOD = TRUE, maxit = 1000,
-  tol = 1e-04, n.perm = 0, write.perm, icim = FALSE, verbose,
-  verbose.scan)
+cim_scan(
+  fullsib,
+  lg,
+  pheno.col = 1,
+  ws = 10,
+  LOD = TRUE,
+  maxit = 1000,
+  tol = 1e-04,
+  n.perm = 0,
+  write.perm,
+  icim = FALSE,
+  verbose,
+  verbose.scan
+)
 }
 \arguments{
 \item{fullsib}{An object from class \emph{fullsib_cofactors}.}
@@ -148,7 +159,7 @@ Individuals with missing phenotypes are dropped.
   summary( cim.perm ) # threshold values
   summary( cim.perm, alpha = 0.10 )
   }
-
+  
 }
 \references{
 Chen, L., Storey, J.D. (2006) Relaxed Significance Criteria for
