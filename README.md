@@ -44,6 +44,6 @@ Comments and suggestions are welcome!
 # Additional material
 [Graphical options with plot_fullsibQTL](https://statgen-esalq.github.io/tutorials/fullsibQTL/Graphical_options_with_plot_fullsibQTL.html)
 
-[Graphical options with plot](hhttps://statgen-esalq.github.io/tutorials/fullsibQTL/Graphical_options_with_plot.html)
+[Graphical options with plot](https://statgen-esalq.github.io/tutorials/fullsibQTL/Graphical_options_with_plot.html)
 
 [QTL mapping with partially informative markers](https://statgen-esalq.github.io/tutorials/fullsibQTL/QTL_mapping_with_partially_informative_markers.html)
