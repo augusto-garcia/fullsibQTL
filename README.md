@@ -20,7 +20,7 @@ The method is based on a maximum likelihood approach, using mixture models and t
 
 The `onemap` package is a dependency, so if you are having trouble installing `fullsibQTL` due to this dependency, please check `onemap` github page (https://github.com/augusto-garcia/onemap) for information about how to install it.
 
-## From github (version under development)
+## From github
 
 Within R, you need to install and load the package `devtools` and install `fullsibQTL` from this very repository:
 
@@ -31,7 +31,6 @@ install_github( "augusto-garcia/fullsibQTL" )
 ```
 
 This will allow you to automatically build and install packages from github. If you use MS Windows and the above script did not work, try to install [Rtools](https://cran.r-project.org/bin/windows/Rtools/) first. If you are facing problems with Rtools installation, try to do it by selecting *Run as Admnistrator* option with right mouse button. On a Mac, you will need _Xcode_ (available on the App Store). On Linux, you may need to install `r-cran-tkrplot` in the command line, since this is a `onemap` dependency that sometimes cause some problems.
-
 
 # Tutorials
 
