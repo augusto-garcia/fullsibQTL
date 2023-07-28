@@ -190,8 +190,9 @@ plot_fullsibQTL = function (fullsib = NULL, fullsib.scan = NULL, r2ls.out = NULL
     if (!is.null(thr)) 
         if (class(thr) != "numeric" | !is.vector(thr)) 
             stop(deparse("thr object must be a numeric vector"))
-    df$dummy <- scales::rescale(as.numeric(df$qtlmapping), to = c(-0.05, 
+    df$dummy <- scales::rescale(as.numeric(as.factor(df$qtlmapping)), to = c(-0.05, 
         -0.95))
+    class(df) = "data.frame"
     suppressWarnings(p <- ggplot() + geom_line(data = df[df$plot == 
         "lod", ], aes(x = pos.cM, y = LOD, color = qtlmapping)) + 
         geom_point(data = df[(df$r2.qtl > 0 & df$plot == "lod"), 
