@@ -318,7 +318,7 @@ cof_selection <- function(fullsib, pheno.col=1, addcovar=NULL, k=2,
   if (trace == 0) cat("Number of Cofactors selected: ")
   while( (check.DF < stoppage.df) && (n.iter <= n.cofactor) ){
       
-    min.form <- step(lm(min.form),scope=list(upper=max.form, lower=min.form),
+    min.form <- stats::step(lm(min.form),scope=list(upper=max.form, lower=min.form),
                      direction = "both", k=k, step=1, trace = trace)
     check.DF <- sum(anova(min.form)$Df) - df.residual(min.form)
     min.form <- as.formula(min.form)
