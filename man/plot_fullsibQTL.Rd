@@ -58,6 +58,8 @@ plot.}
 \item{width}{numeric argument to be passed for \pkg{plotly}::\code{\link{ggplotly}} internal. Default is
 (250 x number of LGs) pixels.}
 
+\item{map_plot}{can be "map" or c("map","lod"). Default="map". Use c("map","lod") if high density map.}
+
 \item{qtlmapping.colors}{string vector with the color names for each LG, argument will be passed for 
 \pkg{ggplot2}::\code{\link{scale_color_manual}}.}
 }
