@@ -193,12 +193,15 @@ plot_fullsibQTL = function (fullsib = NULL, fullsib.scan = NULL, r2ls.out = NULL
             stop(deparse("thr object must be a numeric vector"))
     df$dummy <- scales::rescale(as.numeric(df$qtlmapping), to = c(-0.05, 
         -0.95))
+
+    map_info = which(df$plot %in% map_plot)
+    
     suppressWarnings(p <- ggplot() + geom_line(data = df[df$plot == "lod", ], aes(x = pos.cM, y = LOD, color = qtlmapping)) + 
         geom_point(data = df[(df$r2.qtl > 0 & df$plot == "lod"), 
             ], aes(x = pos.cM, y = dummy, color = qtlmapping, 
             label1 = loc, label2 = r2.qtl, label3 = LOD), shape = 17, 
-            size = 2) + geom_line(data = df[df$plot %in% map_plot, 
-        ], aes(x = pos.cM, y = -1)) + geom_point(data = df[df$plot %in% map_plot, ], aes(x = pos.cM, y = -1, label1 = loc), shape = 3, 
+            size = 2) + geom_line(data = df[map_info, 
+        ], aes(x = pos.cM, y = -1)) + geom_point(data = df[map_info, ], aes(x = pos.cM, y = -1, label1 = loc), shape = 3, 
         size = 1) + facet_grid(. ~ lg, scales = "free_x") + labs(x = "cM", 
         y = "LOD Score", title = "Linkage Group") + theme(strip.text.y = element_text(size=0.1), 
         plot.title = element_text(hjust = 0.5)))
