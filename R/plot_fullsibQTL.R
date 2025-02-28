@@ -16,7 +16,7 @@
 # Depends: ggplot2, plotly, htmlwidgets                               #
 #                                                                     #
 # First version: 06/26/2017                                           #
-# Last  version: 04/11/2019                                           #
+# Last  version: 02/28/2025                                           #
 # License: GPL-3                                                      #
 #                                                                     #
 #######################################################################
