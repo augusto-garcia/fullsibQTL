@@ -71,6 +71,7 @@
 #' @param height numeric argument to be passed for \pkg{plotly}::\code{\link{ggplotly}} internal. Default is
 #' 1000 pixels.
 #' @param qtlmapping.colors string vector with the color names for each LG, argument will be passed for 
+#' @param map_info can be "map" or "all". Default="map". Use "all" if high density map. 
 #' \pkg{ggplot2}::\code{\link{scale_color_manual}}.
 #' 
 #' @return The resulting graphic is divided per linkage group, it has the map
@@ -159,7 +160,7 @@
 #' 
 #' @export
 plot_fullsibQTL = function (fullsib = NULL, fullsib.scan = NULL, r2ls.out = NULL, 
-    qtlmapping = NULL, lgs = NULL, thr = NULL, grayscale = FALSE, 
+    qtlmapping = NULL, lgs = NULL, thr = NULL, grayscale = FALSE, map_info = "map",
     interact = FALSE, file = "fullsibQTL.html", folder = getwd(), 
     browser = TRUE, height = NULL, width = NULL, qtlmapping.colors = NULL) 
 {
@@ -192,14 +193,12 @@ plot_fullsibQTL = function (fullsib = NULL, fullsib.scan = NULL, r2ls.out = NULL
             stop(deparse("thr object must be a numeric vector"))
     df$dummy <- scales::rescale(as.numeric(df$qtlmapping), to = c(-0.05, 
         -0.95))
-    suppressWarnings(p <- ggplot() + geom_line(data = df[df$plot == 
-        "lod", ], aes(x = pos.cM, y = LOD, color = qtlmapping)) + 
+    suppressWarnings(p <- ggplot() + geom_line(data = df[df$plot == "lod", ], aes(x = pos.cM, y = LOD, color = qtlmapping)) + 
         geom_point(data = df[(df$r2.qtl > 0 & df$plot == "lod"), 
             ], aes(x = pos.cM, y = dummy, color = qtlmapping, 
             label1 = loc, label2 = r2.qtl, label3 = LOD), shape = 17, 
-            size = 2) + geom_line(data = df[df$plot == "map", 
-        ], aes(x = pos.cM, y = -1)) + geom_point(data = df[df$plot == 
-        "map", ], aes(x = pos.cM, y = -1, label1 = loc), shape = 3, 
+            size = 2) + geom_line(data = df[df$plot %in% map_info, 
+        ], aes(x = pos.cM, y = -1)) + geom_point(data = df[df$plot %in% map_info, ], aes(x = pos.cM, y = -1, label1 = loc), shape = 3, 
         size = 1) + facet_grid(. ~ lg, scales = "free_x") + labs(x = "cM", 
         y = "LOD Score", title = "Linkage Group") + theme(strip.text.y = element_text(size=0.1), 
         plot.title = element_text(hjust = 0.5)))
